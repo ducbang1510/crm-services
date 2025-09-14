@@ -1,0 +1,13 @@
+package com.tdbang.crm_services;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class CrmServicesApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(CrmServicesApplication.class, args);
+	}
+
+}
