@@ -1,9 +1,9 @@
 package com.tdbang.crm.entities;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
-import com.tdbang.crm.enums.LeadSource;
-import com.tdbang.crm.enums.Salutation;
+import com.tdbang.crm.enums.SalesOrderStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -21,31 +21,25 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Getter
 @Setter
 @Entity
-@Table(name = "contact")
-public class Contact {
+@Table(name = "sales_order")
+public class SalesOrder {
     @Id
     @Column(name = "pk")
     private Long pk;
 
-    @Column(name = "contact_name", nullable = false)
-    private String contactName;
+    @Column(name = "subject", nullable = false)
+    private String subject;
 
-    @Column(name = "salutation", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "contact_fk")
+    private Contact contact;
+
+    @Column(name = "status", nullable = false)
     @Enumerated
-    private Salutation salutation;
+    private SalesOrderStatus status;
 
-    @Column(name = "mobile_phone", nullable = false)
-    private String mobilePhone;
-
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "organization", nullable = false)
-    private String organization;
-
-    @Column(name = "lead_src", nullable = false)
-    @Enumerated
-    private LeadSource leadSrc;
+    @Column(name = "total", nullable = false)
+    private BigDecimal total;
 
     @ManyToOne
     @JoinColumn(name = "assigned_to")
@@ -54,9 +48,6 @@ public class Contact {
     @ManyToOne
     @JoinColumn(name = "creator")
     private User creator;
-
-    @Column(name = "address")
-    private String address;
 
     @Column(name = "description")
     private String description;
