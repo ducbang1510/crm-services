@@ -1,22 +1,15 @@
 package com.tdbang.crm.entities;
 
-import java.util.Date;
-
-import com.tdbang.crm.enums.LeadSource;
-import com.tdbang.crm.enums.Salutation;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
+
+import com.tdbang.crm.enums.LeadSource;
+import com.tdbang.crm.enums.Salutation;
 
 @Getter
 @Setter
@@ -25,6 +18,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 public class Contact {
     @Id
     @Column(name = "pk")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pk;
 
     @Column(name = "contact_name", nullable = false)

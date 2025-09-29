@@ -1,17 +1,12 @@
 package com.tdbang.crm.entities;
 
-import java.util.Date;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -20,6 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 public class User {
     @Id
     @Column(name = "pk")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pk;
 
     @Column(name = "name", nullable = false)
@@ -37,8 +33,8 @@ public class User {
     @Column(name = "phone", nullable = false)
     private String phone;
 
-    @Column(name = "is_manager")
-    private Boolean isManager;
+    @Column(name = "is_admin")
+    private Boolean isAdmin;
 
     @Column(name = "is_active")
     private Boolean isActive;

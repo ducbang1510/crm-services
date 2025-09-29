@@ -1,22 +1,15 @@
 package com.tdbang.crm.entities;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
-import com.tdbang.crm.enums.SalesOrderStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import com.tdbang.crm.enums.SalesOrderStatus;
 
 @Getter
 @Setter
@@ -25,6 +18,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 public class SalesOrder {
     @Id
     @Column(name = "pk")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pk;
 
     @Column(name = "subject", nullable = false)

@@ -28,6 +28,17 @@ import com.tdbang.crm.services.UserService;
 public class SecurityConfig {
     private static final String ERROR_CODE_HEADER = "ERROR_CODE";
     private static final String GROUPS_HEADER = "GROUPS";
+    private static final String[] AUTH_WHITELIST = {
+            //Swagger API
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+    };
 
     private final UserService userDetailsService;
 
@@ -48,6 +59,7 @@ public class SecurityConfig {
         return http
                 .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(AUTH_WHITELIST).anonymous()
                         .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf.ignoringRequestMatchers(authorizationServerConfigurer.getEndpointsMatcher()))
@@ -72,6 +84,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .securityMatcher("/api/**")
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(AUTH_WHITELIST).anonymous()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .build();
