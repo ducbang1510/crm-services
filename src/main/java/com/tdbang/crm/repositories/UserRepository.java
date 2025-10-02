@@ -1,5 +1,6 @@
 package com.tdbang.crm.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -24,4 +25,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT new com.tdbang.crm.dtos.UserDTO(u.pk, u.name, u.email, u.phone, u.isAdmin, u.isActive, u.createdOn) FROM User u")
     Page<UserDTO> getUsersPageable(Pageable pageable);
+
+    @Query("SELECT new com.tdbang.crm.dtos.UserDTO(u.pk, u.name, u.email, u.phone, u.isAdmin, u.isActive, u.createdOn) FROM User u")
+    List<UserDTO> getAllUsers();
 }

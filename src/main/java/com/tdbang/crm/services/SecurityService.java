@@ -1,11 +1,19 @@
 package com.tdbang.crm.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+
+import com.tdbang.crm.entities.User;
+import com.tdbang.crm.utils.AppConstants;
 
 @Service
 public class SecurityService implements InitializingBean {
@@ -38,5 +46,16 @@ public class SecurityService implements InitializingBean {
         throw new IllegalStateException("Unknown principal type: " +
                 (authentication.getPrincipal() != null ?
                         authentication.getPrincipal().getClass().getName() : "null"));
+    }
+
+    public List<GrantedAuthority> getGrantedAuthority(User user) {
+        List<GrantedAuthority> groupAuthorities = new ArrayList<>();
+        if (Boolean.TRUE.equals(user.getIsAdmin())) {
+            groupAuthorities.add(new SimpleGrantedAuthority(AppConstants.ROLE_ADMIN));
+        } else {
+            groupAuthorities.add(new SimpleGrantedAuthority(AppConstants.ROLE_USER));
+        }
+
+        return groupAuthorities;
     }
 }

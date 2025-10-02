@@ -1,10 +1,5 @@
 package com.tdbang.crm.config;
 
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
-
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
@@ -12,7 +7,12 @@ import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.util.UUID;
 
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -27,6 +27,19 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 
 @Configuration
 public class AuthorizationServerConfig implements InitializingBean {
+    @Value("${authorization-server.client.id}")
+    private String clientId;
+    @Value("${authorization-server.client.secret}")
+    private String clientSecret;
+    @Value("${spring.security.oauth2.authorization-server.redirect-uri}")
+    private String redirectURI;
+
+    @Value("${spring.security.oauth2.authorization-server.token.authorization-code-time-to-live:10}")
+    private int authCodeTimeToLive;
+    @Value("${spring.security.oauth2.authorization-server.token.access-token-time-to-live:1}")
+    private int tokenTimeToLive;
+    @Value("${spring.security.oauth2.authorization-server.token.refresh-token-time-to-live:7}")
+    private int refreshTokenTimeToLive;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -36,12 +49,12 @@ public class AuthorizationServerConfig implements InitializingBean {
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
         RegisteredClient crmAppClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("crm-app")
-                .clientSecret("{noop}secret")
+                .clientId(clientId)
+                .clientSecret(clientSecret)
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://localhost:4200/")
+                .redirectUri(redirectURI)
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
                 .scope("api:read")
@@ -51,9 +64,9 @@ public class AuthorizationServerConfig implements InitializingBean {
                         .requireAuthorizationConsent(false)
                         .build())
                 .tokenSettings(TokenSettings.builder()
-                        .accessTokenTimeToLive(Duration.ofHours(1))
-                        .refreshTokenTimeToLive(Duration.ofDays(7))
-                        .authorizationCodeTimeToLive(Duration.ofMinutes(10))
+                        .accessTokenTimeToLive(Duration.ofHours(authCodeTimeToLive))
+                        .refreshTokenTimeToLive(Duration.ofDays(tokenTimeToLive))
+                        .authorizationCodeTimeToLive(Duration.ofMinutes(refreshTokenTimeToLive))
                         .reuseRefreshTokens(false)
                         .build())
                 .build();
