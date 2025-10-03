@@ -64,10 +64,6 @@ public class SecurityConfig implements InitializingBean {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
                 OAuth2AuthorizationServerConfigurer.authorizationServer();
 
-        authorizationServerConfigurer
-                .authorizationEndpoint(authorizationEndpoint ->
-                        authorizationEndpoint.consentPage("/oauth2/consent"));
-
         return http
                 .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
