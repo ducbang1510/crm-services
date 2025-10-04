@@ -76,16 +76,6 @@ OAuth2 Authorization Server endpoints:
 
 ---
 
-## 🧩 Example Endpoints
-
-* `POST /api/v1/user` – Create a new user
-* `GET /api/v1/user` – Get user info
-* ...
-
-(All require valid OAuth2 access tokens)
-
----
-
 ## 🔑 Sample OAuth2 Client Config (Authorization Code Grant)
 
 **Client Info (for testing):**
@@ -93,7 +83,7 @@ OAuth2 Authorization Server endpoints:
 * **Client ID**: `crm-app`
 * **Client Secret**: `secret`
 * **Redirect URI**: `http://localhost:4200/`
-* **Scopes**: `api:read api:write`
+* **Scopes**: `api:read api:write openid profile`
 
 **OAuth2 Endpoints:**
 
@@ -104,12 +94,12 @@ OAuth2 Authorization Server endpoints:
 
 1. Go to **Authorization** tab → Type: `OAuth 2.0`
 2. Grant Type: `Authorization Code`
-3. Callback URL: `http://localhost:4200/`
+3. Callback URL: `http://localhost:4200`
 4. Auth URL: `http://localhost:8080/oauth2/authorize`
 5. Access Token URL: `http://localhost:8080/oauth2/token`
 6. Client ID: `crm-app`
 7. Client Secret: `secret`
-8. Scope: `api:read api:write`
+8. Scope: `api:read api:write openid profile`
 9. Click **Get New Access Token**
 
 ---

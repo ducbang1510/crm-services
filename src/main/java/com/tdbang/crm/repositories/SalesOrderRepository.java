@@ -1,6 +1,7 @@
 package com.tdbang.crm.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,10 +24,18 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
             + " LEFT JOIN user assignTo ON sc.assigned_to = assignTo.pk"
             + " LEFT JOIN user creator ON sc.creator = creator.pk";
 
-    @Query(value = SELECT_LIST_SALES_ORDER
-            , countQuery = "SELECT COUNT(sc.pk) FROM sales_order sc JOIN contact c ON sc.contact_fk = c.pk", nativeQuery = true)
-    Page<SalesOrderQueryDTO> getSalesOrderPageable(Pageable pageable);
+    public static final String SUBJECT_FILTER = " WHERE :subject IS NULL OR sc.subject LIKE %:subject%";
 
-    @Query(value = SELECT_LIST_SALES_ORDER, nativeQuery = true)
-    List<SalesOrderQueryDTO> getAllSalesOrder();
+    @Query(value = SELECT_LIST_SALES_ORDER + SUBJECT_FILTER
+            , countQuery = "SELECT COUNT(sc.pk) FROM sales_order sc JOIN contact c ON sc.contact_fk = c.pk"
+            + SUBJECT_FILTER, nativeQuery = true)
+    Page<SalesOrderQueryDTO> getSalesOrderPageable(String subject, Pageable pageable);
+
+    @Query(value = SELECT_LIST_SALES_ORDER + SUBJECT_FILTER, nativeQuery = true)
+    List<SalesOrderQueryDTO> getAllSalesOrder(String subject);
+
+    @Query(value = SELECT_LIST_SALES_ORDER + " WHERE sc.pk = :orderPk", nativeQuery = true)
+    SalesOrderQueryDTO getSalesOrderDetailsByPk(Long orderPk);
+
+    Optional<SalesOrder> findByPk(Long pk);
 }

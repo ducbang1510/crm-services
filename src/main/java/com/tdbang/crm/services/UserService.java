@@ -23,12 +23,11 @@ import com.tdbang.crm.entities.User;
 import com.tdbang.crm.exceptions.GenericException;
 import com.tdbang.crm.repositories.UserRepository;
 import com.tdbang.crm.utils.AppConstants;
+import com.tdbang.crm.utils.MessageConstants;
 
 @Service
 public class UserService implements UserDetailsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
-    private static final String FETCHING_USER_INFO_SUCCESS = "Fetching user information successfully!";
-    private static final String FETCHING_LIST_OF_NAMES_USERS_SUCCESS = "Fetching list of names of users successfully!";
     @Autowired
     private UserRepository userRepository;
 
@@ -53,7 +52,7 @@ public class UserService implements UserDetailsService {
     }
 
     public ResponseDTO getListOfUsers(Integer pageNumber, Integer pageSize) {
-        ResponseDTO result = new ResponseDTO(1, FETCHING_LIST_OF_NAMES_USERS_SUCCESS);
+        ResponseDTO result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_NAMES_USERS_SUCCESS);
         if (pageNumber != null && pageSize != null) {
             Pageable pageable = PageRequest.of(pageNumber, pageSize);
             Page<UserDTO> userDTOPage = userRepository.getUsersPageable(pageable);
@@ -82,19 +81,32 @@ public class UserService implements UserDetailsService {
             userDTO.setIsAdmin(user.getIsAdmin());
             userDTO.setCreatedTime(user.getCreatedOn());
         } else {
-            throw new GenericException(HttpStatus.NOT_FOUND, "FETCHING_USER_BY_ID_ERROR", "Error while fetching user by ID");
+            throw new GenericException(HttpStatus.NOT_FOUND, "FETCHING_USER_BY_ID_ERROR", MessageConstants.FETCHING_USER_BY_ID_ERROR);
         }
-        result = new ResponseDTO(1, FETCHING_USER_INFO_SUCCESS, userDTO);
+        result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_USER_INFO_SUCCESS, userDTO);
         return result;
     }
 
-    public void createNewUser(UserDTO userDTO) {
-        User saveUser = mappingUserDTOToUserEntity(userDTO, true);
+    public ResponseDTO createNewUser(UserDTO userDTO) {
+        ResponseDTO result;
         try {
+            User saveUser = mappingUserDTOToUserEntity(userDTO, true);
             userRepository.save(saveUser);
+            result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_USER_SUCCESS);
         } catch (Exception e) {
             throw new GenericException(HttpStatus.BAD_REQUEST, "CREATING_NEW_USER_ERROR", "Error while creating user");
         }
+        return result;
+    }
+
+    public ResponseDTO retrieveListNameOfUsers() {
+        ResponseDTO result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_NAMES_USERS_SUCCESS);
+
+        List<UserDTO> userDTOs = userRepository.getAllUsers();
+        List<String> nameOfUsers = userDTOs.stream().map(UserDTO::getName).toList();
+        result.setData(nameOfUsers);
+
+        return result;
     }
 
     private User mappingUserDTOToUserEntity(UserDTO userDTO, boolean isCreateNew) {

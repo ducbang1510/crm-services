@@ -18,6 +18,8 @@ public interface ContactQueryDTO {
 
     String getOrganization();
 
+    Date getDateOfBirth();
+
     Integer getLeadSrc();
 
     String getNameUserAssignedTo();

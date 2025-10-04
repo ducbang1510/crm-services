@@ -1,8 +1,12 @@
 package com.tdbang.crm.controllers;
 
+import java.util.Set;
+
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tdbang.crm.services.SecurityService;
@@ -24,6 +28,11 @@ public class BaseController {
     protected Long getPkUserLogged() {
         String loggedUsername = getUserLogged();
         return userService.getUserPkByUsername(loggedUsername);
+    }
+
+    protected FilterProvider buildFilterProvider(String filterName, Set<String> filterFields) {
+        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.serializeAllExcept(filterFields);
+        return new SimpleFilterProvider().addFilter(filterName, filter);
     }
 
 }

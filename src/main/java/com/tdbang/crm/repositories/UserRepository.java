@@ -28,4 +28,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT new com.tdbang.crm.dtos.UserDTO(u.pk, u.name, u.email, u.phone, u.isAdmin, u.isActive, u.createdOn) FROM User u")
     List<UserDTO> getAllUsers();
+
+    @Query("SELECT u FROM User u WHERE u.name = :name")
+    List<User> getUsersByNames(String name);
 }

@@ -1,6 +1,7 @@
 package com.tdbang.crm.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,16 +15,26 @@ import com.tdbang.crm.entities.Contact;
 @Repository
 public interface ContactRepository extends JpaRepository<Contact, Long> {
     public static final String SELECT_LIST_CONTACTS = "SELECT c.pk AS pk, c.contact_name AS contactName, c.salutation AS salutation, c.mobile_phone AS mobilePhone, c.email AS email, c.organization AS organization,"
-            + " c.lead_src AS leadSrc, assignTo.name AS nameUserAssignedTo, assignTo.pk AS userFkAssignedTo, creator.name AS creatorName, creator.pk AS creatorFk,"
+            + " c.dob AS dateOfBirth, c.lead_src AS leadSrc, assignTo.name AS nameUserAssignedTo, assignTo.pk AS userFkAssignedTo, creator.name AS creatorName, creator.pk AS creatorFk,"
             + " c.address AS address, c.description AS description, c.created_on AS createdOn, c.updated_on AS updatedOn"
             + " FROM contact c"
             + " LEFT JOIN user assignTo ON c.assigned_to = assignTo.pk"
             + " LEFT JOIN user creator ON c.creator = creator.pk";
 
-    @Query(value = SELECT_LIST_CONTACTS
-            , countQuery = "SELECT COUNT(pk) FROM contact", nativeQuery = true)
-    Page<ContactQueryDTO> getContactsPageable(Pageable pageable);
+    public static final String CONTACT_NAME_FILTER = " WHERE :contactName IS NULL OR c.contact_name LIKE %:contactName%";
 
-    @Query(value = SELECT_LIST_CONTACTS, nativeQuery = true)
-    List<ContactQueryDTO> getAllContacts();
+    @Query(value = SELECT_LIST_CONTACTS + CONTACT_NAME_FILTER
+            , countQuery = "SELECT COUNT(c.pk) FROM contact c" + CONTACT_NAME_FILTER, nativeQuery = true)
+    Page<ContactQueryDTO> getContactsPageable(String contactName, Pageable pageable);
+
+    @Query(value = SELECT_LIST_CONTACTS + CONTACT_NAME_FILTER, nativeQuery = true)
+    List<ContactQueryDTO> getAllContacts(String contactName);
+
+    @Query(value = "SELECT c FROM Contact c WHERE c.contactName = :contactName")
+    List<Contact> getContactsByContactName(String contactName);
+
+    @Query(value = SELECT_LIST_CONTACTS + " WHERE c.pk = :contactPk", nativeQuery = true)
+    ContactQueryDTO getContactDetailsByPk(Long contactPk);
+
+    Optional<Contact> findByPk(Long pk);
 }

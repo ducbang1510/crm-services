@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -22,6 +23,7 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -60,18 +62,18 @@ public class SecurityConfig implements InitializingBean {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
                 OAuth2AuthorizationServerConfigurer.authorizationServer();
 
         return http
                 .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AUTH_WHITELIST).anonymous()
                         .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf.ignoringRequestMatchers(authorizationServerConfigurer.getEndpointsMatcher()))
+                .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .with(authorizationServerConfigurer, authorizationServer -> authorizationServer
                         .oidc(Customizer.withDefaults())	// Enable OpenID Connect 1.0
@@ -88,10 +90,10 @@ public class SecurityConfig implements InitializingBean {
 
     @Bean
     @Order(2)
-    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain apiFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .httpBasic(Customizer.withDefaults())
                 .securityMatcher("/api/**")
                 .authorizeHttpRequests(authorize -> authorize
@@ -103,10 +105,10 @@ public class SecurityConfig implements InitializingBean {
 
     @Bean
     @Order(3)
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().permitAll()
@@ -129,14 +131,17 @@ public class SecurityConfig implements InitializingBean {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    private CorsConfigurationSource corsConfigurationSource() {
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOriginPattern(allowedUrlsRaw);
-        config.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Frame-Options", "X-XSS-Protection", "X-Requested-With",
-                "X-Content-Type-Options", "Ocp-Apim-Subscription-Key", "audit_trail_info.comments", "X-XSRF-TOKEN",
-                "Accept", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Noauth"));
-        config.setAllowedMethods(List.of("OPTIONS", "GET", "POST", "PUT", "DELETE"));
+        config.setAllowedOrigins(StringUtils.commaDelimitedListToSet(allowedUrlsRaw).stream().toList());
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedMethods(List.of(
+                HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
+                HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name(),
+                HttpMethod.PATCH.name(), HttpMethod.HEAD.name()
+        ));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
         config.setExposedHeaders(List.of("Content-Disposition", "Content-Length", "Access-Control-Allow-Origin",
