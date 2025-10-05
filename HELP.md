@@ -36,3 +36,32 @@ While most of the inheritance is fine, it also inherits unwanted elements like `
 To prevent this, the project POM contains empty overrides for these elements.
 If you manually switch to a different parent and actually want the inheritance, you need to remove those overrides.
 
+## Required Installations
+
+The following instructions are for Windows OS.
+
+### Install Java 17
+
+1. Download: https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html -> Choose Windows x64
+   Installer
+2. Install jdk file
+3. Setup JAVA_HOME environment variable
+    1. Open Setting -> System -> About -> Advanced system settings -> Environment Variables
+    2. Add new variable `JAVA_HOME` = Path to jdk-17 (e.g. `C:\Program Files\Java\jdk-17`)
+    3. Edit `Path`, add `%JAVA_HOME%\bin;`
+    4. Open cmd and run `java --version` to verify.
+
+### Install Maven 3.9+
+
+1. Download Maven 3.9: https://maven.apache.org/download.cgi -> Choose Binary zip archive
+2. Extract the zip file and copy path to bin folder (e.g. `C:\Program Files\Maven\apache-maven-3.9.9\bin`)
+3. Add the path into variable `Path` in Environment Variables.
+4. Open cmd and run `mvn -v to verify.
+
+### Install MySQL and MySQL Workbench
+
+1. Download MySQL: https://dev.mysql.com/downloads/installer/ -> Choose mysql-installer-community-8+.msi not the web
+   version
+2. Follow these step in https://www.w3schools.com/mysql/mysql_install_windows.asp
+3. Recommend to choose the 'Full' installation in order to have both MySQL server and MySQL Workbench/Shell.
+4. Check the option autostart MySQL80 service with Windows.
