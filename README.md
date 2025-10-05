@@ -41,7 +41,7 @@ It features secure **OAuth2 authorization**, a **MySQL** database, and interacti
 CREATE DATABASE crm_db;
 ```
 
-Update your `application.properties` with DB credentials:
+Update your `crm-services.properties` with DB credentials:
 
 ```properties
 spring.datasource.username=db-user
@@ -55,6 +55,17 @@ mvn spring-boot:run
 ```
 
 App runs at **[http://localhost:8080](http://localhost:8080)**
+
+### Populate Data and Quick Experience
+
+1. Populate data by `populate_data.sql` file
+
+2. Enjoy with admin user, credential below:
+
+```text
+username: user1
+password: 123456
+```
 
 ---
 
@@ -82,7 +93,7 @@ OAuth2 Authorization Server endpoints:
 
 * **Client ID**: `crm-app`
 * **Client Secret**: `secret`
-* **Redirect URI**: `http://localhost:4200/`
+* **Redirect URI**: `http://localhost:4200`
 * **Scopes**: `api:read api:write openid profile`
 
 **OAuth2 Endpoints:**
