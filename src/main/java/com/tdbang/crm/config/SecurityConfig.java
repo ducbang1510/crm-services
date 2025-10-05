@@ -44,7 +44,9 @@ public class SecurityConfig implements InitializingBean {
             "/swagger-ui.html",
             "/webjars/**",
             "/v3/api-docs/**",
-            "/swagger-ui/**"
+            "/swagger-ui/**",
+            "/login",
+            "/css/**", "/js/**", "/images/**"
     };
     @Value("${authentication.cors.allowed.urls:*}")
     private String allowedUrlsRaw;
@@ -70,7 +72,7 @@ public class SecurityConfig implements InitializingBean {
                 .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(AUTH_WHITELIST).anonymous()
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
@@ -78,7 +80,12 @@ public class SecurityConfig implements InitializingBean {
                 .with(authorizationServerConfigurer, authorizationServer -> authorizationServer
                         .oidc(Customizer.withDefaults())	// Enable OpenID Connect 1.0
                 )
-                .formLogin(Customizer.withDefaults())
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .permitAll()
+                        .defaultSuccessUrl("/oauth2/authorize", true) // Redirect to OAuth flow after login
+                )
+                .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
                 .exceptionHandling(exceptions -> exceptions
                         .defaultAuthenticationEntryPointFor(
                                 new LoginUrlAuthenticationEntryPoint("/login"),
@@ -97,7 +104,7 @@ public class SecurityConfig implements InitializingBean {
                 .httpBasic(Customizer.withDefaults())
                 .securityMatcher("/api/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(AUTH_WHITELIST).anonymous()
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .build();
@@ -113,7 +120,11 @@ public class SecurityConfig implements InitializingBean {
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().permitAll()
                 )
-                .formLogin(Customizer.withDefaults())
+                .formLogin(form -> form
+                        .loginPage("/login")    // our thymeleaf page
+                        .permitAll()
+                )
+                .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
                 .build();
     }
 
