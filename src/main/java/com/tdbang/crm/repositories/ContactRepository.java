@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.tdbang.crm.dtos.nativequerydto.ContactQueryDTO;
+import com.tdbang.crm.dtos.nativequerydto.DashboardQueryDTO;
 import com.tdbang.crm.entities.Contact;
 
 @Repository
@@ -37,4 +38,11 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
     ContactQueryDTO getContactDetailsByPk(Long contactPk);
 
     Optional<Contact> findByPk(Long pk);
+
+    @Query(value = "SELECT c.lead_src AS id, COUNT(c.pk) AS count"
+            + " FROM contact c GROUP BY c.lead_src", nativeQuery = true)
+    List<DashboardQueryDTO> countContactGroupByLeadSource();
+
+    @Query(value = "SELECT c FROM Contact c WHERE c.pk IN (:pks)")
+    List<Contact> getContactsByContactPks(List<Long> pks);
 }

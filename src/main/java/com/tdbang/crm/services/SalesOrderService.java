@@ -15,8 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.tdbang.crm.dtos.DashboardDTO;
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.dtos.SalesOrderDTO;
+import com.tdbang.crm.dtos.nativequerydto.DashboardQueryDTO;
 import com.tdbang.crm.dtos.nativequerydto.SalesOrderQueryDTO;
 import com.tdbang.crm.entities.Contact;
 import com.tdbang.crm.entities.SalesOrder;
@@ -100,6 +102,35 @@ public class SalesOrderService {
         if (deletedOrder.getCreator().getPk().equals(creatorFk)) {
             salesOrderRepository.delete(deletedOrder);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_SALES_ORDER_SUCCESS);
+        } else {
+            throw new GenericException(HttpStatus.METHOD_NOT_ALLOWED, "USER_NOT_THE_CREATOR", "User is not the creator");
+        }
+        return result;
+    }
+
+    public ResponseDTO retrieveOrderDashboardByStatus() {
+        ResponseDTO result;
+        List<DashboardQueryDTO> dashboardQueryDTOs = salesOrderRepository.countOrderGroupByStatus();
+        List<DashboardDTO> dashboardDTOs = new ArrayList<>();
+        for (DashboardQueryDTO i : dashboardQueryDTOs) {
+            DashboardDTO dashboardDTO = new DashboardDTO();
+            dashboardDTO.setId(SalesOrderStatus.values()[i.getId()].getName());
+            dashboardDTO.setCount(i.getCount());
+            dashboardDTOs.add(dashboardDTO);
+        }
+        result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.COUNTING_NO_SALES_ORDERS_BY_STATUS_SUCCESS, dashboardDTOs);
+
+        return result;
+    }
+
+    public ResponseDTO deleteSaleOrders(List<Long> orderPks, Long creatorFk) {
+        ResponseDTO result;
+        List<SalesOrder> deletedListOrders = salesOrderRepository.getSaleOrdersByOrderPks(orderPks);
+        boolean hasOtherCreator = deletedListOrders.stream()
+                .anyMatch(i -> !creatorFk.equals(i.getCreator().getPk()));
+        if (!hasOtherCreator && orderPks.size() == deletedListOrders.size()) {
+            salesOrderRepository.deleteAllById(deletedListOrders.stream().map(SalesOrder::getPk).toList());
+            result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_LIST_OF_SALES_ORDERS_SUCCESS);
         } else {
             throw new GenericException(HttpStatus.METHOD_NOT_ALLOWED, "USER_NOT_THE_CREATOR", "User is not the creator");
         }

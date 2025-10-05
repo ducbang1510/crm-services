@@ -1,5 +1,7 @@
 package com.tdbang.crm.controllers;
 
+import java.util.List;
+
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,5 +104,25 @@ public class ContactController extends BaseController {
         ResponseDTO listOfContact = contactService.getListOfContact(pageNumber, pageSize, contactName);
         LOGGER.info("End retrieveContactListWithFilter");
         return new MappingJacksonValue(listOfContact);
+    }
+
+    @GetMapping("/count/lead-source")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ADMIN', 'USER')")
+    public MappingJacksonValue retrieveContactDashboardByLeadSource() {
+        LOGGER.info("Start retrieveContactDashboardByLeadSource");
+        ResponseDTO responseDTO = contactService.retrieveContactDashboardByLeadSource();
+        LOGGER.info("End retrieveContactDashboardByLeadSource");
+        return new MappingJacksonValue(responseDTO);
+    }
+
+    @PostMapping("/delete")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ADMIN', 'USER')")
+    public MappingJacksonValue deleteContacts(@RequestBody List<Long> ids) {
+        LOGGER.info("Start deleteContacts");
+        ResponseDTO responseDTO = contactService.deleteContacts(ids, getPkUserLogged());
+        LOGGER.info("End deleteContacts");
+        return new MappingJacksonValue(responseDTO);
     }
 }

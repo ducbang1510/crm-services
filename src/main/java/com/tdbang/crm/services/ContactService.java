@@ -16,8 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.tdbang.crm.dtos.ContactDTO;
+import com.tdbang.crm.dtos.DashboardDTO;
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.dtos.nativequerydto.ContactQueryDTO;
+import com.tdbang.crm.dtos.nativequerydto.DashboardQueryDTO;
 import com.tdbang.crm.entities.Contact;
 import com.tdbang.crm.entities.User;
 import com.tdbang.crm.enums.LeadSource;
@@ -48,7 +50,8 @@ public class ContactService {
                 result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS, resultMap);
             } else {
                 List<ContactQueryDTO> contactQueryDTOs = contactRepository.getAllContacts(contactName);
-                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS, contactQueryDTOs);
+                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS,
+                        mappingToListContactDTO(contactQueryDTOs));
             }
         } catch (Exception e) {
             result = new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_ERROR);
@@ -63,7 +66,7 @@ public class ContactService {
         try {
             Contact saveContact = mappingContactDTOToEntity(contactDTO, creatorUser, true);
             contactRepository.save(saveContact);
-            result = new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.CREATING_NEW_CONTACT_SUCCESS);
+            result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_CONTACT_SUCCESS);
         } catch (Exception e) {
             throw new GenericException(HttpStatus.BAD_REQUEST, "CREATING_NEW_CONTACT_ERROR", MessageConstants.CREATING_NEW_CONTACT_ERROR);
         }
@@ -114,6 +117,35 @@ public class ContactService {
         List<String> contactNames = mappingToListContactDTO(contactQueryDTOs).stream().map(ContactDTO::getContactName).toList();
         result.setData(contactNames);
 
+        return result;
+    }
+
+    public ResponseDTO retrieveContactDashboardByLeadSource() {
+        ResponseDTO result;
+        List<DashboardQueryDTO> dashboardQueryDTOs = contactRepository.countContactGroupByLeadSource();
+        List<DashboardDTO> dashboardDTOs = new ArrayList<>();
+        for (DashboardQueryDTO i : dashboardQueryDTOs) {
+            DashboardDTO dashboardDTO = new DashboardDTO();
+            dashboardDTO.setId(LeadSource.values()[i.getId()].getName());
+            dashboardDTO.setCount(i.getCount());
+            dashboardDTOs.add(dashboardDTO);
+        }
+        result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.COUNTING_NO_CONTACTS_BY_LEAD_SRC_SUCCESS, dashboardDTOs);
+
+        return result;
+    }
+
+    public ResponseDTO deleteContacts(List<Long> contactPks, Long creatorFk) {
+        ResponseDTO result;
+        List<Contact> deletedListContacts = contactRepository.getContactsByContactPks(contactPks);
+        boolean hasOtherCreator = deletedListContacts.stream()
+                .anyMatch(i -> !creatorFk.equals(i.getCreator().getPk()));
+        if (!hasOtherCreator && contactPks.size() == deletedListContacts.size()) {
+            contactRepository.deleteAllById(deletedListContacts.stream().map(Contact::getPk).toList());
+            result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_LIST_OF_CONTACTS_SUCCESS);
+        } else {
+            throw new GenericException(HttpStatus.METHOD_NOT_ALLOWED, "USER_NOT_THE_CREATOR", "User is not the creator");
+        }
         return result;
     }
 

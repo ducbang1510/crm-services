@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.tdbang.crm.dtos.nativequerydto.DashboardQueryDTO;
 import com.tdbang.crm.dtos.nativequerydto.SalesOrderQueryDTO;
 import com.tdbang.crm.entities.SalesOrder;
 
@@ -38,4 +39,11 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
     SalesOrderQueryDTO getSalesOrderDetailsByPk(Long orderPk);
 
     Optional<SalesOrder> findByPk(Long pk);
+
+    @Query(value = "SELECT sc.status AS id, COUNT(c.pk) AS count"
+            + " FROM sales_order sc JOIN contact c ON sc.contact_fk = c.pk GROUP BY sc.status", nativeQuery = true)
+    List<DashboardQueryDTO> countOrderGroupByStatus();
+
+    @Query(value = "SELECT sc FROM SalesOrder sc WHERE sc.pk IN (:pks)")
+    List<SalesOrder> getSaleOrdersByOrderPks(List<Long> pks);
 }

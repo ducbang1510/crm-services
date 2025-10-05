@@ -1,5 +1,7 @@
 package com.tdbang.crm.controllers;
 
+import java.util.List;
+
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,5 +94,25 @@ public class OderController extends BaseController {
         ResponseDTO listOfOrder = salesOrderService.getListOfOrder(pageNumber, pageSize, subject);
         LOGGER.info("End retrieveOrderListWithFilter");
         return new MappingJacksonValue(listOfOrder);
+    }
+
+    @GetMapping("/count/status")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ADMIN', 'USER')")
+    public MappingJacksonValue retrieveOrderDashboardByStatus() {
+        LOGGER.info("Start retrieveOrderDashboardByStatus");
+        ResponseDTO responseDTO = salesOrderService.retrieveOrderDashboardByStatus();
+        LOGGER.info("End retrieveOrderDashboardByStatus");
+        return new MappingJacksonValue(responseDTO);
+    }
+
+    @PostMapping("/delete")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ADMIN', 'USER')")
+    public MappingJacksonValue deleteSaleOrders(@RequestBody List<Long> ids) {
+        LOGGER.info("Start deleteSaleOrders");
+        ResponseDTO responseDTO = salesOrderService.deleteSaleOrders(ids, getPkUserLogged());
+        LOGGER.info("End deleteSaleOrders");
+        return new MappingJacksonValue(responseDTO);
     }
 }
