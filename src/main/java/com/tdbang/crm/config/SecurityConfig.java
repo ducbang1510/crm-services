@@ -2,8 +2,6 @@ package com.tdbang.crm.config;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +32,6 @@ import com.tdbang.crm.utils.AppConstants;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig implements InitializingBean {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityConfig.class);
     private static final String[] AUTH_WHITELIST = {
             //Swagger API
             "/swagger-resources",
@@ -46,7 +43,8 @@ public class SecurityConfig implements InitializingBean {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/login",
-            "/css/**", "/js/**", "/images/**"
+            "/css/**", "/js/**", "/images/**",
+            "/socket.io/**"
     };
     @Value("${authentication.cors.allowed.urls:*}")
     private String allowedUrlsRaw;
