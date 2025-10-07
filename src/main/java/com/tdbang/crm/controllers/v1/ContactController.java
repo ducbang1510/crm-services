@@ -1,4 +1,4 @@
-package com.tdbang.crm.controllers;
+package com.tdbang.crm.controllers.v1;
 
 import java.util.List;
 
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tdbang.crm.controllers.BaseController;
 import com.tdbang.crm.dtos.ContactDTO;
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.services.ContactService;

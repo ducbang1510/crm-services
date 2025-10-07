@@ -14,7 +14,7 @@ import com.tdbang.crm.dtos.nativequerydto.SalesOrderQueryDTO;
 import com.tdbang.crm.entities.SalesOrder;
 
 @Repository
-public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
+public interface JpaSalesOrderRepository extends JpaRepository<SalesOrder, Long> {
     public static final String SELECT_LIST_SALES_ORDER = "SELECT sc.pk AS pk, sc.subject AS subject, c.contact_name AS contactName,"
             + " sc.status AS status,sc.total AS total,"
             + " assignTo.name AS nameUserAssignedTo, assignTo.pk AS userFkAssignedTo,"

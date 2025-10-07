@@ -1,4 +1,4 @@
-package com.tdbang.crm.controllers;
+package com.tdbang.crm.controllers.v2;
 
 import java.util.List;
 
@@ -20,14 +20,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tdbang.crm.controllers.BaseController;
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.dtos.SalesOrderDTO;
 import com.tdbang.crm.services.SalesOrderService;
 
 @RestController
-@RequestMapping("/api/v1/sales-order")
-public class OderController extends BaseController {
-    private static Logger LOGGER = LoggerFactory.getLogger(OderController.class);
+@RequestMapping("/api/v2/sales-order")
+public class OderControllerV2 extends BaseController {
+    private static Logger LOGGER = LoggerFactory.getLogger(OderControllerV2.class);
 
     @Autowired
     private SalesOrderService salesOrderService;
