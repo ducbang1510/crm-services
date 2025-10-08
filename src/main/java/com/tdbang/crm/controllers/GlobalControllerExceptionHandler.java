@@ -1,6 +1,7 @@
 package com.tdbang.crm.controllers;
 
 import com.corundumstudio.socketio.handler.SocketIOException;
+import com.fasterxml.jackson.core.JacksonException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -69,6 +70,21 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgumentException(
             IllegalArgumentException e, WebRequest request) {
+
+        log.error(e.getMessage(), e);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handle JacksonException Exception method.
+     *
+     * @param e       JacksonException
+     * @param request WebRequest
+     * @return Response Entity
+     */
+    @ExceptionHandler(JacksonException.class)
+    public ResponseEntity<Object> handleJsonException(
+            JacksonException e, WebRequest request) {
 
         log.error(e.getMessage(), e);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -27,12 +27,17 @@ import com.tdbang.crm.mappers.SalesOrderMapper;
 import com.tdbang.crm.repositories.JpaContactRepository;
 import com.tdbang.crm.repositories.JpaSalesOrderRepository;
 import com.tdbang.crm.repositories.JpaUserRepository;
+import com.tdbang.crm.repositories.custom.CustomRepository;
+import com.tdbang.crm.specifications.SpecificationFilterUtil;
+import com.tdbang.crm.specifications.builders.SalesOrderSpecificationBuilder;
+import com.tdbang.crm.specifications.builders.SpecificationBuilder;
 import com.tdbang.crm.utils.AppConstants;
+import com.tdbang.crm.utils.AppUtils;
 import com.tdbang.crm.utils.MessageConstants;
 
 @Log4j2
 @Service
-public class SalesOrderService {
+public class SalesOrderService extends AbstractService<SalesOrder> {
 
     @Autowired
     private JpaSalesOrderRepository jpaSalesOrderRepository;
@@ -46,7 +51,34 @@ public class SalesOrderService {
     @Autowired
     private SalesOrderMapper salesOrderMapper;
 
-    public ResponseDTO getListOfOrder(Integer pageNumber, Integer pageSize, String subjectFilter) {
+    public SalesOrderService(SpecificationFilterUtil<SalesOrder> filterUtil, CustomRepository<SalesOrder> repository) {
+        super(filterUtil, repository);
+    }
+
+    public ResponseDTO getListOfOrder(String filter, int pageSize, int pageNumber, String sortColumn, String sortOrder,
+                                      String fields) {
+        ResponseDTO result;
+        try {
+            List<SalesOrderDTO> salesOrderDTOList = new ArrayList<>();
+
+            Map<String, Object> resultMapQuery = get(filter, pageSize, pageNumber, sortColumn, sortOrder, AppUtils.convertFields(fields));
+            List<SalesOrder> results = salesOrderMapper.mapRecordList(resultMapQuery);
+            for(SalesOrder r: results) {
+                salesOrderDTOList.add(salesOrderMapper.mappingSalesOrderEntityToSalesOrderDTO(r));
+            }
+
+            resultMapQuery.replace(AppConstants.RECORD_LIST_KEY, salesOrderDTOList);
+            if (pageSize == 0)
+                resultMapQuery.remove(AppConstants.TOTAL_RECORD_KEY);
+            result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_SALES_ORDER_SUCCESS, resultMapQuery);
+        } catch (Exception e) {
+            result = new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_SALES_ORDER_ERROR);
+        }
+
+        return result;
+    }
+
+    public ResponseDTO retrieveOrderListWithNonDynamicFilter(Integer pageNumber, Integer pageSize, String subjectFilter) {
         ResponseDTO result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_SALES_ORDER_SUCCESS);
         if (pageNumber != null && pageSize != null) {
             Map<String, Object> resultMap = new HashMap<>();
@@ -145,5 +177,25 @@ public class SalesOrderService {
             throw new GenericException(HttpStatus.METHOD_NOT_ALLOWED, "USER_NOT_THE_CREATOR", "User is not the creator");
         }
         return result;
+    }
+
+    @Override
+    protected String getProfileFields() {
+        return "pk,subject,contact,status,total,assignedTo,creator,description,createdOn,updatedOn";
+    }
+
+    @Override
+    protected String getDefaultSortColumn() {
+        return "subject";
+    }
+
+    @Override
+    protected Class<SalesOrder> getEntityClass() {
+        return SalesOrder.class;
+    }
+
+    @Override
+    protected SpecificationBuilder<SalesOrder> getSpecificationBuilder() {
+        return new SalesOrderSpecificationBuilder();
     }
 }

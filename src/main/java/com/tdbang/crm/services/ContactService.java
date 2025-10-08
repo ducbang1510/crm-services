@@ -71,7 +71,7 @@ public class ContactService extends AbstractService<Contact> {
         return result;
     }
 
-    public ResponseDTO getListOfContactWithNoFilter(Integer pageNumber, Integer pageSize, String contactName) {
+    public ResponseDTO getListOfContactWithNonDynamicFilter(Integer pageNumber, Integer pageSize, String contactName) {
         ResponseDTO result;
         try {
             if (pageNumber != null && pageSize != null) {

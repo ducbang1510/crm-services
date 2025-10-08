@@ -2,6 +2,8 @@ package com.tdbang.crm.controllers;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,8 @@ import com.tdbang.crm.services.SalesOrderService;
 @Log4j2
 @RestController
 @RequestMapping("/api/v1/sales-order")
-public class OderController extends BaseController {
+@Tag(name = "CRM Sales Order APIs")
+public class SalesOderController extends BaseController {
 
     @Autowired
     private SalesOrderService salesOrderService;
@@ -75,10 +78,15 @@ public class OderController extends BaseController {
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
-    public MappingJacksonValue retrieveOrderList(@RequestParam(required = false) Integer pageNumber,
-                                                 @RequestParam(required = false) Integer pageSize) {
+    public MappingJacksonValue retrieveOrderList(
+            @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "contactName:John,organization:OrgName") String filter,
+            @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "contactName,organization") String fields,
+            @RequestParam(required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(required = false, defaultValue = "0") int pageSize,
+            @RequestParam(required = false) String sortColumn,
+            @RequestParam(required = false, defaultValue = "ASC") String sortOrder) {
         log.info("Start retrieveOrderList");
-        ResponseDTO listOfOrder = salesOrderService.getListOfOrder(pageNumber, pageSize, null);
+        ResponseDTO listOfOrder = salesOrderService.getListOfOrder(filter, pageSize, pageNumber, sortColumn, sortOrder, fields);
         log.info("End retrieveOrderList");
         return new MappingJacksonValue(listOfOrder);
     }
@@ -86,12 +94,12 @@ public class OderController extends BaseController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
-    public MappingJacksonValue retrieveOrderListWithFilter(@RequestParam(required = false) Integer pageNumber,
-                                                           @RequestParam(required = false) Integer pageSize,
-                                                           @RequestParam(required = false) String subject) {
-        log.info("Start retrieveOrderListWithFilter");
-        ResponseDTO listOfOrder = salesOrderService.getListOfOrder(pageNumber, pageSize, subject);
-        log.info("End retrieveOrderListWithFilter");
+    public MappingJacksonValue retrieveOrderListWithNonDynamicFilter(@RequestParam(required = false) Integer pageNumber,
+                                                                     @RequestParam(required = false) Integer pageSize,
+                                                                     @RequestParam(required = false) String subject) {
+        log.info("Start retrieveOrderListWithNonDynamicFilter");
+        ResponseDTO listOfOrder = salesOrderService.retrieveOrderListWithNonDynamicFilter(pageNumber, pageSize, subject);
+        log.info("End retrieveOrderListWithNonDynamicFilter");
         return new MappingJacksonValue(listOfOrder);
     }
 

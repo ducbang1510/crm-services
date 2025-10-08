@@ -104,12 +104,12 @@ public class ContactController extends BaseController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
-    public MappingJacksonValue retrieveContactListWithFilter(@RequestParam(required = false) Integer pageNumber,
-                                                             @RequestParam(required = false) Integer pageSize,
-                                                             @RequestParam(required = false) String contactName) {
-        log.info("Start retrieveContactListWithFilter");
-        ResponseDTO listOfContact = contactService.getListOfContactWithNoFilter(pageNumber, pageSize, contactName);
-        log.info("End retrieveContactListWithFilter");
+    public MappingJacksonValue retrieveContactListWithNonDynamicFilter(@RequestParam(required = false) Integer pageNumber,
+                                                                       @RequestParam(required = false) Integer pageSize,
+                                                                       @RequestParam(required = false) String contactName) {
+        log.info("Start retrieveContactListWithNonDynamicFilter");
+        ResponseDTO listOfContact = contactService.getListOfContactWithNonDynamicFilter(pageNumber, pageSize, contactName);
+        log.info("End retrieveContactListWithNonDynamicFilter");
         return new MappingJacksonValue(listOfContact);
     }
 

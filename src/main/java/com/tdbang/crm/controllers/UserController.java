@@ -3,6 +3,7 @@ package com.tdbang.crm.controllers;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.ser.FilterProvider;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import com.tdbang.crm.dtos.UserDTO;
 @Log4j2
 @RestController
 @RequestMapping("/api/v1/user")
+@Tag(name = "CRM User APIs")
 public class UserController extends BaseController {
     private static final String USER_DTO_FILTER = "UserDTOFilter";
     private static final Set<String> EXCLUDE_USER_FIELDS = Set.of("username", "password");
