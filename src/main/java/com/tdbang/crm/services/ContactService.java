@@ -61,9 +61,11 @@ public class ContactService extends AbstractService<Contact> {
             }
 
             resultMapQuery.replace(AppConstants.RECORD_LIST_KEY, contactDTOList);
-            if (pageSize == 0)
-                resultMapQuery.remove(AppConstants.TOTAL_RECORD_KEY);
-            result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS, resultMapQuery);
+            if (pageSize == 0) {
+                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS, contactDTOList);
+            } else {
+                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS, resultMapQuery);
+            }
         } catch (Exception e) {
             result = new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_ERROR);
         }

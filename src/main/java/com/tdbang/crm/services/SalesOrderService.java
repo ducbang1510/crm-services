@@ -68,9 +68,11 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
             }
 
             resultMapQuery.replace(AppConstants.RECORD_LIST_KEY, salesOrderDTOList);
-            if (pageSize == 0)
-                resultMapQuery.remove(AppConstants.TOTAL_RECORD_KEY);
-            result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_SALES_ORDER_SUCCESS, resultMapQuery);
+            if (pageSize == 0) {
+                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_SALES_ORDER_SUCCESS, salesOrderDTOList);
+            } else {
+                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_SALES_ORDER_SUCCESS, resultMapQuery);
+            }
         } catch (Exception e) {
             result = new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_SALES_ORDER_ERROR);
         }
