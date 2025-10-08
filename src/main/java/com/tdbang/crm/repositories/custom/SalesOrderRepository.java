@@ -23,4 +23,9 @@ public class SalesOrderRepository extends CustomRepository<SalesOrder> {
     protected Root<SalesOrder> getLongRoot(CriteriaQuery<Long> query) {
         return query.from(SalesOrder.class);
     }
+
+    @Override
+    protected Class<SalesOrder> getEntityClass() {
+        return SalesOrder.class;
+    }
 }

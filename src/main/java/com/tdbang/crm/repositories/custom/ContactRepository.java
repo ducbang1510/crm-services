@@ -23,4 +23,9 @@ public class ContactRepository extends CustomRepository<Contact> {
     protected Root<Contact> getLongRoot(CriteriaQuery<Long> query) {
         return query.from(Contact.class);
     }
+
+    @Override
+    protected Class<Contact> getEntityClass() {
+        return Contact.class;
+    }
 }

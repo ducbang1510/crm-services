@@ -11,8 +11,6 @@ public class AppConstants {
     public static final String ROLE_USER = "USER";
     public static final String ROLE_ADMIN = "ADMIN";
 
-    public static final String USER_LIST = "userList";
-    public static final String SALES_ORDER_LIST = "salesOrderList";
-    public static final String CONTACT_LIST = "contactList";
-    public static final String TOTAL_RECORD = "totalRecord";
+    public static final String TOTAL_RECORD_KEY = "totalRecord";
+    public static final String RECORD_LIST_KEY = "recordList";
 }

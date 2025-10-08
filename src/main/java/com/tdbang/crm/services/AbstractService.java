@@ -21,14 +21,12 @@ import org.springframework.util.StringUtils;
 import com.tdbang.crm.repositories.custom.CustomRepository;
 import com.tdbang.crm.specifications.SpecificationFilterUtil;
 import com.tdbang.crm.specifications.builders.SpecificationBuilder;
+import com.tdbang.crm.utils.AppConstants;
 
 @Service
 public abstract class AbstractService<S> {
 
-    public static final String TOTAL_RECORD_KEY = "totalRecords";
-    public static final String RECORDS_KEY = "records";
-
-    private com.tdbang.crm.specifications.SpecificationFilterUtil<S> filterUtil;
+    private SpecificationFilterUtil<S> filterUtil;
 
     private CustomRepository<S> repository;
 
@@ -84,12 +82,36 @@ public abstract class AbstractService<S> {
         return repository.findAll(specification, pageable, getFields(fields));
     }
 
+    private List<S> findEntityResult(Set<String> fields) {
+        return repository.findAllEntityResult(getFields(fields));
+    }
+
+    private List<S> findEntityResult(Specification<S> specification, Set<String> fields) {
+        return repository.findAllEntityResult(specification, getFields(fields));
+    }
+
+    private List<S> findEntityResult(Sort sort, Set<String> fields) {
+        return repository.findAllEntityResult(sort, getFields(fields));
+    }
+
+    private List<S> findEntityResult(Specification<S> specification, Sort sort, Set<String> fields) {
+        return repository.findAllEntityResult(specification, sort, getFields(fields));
+    }
+
+    private Page<S> findEntityResult(Pageable pageable, Set<String> fields) {
+        return repository.findAllEntityResult(pageable, getFields(fields));
+    }
+
+    private Page<S> findEntityResult(Specification<S> specification, Pageable pageable, Set<String> fields) {
+        return repository.findAllEntityResult(specification, pageable, getFields(fields));
+    }
+
     private Specification<S> buildSpecification(String filter) {
         return filterUtil.withFilter(getSpecificationBuilder(), filter).build();
     }
 
     private Pageable getPageable(int pageSize, int pageNumber, String sortColumn, String sortOrder) {
-        Pageable pageable = null;
+        Pageable pageable;
         if (StringUtils.hasLength(sortColumn)) {
             pageable = PageRequest.of(pageNumber, pageSize, getSort(sortColumn, sortOrder));
         } else {
@@ -120,8 +142,8 @@ public abstract class AbstractService<S> {
         Map<String, Object> result = new HashMap<String, Object>();
         Pageable pageable = getPageable(pageSize, pageNumber, sortColumn, sortOrder);
         Page<Map<String, Object>> records = find(filter, pageable, fields);
-        result.put(RECORDS_KEY, records.getContent());
-        result.put(TOTAL_RECORD_KEY, records.getTotalElements());
+        result.put(AppConstants.RECORD_LIST_KEY, records.getContent());
+        result.put(AppConstants.TOTAL_RECORD_KEY, records.getTotalElements());
         return result;
     }
 
@@ -134,8 +156,8 @@ public abstract class AbstractService<S> {
         } else {
             records = find(filter, fields);
         }
-        result.put(RECORDS_KEY, records);
-        result.put(TOTAL_RECORD_KEY, records.size());
+        result.put(AppConstants.RECORD_LIST_KEY, records);
+        result.put(AppConstants.TOTAL_RECORD_KEY, records.size());
         return result;
     }
 
@@ -168,6 +190,39 @@ public abstract class AbstractService<S> {
             records = find(specification, fields);
         } else {
             records = find(fields);
+        }
+        return records;
+    }
+
+    private Page<S> findEntityRecords(String filter, Pageable pageable, Set<String> fields) {
+        Page<S> records;
+        if (StringUtils.hasLength(filter)) {
+            Specification<S> specification = build(filter);
+            records = findEntityResult(specification, pageable, fields);
+        } else {
+            records = findEntityResult(pageable, fields);
+        }
+        return records;
+    }
+
+    private List<S> findEntityRecords(String filter, Sort sort, Set<String> fields) {
+        List<S> records;
+        if (StringUtils.hasLength(filter)) {
+            Specification<S> specification = build(filter);
+            records = findEntityResult(specification, sort, fields);
+        } else {
+            records = findEntityResult(sort, fields);
+        }
+        return records;
+    }
+
+    private List<S> findEntityRecords(String filter, Set<String> fields) {
+        List<S> records;
+        if (StringUtils.hasLength(filter)) {
+            Specification<S> specification = build(filter);
+            records = findEntityResult(specification, fields);
+        } else {
+            records = findEntityResult(fields);
         }
         return records;
     }

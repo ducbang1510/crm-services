@@ -2,15 +2,14 @@ package com.tdbang.crm.config;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.Transport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Log4j2
 @Configuration
 public class SocketIOConfig {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SocketIOConfig.class);
     @Value("${socketio.ui.host:http://localhost:4200}")
     private String uiHost;
 
@@ -30,7 +29,7 @@ public class SocketIOConfig {
         config.setPort(port);
         config.setOrigin(uiHost);
         config.setAuthorizationListener(handshakeData -> {
-            LOGGER.info("Start to verify token for socket io");
+            log.info("Start to verify token for socket io");
             String tokenString = handshakeData.getSingleUrlParam("token");
             if (tokenString != null && !tokenString.isEmpty()) {
                 try {

@@ -35,8 +35,8 @@ public abstract class SpecificationBuilder <T> {
                     op = SearchOperation.STARTS_WITH;
                 }
             }
-            SearchCriteria searchCritera = new SearchCriteria(orPredicate, key, op, value);
-            params.add(searchCritera);
+            SearchCriteria searchCriteria = new SearchCriteria(orPredicate, key, op, value);
+            params.add(searchCriteria);
         }
         return this;
     }

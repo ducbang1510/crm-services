@@ -5,15 +5,12 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tdbang.crm.services.SecurityService;
 import com.tdbang.crm.services.UserService;
 
 public class BaseController {
-    private static Logger LOGGER = LoggerFactory.getLogger(BaseController.class);
 
     @Autowired
     protected SecurityService securityService;

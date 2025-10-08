@@ -96,6 +96,11 @@
 			<artifactId>netty-socketio</artifactId>
 			<version>1.7.19</version>
 		</dependency>
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>3.2.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>

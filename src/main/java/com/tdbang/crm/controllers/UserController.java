@@ -1,11 +1,10 @@
-package com.tdbang.crm.controllers.v1;
+package com.tdbang.crm.controllers;
 
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,14 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tdbang.crm.controllers.BaseController;
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.dtos.UserDTO;
 
+@Log4j2
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController extends BaseController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     private static final String USER_DTO_FILTER = "UserDTOFilter";
     private static final Set<String> EXCLUDE_USER_FIELDS = Set.of("username", "password");
 
@@ -33,14 +31,14 @@ public class UserController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveUserProfile() {
-        LOGGER.info("Start retrieveUserProfile");
+        log.info("Start retrieveUserProfile");
         Long userPk = getPkUserLogged();
         FilterProvider filters = buildFilterProvider(USER_DTO_FILTER, EXCLUDE_USER_FIELDS);
 
         ResponseDTO userProfile = userService.getUserInfo(userPk);
         MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(userProfile);
         mappingJacksonValue.setFilters(filters);
-        LOGGER.info("End retrieveUserProfile");
+        log.info("End retrieveUserProfile");
         return mappingJacksonValue;
     }
 
@@ -48,9 +46,9 @@ public class UserController extends BaseController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ADMIN')")
     public MappingJacksonValue createUser(@RequestBody @Valid UserDTO userDTO) {
-        LOGGER.info("Start createUser");
+        log.info("Start createUser");
         ResponseDTO responseDTO = userService.createNewUser(userDTO);
-        LOGGER.info("End createUser");
+        log.info("End createUser");
         return new MappingJacksonValue(responseDTO);
     }
 
@@ -58,13 +56,13 @@ public class UserController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN')")
     public MappingJacksonValue retrieveUserInfo(@PathVariable Long id) {
-        LOGGER.info("Start retrieveUserInfo");
+        log.info("Start retrieveUserInfo");
         FilterProvider filters = buildFilterProvider(USER_DTO_FILTER, EXCLUDE_USER_FIELDS);
 
         ResponseDTO userInfo = userService.getUserInfo(id);
         MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(userInfo);
         mappingJacksonValue.setFilters(filters);
-        LOGGER.info("End retrieveUserInfo");
+        log.info("End retrieveUserInfo");
         return mappingJacksonValue;
     }
 
@@ -73,13 +71,13 @@ public class UserController extends BaseController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public MappingJacksonValue retrieveUserList(@RequestParam(required = false) Integer pageNumber,
                                                 @RequestParam(required = false) Integer pageSize) {
-        LOGGER.info("Start retrieveUserList");
+        log.info("Start retrieveUserList");
         FilterProvider filters = buildFilterProvider(USER_DTO_FILTER, EXCLUDE_USER_FIELDS);
 
         ResponseDTO listOfUsers = userService.getListOfUsers(pageNumber, pageSize);
         MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(listOfUsers);
         mappingJacksonValue.setFilters(filters);
-        LOGGER.info("End retrieveUserList");
+        log.info("End retrieveUserList");
         return mappingJacksonValue;
     }
 
@@ -87,10 +85,10 @@ public class UserController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveListNameOfUsers() {
-        LOGGER.info("Start retrieveListNameOfUsers");
+        log.info("Start retrieveListNameOfUsers");
         ResponseDTO listOfNameUsers = userService.retrieveListNameOfUsers();
         MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(listOfNameUsers);
-        LOGGER.info("End retrieveListNameOfUsers");
+        log.info("End retrieveListNameOfUsers");
         return mappingJacksonValue;
     }
 }

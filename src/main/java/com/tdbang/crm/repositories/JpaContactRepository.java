@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,7 @@ import com.tdbang.crm.dtos.nativequerydto.DashboardQueryDTO;
 import com.tdbang.crm.entities.Contact;
 
 @Repository
-public interface JpaContactRepository extends JpaRepository<Contact, Long> {
+public interface JpaContactRepository extends JpaRepository<Contact, Long>, JpaSpecificationExecutor<Contact> {
     public static final String SELECT_LIST_CONTACTS = "SELECT c.pk AS pk, c.contact_name AS contactName, c.salutation AS salutation, c.mobile_phone AS mobilePhone, c.email AS email, c.organization AS organization,"
             + " c.dob AS dateOfBirth, c.lead_src AS leadSrc, assignTo.name AS nameUserAssignedTo, assignTo.pk AS userFkAssignedTo, creator.name AS creatorName, creator.pk AS creatorFk,"
             + " c.address AS address, c.description AS description, c.created_on AS createdOn, c.updated_on AS updatedOn"

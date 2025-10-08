@@ -13,16 +13,14 @@ public class SpecificationFilterUtil<S> {
 
     public SpecificationBuilder<S> withFilter(SpecificationBuilder<S> builder, String filter) {
         String[] filters = filter.split(FILTER_SEPARATOR);
-        for (int i = 0; i < filters.length; i++) {
-            String operator = findOperator(filters[i]);
+        for (String s : filters) {
+            String operator = findOperator(s);
             if (null != operator) {
-                String key = filters[i].split(operator)[0].trim();
-                String value = filters[i].split(operator)[1].trim();
-                if (null != key && null != value) {
-                    builder.with(orPredicate(key) == true ? SearchOperation.OR_PREDICATE_FLAG : org.apache.commons.lang3.StringUtils.EMPTY, stripOrPredicate(key), operator,
-                            stripPrefixSuffix(value), hasPrefix(value) == true ? SearchOperation.ZERO_OR_MORE_REGEX : StringUtils.EMPTY,
-                            hasSuffix(value) == true ? SearchOperation.ZERO_OR_MORE_REGEX : StringUtils.EMPTY);
-                }
+                String key = s.split(operator)[0].trim();
+                String value = s.split(operator)[1].trim();
+                builder.with(orPredicate(key) ? SearchOperation.OR_PREDICATE_FLAG : StringUtils.EMPTY, stripOrPredicate(key), operator,
+                        stripPrefixSuffix(value), hasPrefix(value) ? SearchOperation.ZERO_OR_MORE_REGEX : StringUtils.EMPTY,
+                        hasSuffix(value) ? SearchOperation.ZERO_OR_MORE_REGEX : StringUtils.EMPTY);
             }
         }
         return builder;

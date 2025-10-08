@@ -15,8 +15,8 @@ public class ContactSpecificationBuilder extends SpecificationBuilder<Contact> {
         Specification<Contact> result = new ContactSpecification(getParams().get(0));
         for (int i = 1; i < getParams().size(); i++) {
             result = getParams().get(i).isOrPredicate()
-                    ? Specification.allOf(result).or(new ContactSpecification(getParams().get(i)))
-                    : Specification.allOf((result).and(new ContactSpecification(getParams().get(i))));
+                    ? Specification.anyOf(result, new ContactSpecification(getParams().get(i)))
+                    : Specification.allOf(result, new ContactSpecification(getParams().get(i)));
         }
         return result;
     }
