@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.tdbang.crm.entities.JwkEntity;
 
 @Repository
-public interface JwkRepository extends JpaRepository<JwkEntity, String> {
+public interface JpaJwkRepository extends JpaRepository<JwkEntity, String> {
 }

@@ -1,9 +1,9 @@
 package com.tdbang.crm.controllers;
 
 import com.corundumstudio.socketio.handler.SocketIOException;
+import com.fasterxml.jackson.core.JacksonException;
 import jakarta.persistence.EntityNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,9 +26,9 @@ import com.tdbang.crm.utils.AppConstants;
 /**
  * Exception Handler class for global controller
  */
+@Log4j2
 @ControllerAdvice
 public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
 
     /**
      * Handle Data Integrity Violation Exception method.
@@ -41,7 +41,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     public ResponseEntity<Object> handleDataIntegrityViolationException(
             DataIntegrityViolationException e, WebRequest request) {
 
-        LOGGER.error(e.getMessage(), e);
+        log.error(e.getMessage(), e);
         return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
@@ -56,7 +56,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     public ResponseEntity<Object> handleEntityNotFoundException(
             EntityNotFoundException e, WebRequest request) {
 
-        LOGGER.error(e.getMessage(), e);
+        log.error(e.getMessage(), e);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -71,7 +71,22 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     public ResponseEntity<Object> handleIllegalArgumentException(
             IllegalArgumentException e, WebRequest request) {
 
-        LOGGER.error(e.getMessage(), e);
+        log.error(e.getMessage(), e);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handle JacksonException Exception method.
+     *
+     * @param e       JacksonException
+     * @param request WebRequest
+     * @return Response Entity
+     */
+    @ExceptionHandler(JacksonException.class)
+    public ResponseEntity<Object> handleJsonException(
+            JacksonException e, WebRequest request) {
+
+        log.error(e.getMessage(), e);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
@@ -86,7 +101,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     public ResponseEntity<Object> handleAccessDeniedException(
             AccessDeniedException e, WebRequest request) {
 
-        LOGGER.error(e.getMessage());
+        log.error(e.getMessage());
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
@@ -101,7 +116,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     public ResponseEntity<Object> handleGenericException(
             Exception e, WebRequest request) {
 
-        LOGGER.error(e.getMessage(), e);
+        log.error(e.getMessage(), e);
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -115,7 +130,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     @ExceptionHandler(GenericException.class)
     public ResponseEntity handleGenericException(
             GenericException e, WebRequest request) {
-        LOGGER.error(e.getMessage(), e);
+        log.error(e.getMessage(), e);
         MultiValueMap headers = new LinkedMultiValueMap();
         headers.add(AppConstants.ERROR_CODE_HEADER, e.getErrorCode());
         return new ResponseEntity(headers, e.getStatus());
@@ -131,7 +146,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity handleHttpClientErrorException(
             HttpClientErrorException e, WebRequest request) {
-        LOGGER.error(e.getMessage(), e);
+        log.error(e.getMessage(), e);
         return new ResponseEntity<>(e.getStatusCode());
     }
 
@@ -152,7 +167,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
             errorMessage.append(error.getDefaultMessage()).append(";");
         }
         headers.add(AppConstants.ERROR_CODE_HEADER, errorMessage.toString());
-        LOGGER.error("Validation failed: {}", errorMessage);
+        log.error("Validation failed: {}", errorMessage);
 
         return new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
     }
@@ -166,7 +181,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
      */
     @ExceptionHandler(SocketIOException.class)
     public ResponseEntity<Object> handleSocketIOException(SocketIOException ex, WebRequest request) {
-        LOGGER.error("Socket IO error: {}", ex.getMessage());
+        log.error("Socket IO error: {}", ex.getMessage());
         return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
     }
 

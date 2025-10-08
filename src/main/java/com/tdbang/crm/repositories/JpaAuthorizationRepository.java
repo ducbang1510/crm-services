@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.tdbang.crm.entities.Authorization;
 
 @Repository
-public interface AuthorizationRepository extends JpaRepository<Authorization, String> {
+public interface JpaAuthorizationRepository extends JpaRepository<Authorization, String> {
     Optional<Authorization> findByState(String state);
 
     Optional<Authorization> findByAuthorizationCodeValue(String authorizationCode);

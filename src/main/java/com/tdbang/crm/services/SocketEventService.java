@@ -10,16 +10,15 @@ import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+@Log4j2
 @Getter
 @Service
 @RequiredArgsConstructor
 public class SocketEventService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SocketEventService.class);
 
     private final SocketIOServer socketIOServer;
 //    private final EmployeeNotificationRepository employeeNotificationRepository;
@@ -28,17 +27,17 @@ public class SocketEventService {
 
     public void joinRoom(SocketIOClient client, String room) {
         client.joinRoom(room);
-        LOGGER.info("Client {} joined room: {}", client.getSessionId(), room);
+        log.info("Client {} joined room: {}", client.getSessionId(), room);
     }
 
     public void leaveRoom(SocketIOClient client, String room) {
         client.leaveRoom(room);
-        LOGGER.info("Client {} leaved room: {}", client.getSessionId(), room);
+        log.info("Client {} leaved room: {}", client.getSessionId(), room);
     }
 
     public void sendToRoom(String room, String eventName, Object data) {
         socketIOServer.getRoomOperations(room).sendEvent(eventName, data);
-        LOGGER.info("Sent {} to room: {}", eventName, room);
+        log.info("Sent {} to room: {}", eventName, room);
     }
 
     public void broadcastExcept(String eventName, Object data, UUID senderId) {

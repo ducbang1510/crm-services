@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,29 +13,32 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.stereotype.Service;
 
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.dtos.UserDTO;
 import com.tdbang.crm.entities.User;
 import com.tdbang.crm.exceptions.GenericException;
-import com.tdbang.crm.repositories.UserRepository;
+import com.tdbang.crm.mappers.UserMapper;
+import com.tdbang.crm.repositories.JpaUserRepository;
 import com.tdbang.crm.utils.AppConstants;
 import com.tdbang.crm.utils.MessageConstants;
 
+@Log4j2
 @Service
 public class UserService implements UserDetailsService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
     @Autowired
-    private UserRepository userRepository;
+    private JpaUserRepository jpaUserRepository;
 
     @Autowired
     private SecurityService securityService;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
+        User user = jpaUserRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
         return org.springframework.security.core.userdetails.User.builder()
@@ -48,20 +50,20 @@ public class UserService implements UserDetailsService {
     }
 
     public Long getUserPkByUsername(String username) {
-        return userRepository.getUserPkByUsername(username);
+        return jpaUserRepository.getUserPkByUsername(username);
     }
 
     public ResponseDTO getListOfUsers(Integer pageNumber, Integer pageSize) {
         ResponseDTO result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_NAMES_USERS_SUCCESS);
         if (pageNumber != null && pageSize != null) {
             Pageable pageable = PageRequest.of(pageNumber, pageSize);
-            Page<UserDTO> userDTOPage = userRepository.getUsersPageable(pageable);
+            Page<UserDTO> userDTOPage = jpaUserRepository.getUsersPageable(pageable);
             Map<String, Object> resultMap = new HashMap<>();
-            resultMap.put(AppConstants.USER_LIST, userDTOPage.getContent());
-            resultMap.put(AppConstants.TOTAL_RECORD, userDTOPage.getTotalElements());
+            resultMap.put(AppConstants.RECORD_LIST_KEY, userDTOPage.getContent());
+            resultMap.put(AppConstants.TOTAL_RECORD_KEY, userDTOPage.getTotalElements());
             result.setData(resultMap);
         } else {
-            List<UserDTO> userDTOs = userRepository.getAllUsers();
+            List<UserDTO> userDTOs = jpaUserRepository.getAllUsers();
             result.setData(userDTOs);
         }
 
@@ -71,7 +73,7 @@ public class UserService implements UserDetailsService {
     public ResponseDTO getUserInfo(Long pk) {
         ResponseDTO result;
         UserDTO userDTO = new UserDTO();
-        User user = userRepository.findUserByPk(pk);
+        User user = jpaUserRepository.findUserByPk(pk);
         if (user != null) {
             userDTO.setPk(user.getPk());
             userDTO.setName(user.getName());
@@ -90,8 +92,8 @@ public class UserService implements UserDetailsService {
     public ResponseDTO createNewUser(UserDTO userDTO) {
         ResponseDTO result;
         try {
-            User saveUser = mappingUserDTOToUserEntity(userDTO, true);
-            userRepository.save(saveUser);
+            User saveUser = userMapper.mappingUserDTOToUserEntity(userDTO, true);
+            jpaUserRepository.save(saveUser);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_USER_SUCCESS);
         } catch (Exception e) {
             throw new GenericException(HttpStatus.BAD_REQUEST, "CREATING_NEW_USER_ERROR", "Error while creating user");
@@ -102,23 +104,10 @@ public class UserService implements UserDetailsService {
     public ResponseDTO retrieveListNameOfUsers() {
         ResponseDTO result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_NAMES_USERS_SUCCESS);
 
-        List<UserDTO> userDTOs = userRepository.getAllUsers();
+        List<UserDTO> userDTOs = jpaUserRepository.getAllUsers();
         List<String> nameOfUsers = userDTOs.stream().map(UserDTO::getName).toList();
         result.setData(nameOfUsers);
 
         return result;
-    }
-
-    private User mappingUserDTOToUserEntity(UserDTO userDTO, boolean isCreateNew) {
-        User userEntity = new User();
-        if (isCreateNew)
-            userEntity.setUsername(userDTO.getUsername());
-        userEntity.setName(userDTO.getName());
-        userEntity.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(userDTO.getPassword()));
-        userEntity.setEmail(userDTO.getEmail());
-        userEntity.setPhone(userDTO.getPhone());
-        userEntity.setIsActive(userDTO.getIsActive());
-        userEntity.setIsAdmin(userDTO.getIsAdmin());
-        return userEntity;
     }
 }

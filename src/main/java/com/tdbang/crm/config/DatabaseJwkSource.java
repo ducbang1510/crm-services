@@ -14,27 +14,27 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import com.tdbang.crm.entities.JwkEntity;
-import com.tdbang.crm.repositories.JwkRepository;
+import com.tdbang.crm.repositories.JpaJwkRepository;
 
 @Component
 public class DatabaseJwkSource {
 
-    private final JwkRepository jwkRepository;
+    private final JpaJwkRepository jpaJwkRepository;
 
-    public DatabaseJwkSource(JwkRepository jwkRepository) {
-        this.jwkRepository = jwkRepository;
+    public DatabaseJwkSource(JpaJwkRepository jpaJwkRepository) {
+        this.jpaJwkRepository = jpaJwkRepository;
     }
 
     @PostConstruct
     public void initialize() {
         // Ensure we have at least one key
-        if (jwkRepository.count() == 0) {
+        if (jpaJwkRepository.count() == 0) {
             generateAndSaveNewKey();
         }
     }
 
     public JWKSource<SecurityContext> getJwkSource(String kid) {
-        JwkEntity jwkEntity = jwkRepository.findById(kid)
+        JwkEntity jwkEntity = jpaJwkRepository.findById(kid)
                 .orElseGet(this::generateAndSaveNewKey);
 
         try {
@@ -43,7 +43,7 @@ public class DatabaseJwkSource {
 
             // Update last used timestamp
             jwkEntity.setLastUsed(Instant.now());
-            jwkRepository.save(jwkEntity);
+            jpaJwkRepository.save(jwkEntity);
 
             return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
 
@@ -63,7 +63,7 @@ public class DatabaseJwkSource {
             entity.setCreatedAt(Instant.now());
             entity.setLastUsed(Instant.now());
 
-            return jwkRepository.save(entity);
+            return jpaJwkRepository.save(entity);
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate new JWK", e);

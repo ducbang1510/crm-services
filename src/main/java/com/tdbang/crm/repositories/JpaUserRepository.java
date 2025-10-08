@@ -13,7 +13,7 @@ import com.tdbang.crm.dtos.UserDTO;
 import com.tdbang.crm.entities.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface JpaUserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.pk = :pk")
     User findUserByPk(Long pk);

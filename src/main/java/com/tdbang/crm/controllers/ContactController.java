@@ -2,9 +2,10 @@ package com.tdbang.crm.controllers;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -24,10 +25,11 @@ import com.tdbang.crm.dtos.ContactDTO;
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.services.ContactService;
 
+@Log4j2
 @RestController
 @RequestMapping("/api/v1/contact")
+@Tag(name = "CRM Contact APIs")
 public class ContactController extends BaseController {
-    private static Logger LOGGER = LoggerFactory.getLogger(ContactController.class);
 
     @Autowired
     private ContactService contactService;
@@ -36,9 +38,9 @@ public class ContactController extends BaseController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
     public MappingJacksonValue createContact(@RequestBody @Valid ContactDTO contactDTO) {
-        LOGGER.info("Start createContact");
+        log.info("Start createContact");
         ResponseDTO responseDTO = contactService.createNewContact(contactDTO, getPkUserLogged());
-        LOGGER.info("End createContact");
+        log.info("End createContact");
         return new MappingJacksonValue(responseDTO);
     }
 
@@ -46,9 +48,9 @@ public class ContactController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveContactDetails(@PathVariable Long id) {
-        LOGGER.info("Start retrieveContactDetails");
+        log.info("Start retrieveContactDetails");
         ResponseDTO orderDetails = contactService.getContactDetails(id);
-        LOGGER.info("End retrieveContactDetails");
+        log.info("End retrieveContactDetails");
         return new MappingJacksonValue(orderDetails);
     }
 
@@ -57,9 +59,9 @@ public class ContactController extends BaseController {
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
     public MappingJacksonValue updateContactDetails(@PathVariable Long id,
                                                     @RequestBody @Valid ContactDTO contactDTO) {
-        LOGGER.info("Start updateContactDetails");
+        log.info("Start updateContactDetails");
         ResponseDTO responseDTO = contactService.updateContactDetails(id, getPkUserLogged(), contactDTO);
-        LOGGER.info("End updateContactDetails");
+        log.info("End updateContactDetails");
         return new MappingJacksonValue(responseDTO);
     }
 
@@ -67,20 +69,25 @@ public class ContactController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
     public MappingJacksonValue deleteContactDetails(@PathVariable Long id) {
-        LOGGER.info("Start deleteContactDetails");
+        log.info("Start deleteContactDetails");
         ResponseDTO responseDTO = contactService.deleteContactDetails(id, getPkUserLogged());
-        LOGGER.info("End deleteContactDetails");
+        log.info("End deleteContactDetails");
         return new MappingJacksonValue(responseDTO);
     }
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
-    public MappingJacksonValue retrieveContactList(@RequestParam(required = false) Integer pageNumber,
-                                                   @RequestParam(required = false) Integer pageSize) {
-        LOGGER.info("Start retrieveContactList");
-        ResponseDTO listOfContact = contactService.getListOfContact(pageNumber, pageSize, null);
-        LOGGER.info("End retrieveContactList");
+    public MappingJacksonValue retrieveContactList(
+            @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "contactName:John,organization:OrgName") String filter,
+            @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "contactName,organization") String fields,
+            @RequestParam(required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(required = false, defaultValue = "0") int pageSize,
+            @RequestParam(required = false) String sortColumn,
+            @RequestParam(required = false, defaultValue = "ASC") String sortOrder) {
+        log.info("Start retrieveContactList");
+        ResponseDTO listOfContact = contactService.getListOfContact(filter, pageSize, pageNumber, sortColumn, sortOrder, fields);
+        log.info("End retrieveContactList");
         return new MappingJacksonValue(listOfContact);
     }
 
@@ -88,21 +95,21 @@ public class ContactController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveContactNameList() {
-        LOGGER.info("Start retrieveContactNameList");
+        log.info("Start retrieveContactNameList");
         ResponseDTO listOfContactName = contactService.getListOfContactName();
-        LOGGER.info("End retrieveContactNameList");
+        log.info("End retrieveContactNameList");
         return new MappingJacksonValue(listOfContactName);
     }
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
-    public MappingJacksonValue retrieveContactListWithFilter(@RequestParam(required = false) Integer pageNumber,
-                                                             @RequestParam(required = false) Integer pageSize,
-                                                             @RequestParam(required = false) String contactName) {
-        LOGGER.info("Start retrieveContactListWithFilter");
-        ResponseDTO listOfContact = contactService.getListOfContact(pageNumber, pageSize, contactName);
-        LOGGER.info("End retrieveContactListWithFilter");
+    public MappingJacksonValue retrieveContactListWithNonDynamicFilter(@RequestParam(required = false) Integer pageNumber,
+                                                                       @RequestParam(required = false) Integer pageSize,
+                                                                       @RequestParam(required = false) String contactName) {
+        log.info("Start retrieveContactListWithNonDynamicFilter");
+        ResponseDTO listOfContact = contactService.getListOfContactWithNonDynamicFilter(pageNumber, pageSize, contactName);
+        log.info("End retrieveContactListWithNonDynamicFilter");
         return new MappingJacksonValue(listOfContact);
     }
 
@@ -110,9 +117,9 @@ public class ContactController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveContactDashboardByLeadSource() {
-        LOGGER.info("Start retrieveContactDashboardByLeadSource");
+        log.info("Start retrieveContactDashboardByLeadSource");
         ResponseDTO responseDTO = contactService.retrieveContactDashboardByLeadSource();
-        LOGGER.info("End retrieveContactDashboardByLeadSource");
+        log.info("End retrieveContactDashboardByLeadSource");
         return new MappingJacksonValue(responseDTO);
     }
 
@@ -120,9 +127,9 @@ public class ContactController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN', 'USER')")
     public MappingJacksonValue deleteContacts(@RequestBody List<Long> ids) {
-        LOGGER.info("Start deleteContacts");
+        log.info("Start deleteContacts");
         ResponseDTO responseDTO = contactService.deleteContacts(ids, getPkUserLogged());
-        LOGGER.info("End deleteContacts");
+        log.info("End deleteContacts");
         return new MappingJacksonValue(responseDTO);
     }
 }
