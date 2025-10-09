@@ -79,8 +79,8 @@ public class SalesOderController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public MappingJacksonValue retrieveOrderList(
-            @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "contactName:John,organization:OrgName") String filter,
-            @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "contactName,organization") String fields,
+            @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "contact.contactName:John,subject:SubjectTxt") String filter,
+            @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "subject,status") String fields,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "0") int pageSize,
             @RequestParam(required = false) String sortColumn,

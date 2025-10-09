@@ -3,6 +3,7 @@ package com.tdbang.crm.dtos;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonFilter("UserDTOFilter")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
     private Long pk;
 

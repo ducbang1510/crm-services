@@ -65,11 +65,11 @@ public class SalesOrderMapper {
         SalesOrderDTO salesOrderDTO = new SalesOrderDTO();
         salesOrderDTO.setPk(salesOrder.getPk());
         salesOrderDTO.setSubject(salesOrder.getSubject());
-        salesOrderDTO.setContactName(salesOrder.getContact().getContactName());
-        salesOrderDTO.setStatus(salesOrder.getStatus().getName());
+        salesOrderDTO.setContactName(salesOrder.getContact() != null ? salesOrder.getContact().getContactName() : null);
+        salesOrderDTO.setStatus(salesOrder.getStatus() != null ? salesOrder.getStatus().getName() : null);
         salesOrderDTO.setTotal(salesOrder.getTotal());
-        salesOrderDTO.setAssignedTo(salesOrder.getAssignedTo().getName());
-        salesOrderDTO.setCreator(salesOrder.getCreator().getName());
+        salesOrderDTO.setAssignedTo(salesOrder.getAssignedTo() != null ? salesOrder.getAssignedTo().getName() : null);
+        salesOrderDTO.setCreator(salesOrder.getCreator() != null ? salesOrder.getCreator().getName() : null);
         salesOrderDTO.setDescription(salesOrder.getDescription());
         salesOrderDTO.setCreatedTime(salesOrder.getCreatedOn());
         salesOrderDTO.setUpdatedTime(salesOrder.getUpdatedOn());

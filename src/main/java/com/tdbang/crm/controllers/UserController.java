@@ -3,6 +3,7 @@ package com.tdbang.crm.controllers;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.ser.FilterProvider;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
@@ -71,12 +72,17 @@ public class UserController extends BaseController {
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public MappingJacksonValue retrieveUserList(@RequestParam(required = false) Integer pageNumber,
-                                                @RequestParam(required = false) Integer pageSize) {
+    public MappingJacksonValue retrieveUserList(
+            @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "name:John") String filter,
+            @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "pk,name") String fields,
+            @RequestParam(required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(required = false, defaultValue = "0") int pageSize,
+            @RequestParam(required = false) String sortColumn,
+            @RequestParam(required = false, defaultValue = "ASC") String sortOrder) {
         log.info("Start retrieveUserList");
         FilterProvider filters = buildFilterProvider(USER_DTO_FILTER, EXCLUDE_USER_FIELDS);
 
-        ResponseDTO listOfUsers = userService.getListOfUsers(pageNumber, pageSize);
+        ResponseDTO listOfUsers = userService.getListOfUsers(filter, pageSize, pageNumber, sortColumn, sortOrder, fields);
         MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(listOfUsers);
         mappingJacksonValue.setFilters(filters);
         log.info("End retrieveUserList");

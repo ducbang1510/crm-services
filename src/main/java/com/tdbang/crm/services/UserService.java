@@ -1,5 +1,6 @@
 package com.tdbang.crm.services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +22,17 @@ import com.tdbang.crm.entities.User;
 import com.tdbang.crm.exceptions.GenericException;
 import com.tdbang.crm.mappers.UserMapper;
 import com.tdbang.crm.repositories.JpaUserRepository;
+import com.tdbang.crm.repositories.custom.CustomRepository;
+import com.tdbang.crm.specifications.SpecificationFilterUtil;
+import com.tdbang.crm.specifications.builders.SpecificationBuilder;
+import com.tdbang.crm.specifications.builders.UserSpecificationBuilder;
 import com.tdbang.crm.utils.AppConstants;
+import com.tdbang.crm.utils.AppUtils;
 import com.tdbang.crm.utils.MessageConstants;
 
 @Log4j2
 @Service
-public class UserService implements UserDetailsService {
+public class UserService extends AbstractService<User> implements UserDetailsService {
     @Autowired
     private JpaUserRepository jpaUserRepository;
 
@@ -35,6 +41,10 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserMapper userMapper;
+
+    public UserService(SpecificationFilterUtil<User> filterUtil, CustomRepository<User> repository) {
+        super(filterUtil, repository);
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -65,6 +75,31 @@ public class UserService implements UserDetailsService {
         } else {
             List<UserDTO> userDTOs = jpaUserRepository.getAllUsers();
             result.setData(userDTOs);
+        }
+
+        return result;
+    }
+
+    public ResponseDTO getListOfUsers(String filter, int pageSize, int pageNumber, String sortColumn, String sortOrder,
+                                      String fields) {
+        ResponseDTO result;
+        try {
+            List<UserDTO> userDTOList = new ArrayList<>();
+
+            Map<String, Object> resultMapQuery = get(filter, pageSize, pageNumber, sortColumn, sortOrder, AppUtils.convertFields(fields));
+            List<User> results = userMapper.mapRecordList(resultMapQuery);
+            for(User r: results) {
+                userDTOList.add(userMapper.mappingUserEntityToUserDTO(r));
+            }
+
+            resultMapQuery.replace(AppConstants.RECORD_LIST_KEY, userDTOList);
+            if (pageSize == 0) {
+                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS, userDTOList);
+            } else {
+                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS, resultMapQuery);
+            }
+        } catch (Exception e) {
+            result = new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_ERROR);
         }
 
         return result;
@@ -109,5 +144,25 @@ public class UserService implements UserDetailsService {
         result.setData(nameOfUsers);
 
         return result;
+    }
+
+    @Override
+    protected String getProfileFields() {
+        return "pk,name,username,password,email,phone,isAdmin,isActive,createdOn,updatedOn";
+    }
+
+    @Override
+    protected String getDefaultSortColumn() {
+        return "name";
+    }
+
+    @Override
+    protected Class<User> getEntityClass() {
+        return User.class;
+    }
+
+    @Override
+    protected SpecificationBuilder<User> getSpecificationBuilder() {
+        return new UserSpecificationBuilder();
     }
 }

@@ -109,14 +109,14 @@ public class ContactMapper {
         ContactDTO contactDTO = new ContactDTO();
         contactDTO.setPk(contact.getPk());
         contactDTO.setContactName(contact.getContactName());
-        contactDTO.setSalutation(contact.getSalutation().getName());
+        contactDTO.setSalutation(contact.getSalutation() != null ? contact.getSalutation().getName() : null);
         contactDTO.setMobilePhone(contact.getMobilePhone());
         contactDTO.setEmail(contact.getEmail());
         contactDTO.setOrganization(contact.getOrganization());
         contactDTO.setDob(contact.getDob());
-        contactDTO.setLeadSrc(contact.getLeadSrc().getName());
-        contactDTO.setAssignedTo(contact.getAssignedTo().getName());
-        contactDTO.setCreator(contact.getCreator().getName());
+        contactDTO.setLeadSrc(contact.getLeadSrc() != null ? contact.getLeadSrc().getName() : null);
+        contactDTO.setAssignedTo(contact.getAssignedTo() != null ? contact.getAssignedTo().getName() : null);
+        contactDTO.setCreator(contact.getCreator() != null ? contact.getCreator().getName() : null);
         contactDTO.setAddress(contact.getAddress());
         contactDTO.setDescription(contact.getDescription());
         contactDTO.setCreatedTime(contact.getCreatedOn());
