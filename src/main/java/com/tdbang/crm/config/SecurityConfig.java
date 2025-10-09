@@ -2,25 +2,23 @@ package com.tdbang.crm.config;
 
 import java.util.List;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -29,8 +27,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.tdbang.crm.services.UserService;
 import com.tdbang.crm.utils.AppConstants;
 
+@Log4j2
 @Configuration
-@EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig implements InitializingBean {
     private static final String[] AUTH_WHITELIST = {
             //Swagger API
@@ -50,14 +49,16 @@ public class SecurityConfig implements InitializingBean {
     private String allowedUrlsRaw;
 
     private final UserService userDetailsService;
+    private final JwtConfig jwtConfig;
 
     @Override
     public void afterPropertiesSet() {
 
     }
 
-    public SecurityConfig(UserService userDetailsService) {
+    public SecurityConfig(UserService userDetailsService, JwtConfig jwtConfig) {
         this.userDetailsService = userDetailsService;
+        this.jwtConfig = jwtConfig;
     }
 
     @Bean
@@ -74,22 +75,12 @@ public class SecurityConfig implements InitializingBean {
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(Customizer.withDefaults())
-                .with(authorizationServerConfigurer, authorizationServer -> authorizationServer
-                        .oidc(Customizer.withDefaults())	// Enable OpenID Connect 1.0
-                )
+                .with(authorizationServerConfigurer, Customizer.withDefaults())
                 .formLogin(form -> form
                         .loginPage("/login")
                         .permitAll()
-                        .defaultSuccessUrl("/oauth2/authorize", true) // Redirect to OAuth flow after login
                 )
                 .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
-                .exceptionHandling(exceptions -> exceptions
-                        .defaultAuthenticationEntryPointFor(
-                                new LoginUrlAuthenticationEntryPoint("/login"),
-                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
-                        )
-                )
                 .build();
     }
 
@@ -97,14 +88,15 @@ public class SecurityConfig implements InitializingBean {
     @Order(2)
     public SecurityFilterChain apiFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         return http
+                .securityMatcher("/api/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
-                .httpBasic(Customizer.withDefaults())
-                .securityMatcher("/api/**")
-                .authorizeHttpRequests(authorize -> authorize
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated())
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConfig.jwtAuthenticationConverter()))
+                )
                 .build();
     }
 
@@ -114,17 +106,16 @@ public class SecurityConfig implements InitializingBean {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
-                .httpBasic(Customizer.withDefaults())
-                .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll()
-                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .anyRequest().authenticated())
                 .formLogin(form -> form
-                        .loginPage("/login")    // our thymeleaf page
-                        .permitAll()
-                )
+                        .loginPage("/login")
+                        .permitAll())
                 .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
                 .build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
