@@ -24,7 +24,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.tdbang.crm.services.UserService;
+import com.tdbang.crm.authentication.CustomUserDetailsService;
 import com.tdbang.crm.utils.AppConstants;
 
 @Log4j2
@@ -48,7 +48,7 @@ public class SecurityConfig implements InitializingBean {
     @Value("${authentication.cors.allowed.urls:*}")
     private String allowedUrlsRaw;
 
-    private final UserService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
     private final JwtConfig jwtConfig;
 
     @Override
@@ -56,7 +56,7 @@ public class SecurityConfig implements InitializingBean {
 
     }
 
-    public SecurityConfig(UserService userDetailsService, JwtConfig jwtConfig) {
+    public SecurityConfig(CustomUserDetailsService userDetailsService, JwtConfig jwtConfig) {
         this.userDetailsService = userDetailsService;
         this.jwtConfig = jwtConfig;
     }

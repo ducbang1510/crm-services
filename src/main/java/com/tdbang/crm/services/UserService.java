@@ -11,9 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.tdbang.crm.dtos.ResponseDTO;
@@ -32,31 +29,15 @@ import com.tdbang.crm.utils.MessageConstants;
 
 @Log4j2
 @Service
-public class UserService extends AbstractService<User> implements UserDetailsService {
+public class UserService extends AbstractService<User> {
     @Autowired
     private JpaUserRepository jpaUserRepository;
-
-    @Autowired
-    private SecurityService securityService;
 
     @Autowired
     private UserMapper userMapper;
 
     public UserService(SpecificationFilterUtil<User> filterUtil, CustomRepository<User> repository) {
         super(filterUtil, repository);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = jpaUserRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .disabled(!user.getIsActive())
-                .authorities(securityService.getGrantedAuthority(user))
-                .build();
     }
 
     public Long getUserPkByUsername(String username) {

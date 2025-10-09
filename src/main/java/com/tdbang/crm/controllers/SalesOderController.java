@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.dtos.SalesOrderDTO;
+import com.tdbang.crm.enums.SalesOrderStatus;
 import com.tdbang.crm.services.SalesOrderService;
 
 @Log4j2
@@ -91,6 +92,10 @@ public class SalesOderController extends BaseController {
         return new MappingJacksonValue(listOfOrder);
     }
 
+    /**
+     * @deprecated (This function will be removed, use retrieveOrderList instead)
+     */
+    @Deprecated(since="1.1.0", forRemoval = true)
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
@@ -121,5 +126,15 @@ public class SalesOderController extends BaseController {
         ResponseDTO responseDTO = salesOrderService.deleteSaleOrders(ids, getPkUserLogged());
         log.info("End deleteSaleOrders");
         return new MappingJacksonValue(responseDTO);
+    }
+
+    @GetMapping("/list/status")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public MappingJacksonValue retrieveStatusEnumOfSalesOrder() {
+        log.info("Start retrieveStatusEnumOfSalesOrder");
+        List<SalesOrderStatus> status = salesOrderService.retrieveStatusEnumOfSalesOrder();
+        log.info("End retrieveStatusEnumOfSalesOrder");
+        return new MappingJacksonValue(status);
     }
 }

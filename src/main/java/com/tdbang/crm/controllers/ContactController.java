@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tdbang.crm.dtos.ContactDTO;
 import com.tdbang.crm.dtos.ResponseDTO;
+import com.tdbang.crm.enums.LeadSource;
+import com.tdbang.crm.enums.Salutation;
 import com.tdbang.crm.services.ContactService;
 
 @Log4j2
@@ -101,6 +103,10 @@ public class ContactController extends BaseController {
         return new MappingJacksonValue(listOfContactName);
     }
 
+    /**
+     * @deprecated (This function will be removed, use retrieveContactList instead)
+     */
+    @Deprecated(since="1.1.0", forRemoval = true)
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
@@ -131,5 +137,25 @@ public class ContactController extends BaseController {
         ResponseDTO responseDTO = contactService.deleteContacts(ids, getPkUserLogged());
         log.info("End deleteContacts");
         return new MappingJacksonValue(responseDTO);
+    }
+
+    @GetMapping("/list/salutation")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public MappingJacksonValue retrieveSalutationEnumOfContact() {
+        log.info("Start retrieveSalutationEnumOfContact");
+        List<Salutation> status = contactService.retrieveSalutationEnumOfContact();
+        log.info("End retrieveSalutationEnumOfContact");
+        return new MappingJacksonValue(status);
+    }
+
+    @GetMapping("/list/lead-source")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public MappingJacksonValue retrieveLeadSourceEnumOfContact() {
+        log.info("Start retrieveLeadSourceEnumOfContact");
+        List<LeadSource> status = contactService.retrieveLeadSourceEnumOfContact();
+        log.info("End retrieveLeadSourceEnumOfContact");
+        return new MappingJacksonValue(status);
     }
 }

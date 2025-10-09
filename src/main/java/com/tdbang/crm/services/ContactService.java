@@ -1,6 +1,7 @@
 package com.tdbang.crm.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import com.tdbang.crm.dtos.nativequerydto.DashboardQueryDTO;
 import com.tdbang.crm.entities.Contact;
 import com.tdbang.crm.entities.User;
 import com.tdbang.crm.enums.LeadSource;
+import com.tdbang.crm.enums.Salutation;
 import com.tdbang.crm.exceptions.GenericException;
 import com.tdbang.crm.mappers.ContactMapper;
 import com.tdbang.crm.repositories.JpaContactRepository;
@@ -184,6 +186,14 @@ public class ContactService extends AbstractService<Contact> {
             throw new GenericException(HttpStatus.METHOD_NOT_ALLOWED, "USER_NOT_THE_CREATOR", "User is not the creator");
         }
         return result;
+    }
+
+    public List<Salutation> retrieveSalutationEnumOfContact() {
+        return Arrays.stream(Salutation.values()).toList();
+    }
+
+    public List<LeadSource> retrieveLeadSourceEnumOfContact() {
+        return Arrays.stream(LeadSource.values()).toList();
     }
 
     @Override
