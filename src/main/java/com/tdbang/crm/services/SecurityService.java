@@ -52,9 +52,8 @@ public class SecurityService implements InitializingBean {
         List<GrantedAuthority> groupAuthorities = new ArrayList<>();
         if (Boolean.TRUE.equals(user.getIsAdmin())) {
             groupAuthorities.add(new SimpleGrantedAuthority(AppConstants.ROLE_ADMIN));
-        } else {
-            groupAuthorities.add(new SimpleGrantedAuthority(AppConstants.ROLE_USER));
         }
+        groupAuthorities.add(new SimpleGrantedAuthority(AppConstants.ROLE_USER));
 
         return groupAuthorities;
     }
