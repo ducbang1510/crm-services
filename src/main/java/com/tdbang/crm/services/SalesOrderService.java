@@ -1,6 +1,7 @@
 package com.tdbang.crm.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -179,6 +180,10 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
             throw new GenericException(HttpStatus.METHOD_NOT_ALLOWED, "USER_NOT_THE_CREATOR", "User is not the creator");
         }
         return result;
+    }
+
+    public List<SalesOrderStatus> retrieveStatusEnumOfSalesOrder() {
+        return Arrays.stream(SalesOrderStatus.values()).toList();
     }
 
     @Override

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.dtos.SalesOrderDTO;
+import com.tdbang.crm.enums.SalesOrderStatus;
 import com.tdbang.crm.services.SalesOrderService;
 
 @Log4j2
@@ -79,8 +80,8 @@ public class SalesOderController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public MappingJacksonValue retrieveOrderList(
-            @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "contactName:John,organization:OrgName") String filter,
-            @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "contactName,organization") String fields,
+            @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "contact.contactName:John,subject:SubjectTxt") String filter,
+            @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "subject,status") String fields,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "0") int pageSize,
             @RequestParam(required = false) String sortColumn,
@@ -91,6 +92,10 @@ public class SalesOderController extends BaseController {
         return new MappingJacksonValue(listOfOrder);
     }
 
+    /**
+     * @deprecated (This function will be removed, use retrieveOrderList instead)
+     */
+    @Deprecated(since="1.1.0", forRemoval = true)
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
@@ -121,5 +126,15 @@ public class SalesOderController extends BaseController {
         ResponseDTO responseDTO = salesOrderService.deleteSaleOrders(ids, getPkUserLogged());
         log.info("End deleteSaleOrders");
         return new MappingJacksonValue(responseDTO);
+    }
+
+    @GetMapping("/list/status")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public MappingJacksonValue retrieveStatusEnumOfSalesOrder() {
+        log.info("Start retrieveStatusEnumOfSalesOrder");
+        List<SalesOrderStatus> status = salesOrderService.retrieveStatusEnumOfSalesOrder();
+        log.info("End retrieveStatusEnumOfSalesOrder");
+        return new MappingJacksonValue(status);
     }
 }

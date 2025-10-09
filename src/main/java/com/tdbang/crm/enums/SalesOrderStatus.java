@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum SalesOrderStatus {
-    NONE("Created"),
-    MR("Approved"),
-    MRS("Delivered"),
-    MS("Canceled");
+    CREATED("Created"),
+    APPROVED("Approved"),
+    DELIVERED("Delivered"),
+    CANCELED("Canceled");
 
     private final String name;
 
