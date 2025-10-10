@@ -37,9 +37,9 @@ public class AuthorizationServerConfig implements InitializingBean {
 
     @Value("${spring.security.oauth2.authorization-server.token.authorization-code-time-to-live:10}")
     private int authCodeTimeToLive;
-    @Value("${spring.security.oauth2.authorization-server.token.access-token-time-to-live:1}")
+    @Value("${spring.security.oauth2.authorization-server.token.access-token-time-to-live:60}")
     private int accessTokenTimeToLive;
-    @Value("${spring.security.oauth2.authorization-server.token.refresh-token-time-to-live:7}")
+    @Value("${spring.security.oauth2.authorization-server.token.refresh-token-time-to-live:10080}")
     private int refreshTokenTimeToLive;
 
     private final DatabaseJwkSource databaseJwkSource;
@@ -90,8 +90,8 @@ public class AuthorizationServerConfig implements InitializingBean {
                             .requireAuthorizationConsent(false)
                             .build())
                     .tokenSettings(TokenSettings.builder()
-                            .accessTokenTimeToLive(Duration.ofHours(accessTokenTimeToLive))
-                            .refreshTokenTimeToLive(Duration.ofDays(refreshTokenTimeToLive))
+                            .accessTokenTimeToLive(Duration.ofMinutes(accessTokenTimeToLive))
+                            .refreshTokenTimeToLive(Duration.ofMinutes(refreshTokenTimeToLive))
                             .authorizationCodeTimeToLive(Duration.ofMinutes(authCodeTimeToLive))
                             .reuseRefreshTokens(false)
                             .build())
