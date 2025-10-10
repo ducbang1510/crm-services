@@ -23,7 +23,7 @@ import com.tdbang.crm.entities.Contact;
 import com.tdbang.crm.entities.User;
 import com.tdbang.crm.enums.LeadSource;
 import com.tdbang.crm.enums.Salutation;
-import com.tdbang.crm.exceptions.GenericException;
+import com.tdbang.crm.exceptions.CRMException;
 import com.tdbang.crm.mappers.ContactMapper;
 import com.tdbang.crm.repositories.JpaContactRepository;
 import com.tdbang.crm.repositories.JpaUserRepository;
@@ -69,7 +69,9 @@ public class ContactService extends AbstractService<Contact> {
                 result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS, resultMapQuery);
             }
         } catch (Exception e) {
-            result = new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_ERROR);
+            throw new CRMException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE,
+                    new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_ERROR));
         }
 
         return result;
@@ -91,7 +93,9 @@ public class ContactService extends AbstractService<Contact> {
                         contactMapper.mappingToListContactDTO(contactQueryDTOs));
             }
         } catch (Exception e) {
-            result = new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_ERROR);
+            throw new CRMException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE,
+                    new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_ERROR));
         }
 
         return result;
@@ -106,7 +110,7 @@ public class ContactService extends AbstractService<Contact> {
             jpaContactRepository.save(saveContact);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_CONTACT_SUCCESS);
         } catch (Exception e) {
-            throw new GenericException(HttpStatus.BAD_REQUEST, "CREATING_NEW_CONTACT_ERROR", MessageConstants.CREATING_NEW_CONTACT_ERROR);
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_CONTACT_ERROR);
         }
         return result;
     }
@@ -125,14 +129,14 @@ public class ContactService extends AbstractService<Contact> {
     public ResponseDTO updateContactDetails(Long contactPk, Long creatorFk, ContactDTO contactDTO) {
         ResponseDTO result;
         Contact updatedContact = jpaContactRepository.findByPk(contactPk)
-                .orElseThrow(() -> new GenericException(HttpStatus.NOT_FOUND, "CONTACT_NOT_FOUND", "Contact not found"));
+                .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, "CONTACT_NOT_FOUND", "Contact not found"));
         if (updatedContact.getCreator().getPk().equals(creatorFk)) {
             User assignedTo = jpaUserRepository.getUsersByNames(contactDTO.getAssignedTo()).get(0);
             updatedContact = contactMapper.mappingContactDTOToEntity(contactDTO, null, assignedTo, false);
             jpaContactRepository.save(updatedContact);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.UPDATING_CONTACT_SUCCESS);
         } else {
-            throw new GenericException(HttpStatus.METHOD_NOT_ALLOWED, "USER_NOT_THE_CREATOR", "User is not the creator");
+            throw new CRMException(HttpStatus.FORBIDDEN, MessageConstants.FORBIDDEN_CODE, MessageConstants.FORBIDDEN_MESSAGE);
         }
         return result;
     }
@@ -140,12 +144,12 @@ public class ContactService extends AbstractService<Contact> {
     public ResponseDTO deleteContactDetails(Long contactPk, Long creatorFk) {
         ResponseDTO result;
         Contact deletedContact = jpaContactRepository.findByPk(contactPk)
-                .orElseThrow(() -> new GenericException(HttpStatus.NOT_FOUND, "CONTACT_NOT_FOUND", "Contact not found"));
+                .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, "CONTACT_NOT_FOUND", "Contact not found"));
         if (deletedContact.getCreator().getPk().equals(creatorFk)) {
             jpaContactRepository.delete(deletedContact);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_CONTACT_SUCCESS);
         } else {
-            throw new GenericException(HttpStatus.METHOD_NOT_ALLOWED, "USER_NOT_THE_CREATOR", "User is not the creator");
+            throw new CRMException(HttpStatus.FORBIDDEN, MessageConstants.FORBIDDEN_CODE, MessageConstants.FORBIDDEN_MESSAGE);
         }
         return result;
     }
@@ -183,7 +187,7 @@ public class ContactService extends AbstractService<Contact> {
             jpaContactRepository.deleteAllById(deletedListContacts.stream().map(Contact::getPk).toList());
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_LIST_OF_CONTACTS_SUCCESS);
         } else {
-            throw new GenericException(HttpStatus.METHOD_NOT_ALLOWED, "USER_NOT_THE_CREATOR", "User is not the creator");
+            throw new CRMException(HttpStatus.FORBIDDEN, MessageConstants.FORBIDDEN_CODE, MessageConstants.FORBIDDEN_MESSAGE);
         }
         return result;
     }

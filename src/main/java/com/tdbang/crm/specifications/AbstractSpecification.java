@@ -29,6 +29,8 @@ public abstract class AbstractSpecification<T> implements Specification<T> {
             case EQUALITY:
                 if (isEnumField()) {
                     result = builder.equal(path, valueToEnum(path));
+                } else if (isBooleanField()) {
+                    result = builder.equal(path, valueToBoolean());
                 } else if (!isDateField()) {
                     result = builder.equal(path, value());
                 } else {
@@ -38,6 +40,8 @@ public abstract class AbstractSpecification<T> implements Specification<T> {
             case NEGATION:
                 if (isEnumField()) {
                     result = builder.notEqual(path, valueToEnum(path));
+                } else if (isBooleanField()) {
+                    result = builder.notEqual(path, valueToBoolean());
                 } else if (!isDateField()) {
                     result = builder.notEqual(path, value());
                 } else {
@@ -107,15 +111,19 @@ public abstract class AbstractSpecification<T> implements Specification<T> {
         Class<?> type = path.getJavaType();
         @SuppressWarnings("unchecked")
         Class<? extends Enum<?>> enumType = (Class<? extends Enum<?>>) type;
-        return  Enum.valueOf((Class) enumType, criteria.getValue().toString().toUpperCase());
+        return  Enum.valueOf((Class) enumType, valueToString().toUpperCase());
     }
 
     private Date valueToDate() {
-        return new Date(Long.parseLong(criteria.getValue().toString()));
+        return new Date(Long.parseLong(valueToString()));
     }
 
     private String valueToString() {
         return criteria.getValue().toString();
+    }
+
+    private Boolean valueToBoolean() {
+        return Boolean.valueOf(valueToString());
     }
 
     private Object value() {
@@ -125,6 +133,8 @@ public abstract class AbstractSpecification<T> implements Specification<T> {
     protected abstract boolean isDateField();
 
     protected abstract boolean isEnumField();
+
+    protected abstract boolean isBooleanField();
 
     public SearchCriteria getCriteria() {
         return criteria;

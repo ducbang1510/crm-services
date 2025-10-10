@@ -23,7 +23,7 @@ import com.tdbang.crm.entities.Contact;
 import com.tdbang.crm.entities.SalesOrder;
 import com.tdbang.crm.entities.User;
 import com.tdbang.crm.enums.SalesOrderStatus;
-import com.tdbang.crm.exceptions.GenericException;
+import com.tdbang.crm.exceptions.CRMException;
 import com.tdbang.crm.mappers.SalesOrderMapper;
 import com.tdbang.crm.repositories.JpaContactRepository;
 import com.tdbang.crm.repositories.JpaSalesOrderRepository;
@@ -75,7 +75,9 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
                 result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_SALES_ORDER_SUCCESS, resultMapQuery);
             }
         } catch (Exception e) {
-            result = new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_SALES_ORDER_ERROR);
+            throw new CRMException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE,
+                    new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_SALES_ORDER_ERROR));
         }
 
         return result;
@@ -112,7 +114,7 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
     public ResponseDTO updateSalesOrderDetails(Long orderPk, Long creatorFk, SalesOrderDTO salesOrderDTO) {
         ResponseDTO result;
         SalesOrder updatedOrder = jpaSalesOrderRepository.findByPk(orderPk)
-                .orElseThrow(() -> new GenericException(HttpStatus.NOT_FOUND, "SALES_ORDER_NOT_FOUND", "Sales order not found"));
+                .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, "SALES_ORDER_NOT_FOUND", "Sales order not found"));
         if (updatedOrder.getCreator().getPk().equals(creatorFk)) {
             User userAssignedTo = jpaUserRepository.getUsersByNames(salesOrderDTO.getAssignedTo()).get(0);
             Contact contact = jpaContactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0);
@@ -120,7 +122,7 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
             jpaSalesOrderRepository.save(updatedOrder);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.UPDATING_SALES_ORDER_SUCCESS);
         } else {
-            throw new GenericException(HttpStatus.METHOD_NOT_ALLOWED, "USER_NOT_THE_CREATOR", "User is not the creator");
+            throw new CRMException(HttpStatus.FORBIDDEN, MessageConstants.FORBIDDEN_CODE, MessageConstants.FORBIDDEN_MESSAGE);
         }
         return result;
     }
@@ -135,7 +137,7 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
             jpaSalesOrderRepository.save(saveSalesOrder);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_SALES_ORDER_SUCCESS);
         } catch (Exception e) {
-            throw new GenericException(HttpStatus.BAD_REQUEST, "CREATING_NEW_SALES_ORDER_ERROR", MessageConstants.CREATING_NEW_SALES_ORDER_ERROR);
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_SALES_ORDER_ERROR);
         }
         return result;
     }
@@ -143,12 +145,12 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
     public ResponseDTO deleteSalesOrderDetails(Long orderPk, Long creatorFk) {
         ResponseDTO result;
         SalesOrder deletedOrder = jpaSalesOrderRepository.findByPk(orderPk)
-                .orElseThrow(() -> new GenericException(HttpStatus.NOT_FOUND, "SALES_ORDER_NOT_FOUND", "Sales order not found"));
+                .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
         if (deletedOrder.getCreator().getPk().equals(creatorFk)) {
             jpaSalesOrderRepository.delete(deletedOrder);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_SALES_ORDER_SUCCESS);
         } else {
-            throw new GenericException(HttpStatus.METHOD_NOT_ALLOWED, "USER_NOT_THE_CREATOR", "User is not the creator");
+            throw new CRMException(HttpStatus.FORBIDDEN, MessageConstants.FORBIDDEN_CODE, MessageConstants.FORBIDDEN_MESSAGE);
         }
         return result;
     }
@@ -177,7 +179,7 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
             jpaSalesOrderRepository.deleteAllById(deletedListOrders.stream().map(SalesOrder::getPk).toList());
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_LIST_OF_SALES_ORDERS_SUCCESS);
         } else {
-            throw new GenericException(HttpStatus.METHOD_NOT_ALLOWED, "USER_NOT_THE_CREATOR", "User is not the creator");
+            throw new CRMException(HttpStatus.FORBIDDEN, MessageConstants.FORBIDDEN_CODE, MessageConstants.FORBIDDEN_MESSAGE);
         }
         return result;
     }

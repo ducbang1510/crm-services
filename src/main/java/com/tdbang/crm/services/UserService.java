@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.dtos.UserDTO;
 import com.tdbang.crm.entities.User;
-import com.tdbang.crm.exceptions.GenericException;
+import com.tdbang.crm.exceptions.CRMException;
 import com.tdbang.crm.mappers.UserMapper;
 import com.tdbang.crm.repositories.JpaUserRepository;
 import com.tdbang.crm.repositories.custom.CustomRepository;
@@ -80,7 +80,9 @@ public class UserService extends AbstractService<User> {
                 result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS, resultMapQuery);
             }
         } catch (Exception e) {
-            result = new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_ERROR);
+            throw new CRMException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE,
+                    new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_USERS_ERROR));
         }
 
         return result;
@@ -99,7 +101,7 @@ public class UserService extends AbstractService<User> {
             userDTO.setIsAdmin(user.getIsAdmin());
             userDTO.setCreatedTime(user.getCreatedOn());
         } else {
-            throw new GenericException(HttpStatus.NOT_FOUND, "FETCHING_USER_BY_ID_ERROR", MessageConstants.FETCHING_USER_BY_ID_ERROR);
+            throw new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE);
         }
         result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_USER_INFO_SUCCESS, userDTO);
         return result;
@@ -112,7 +114,7 @@ public class UserService extends AbstractService<User> {
             jpaUserRepository.save(saveUser);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_USER_SUCCESS);
         } catch (Exception e) {
-            throw new GenericException(HttpStatus.BAD_REQUEST, "CREATING_NEW_USER_ERROR", "Error while creating user");
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_USER_ERROR);
         }
         return result;
     }

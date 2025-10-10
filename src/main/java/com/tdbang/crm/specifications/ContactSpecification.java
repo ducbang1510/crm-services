@@ -14,6 +14,8 @@ public class ContactSpecification extends AbstractSpecification<Contact> impleme
 
     protected static final Set<String> ENUM_FIELDS = Set.of("salutation", "leadSrc");
 
+    protected static final Set<String> BOOLEAN_FIELDS = Set.of();
+
     public ContactSpecification(SearchCriteria criteria) {
         super(criteria);
     }
@@ -26,6 +28,11 @@ public class ContactSpecification extends AbstractSpecification<Contact> impleme
     @Override
     protected boolean isEnumField() {
         return ENUM_FIELDS.contains(getCriteria().getKey());
+    }
+
+    @Override
+    protected boolean isBooleanField() {
+        return BOOLEAN_FIELDS.contains(getCriteria().getKey());
     }
 
 }

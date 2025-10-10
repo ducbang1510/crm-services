@@ -5,36 +5,32 @@
 
 package com.tdbang.crm.exceptions;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 /**
  * Generic Exception for Employee Portal Application.
  */
-public class GenericException extends RuntimeException {
+@Setter
+@Getter
+public class CRMException extends RuntimeException {
 
     private HttpStatus status;
     private String errorCode;
+    private Object details;
 
-    public GenericException(HttpStatus status, String errorCode, String message) {
+    public CRMException(HttpStatus status, String errorCode, String message) {
         super(message);
         this.status = status;
         this.errorCode = errorCode;
     }
 
-    public HttpStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(HttpStatus status) {
+    public CRMException(HttpStatus status, String errorCode, String message, Object details) {
+        super(message);
         this.status = status;
+        this.errorCode = errorCode;
+        this.details = details;
     }
 
-	public String getErrorCode() {
-		return errorCode;
-	}
-
-	public void setErrorCode(String errorCode) {
-		this.errorCode = errorCode;
-	}
-    
 }

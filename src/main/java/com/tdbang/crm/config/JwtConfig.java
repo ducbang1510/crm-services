@@ -3,6 +3,7 @@ package com.tdbang.crm.config;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
@@ -33,14 +34,14 @@ public class JwtConfig {
 
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
+        // Important: not refactor collect(Collectors.toList()) here to toList() that cause error, Jackson can't safely serialize and deserialize
         return context -> {
             if (context.getPrincipal() != null && context.getPrincipal().getAuthorities() != null) {
-                log.info(context.getPrincipal().getAuthorities());
                 var authorities = context.getPrincipal().getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .filter(auth -> auth.startsWith(ROLE_PREFIX))
                         .map(auth -> auth.substring(5))
-                        .toList();
+                        .collect(Collectors.toList());
 
                 context.getClaims().claim(ROLE_CLAIM_NAME, authorities);
             }

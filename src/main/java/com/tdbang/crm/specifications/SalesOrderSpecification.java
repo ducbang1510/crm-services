@@ -14,6 +14,8 @@ public class SalesOrderSpecification extends AbstractSpecification<SalesOrder> i
 
     protected static final Set<String> ENUM_FIELDS = Set.of("status");
 
+    protected static final Set<String> BOOLEAN_FIELDS = Set.of();
+
     public SalesOrderSpecification(SearchCriteria criteria) {
         super(criteria);
     }
@@ -26,5 +28,10 @@ public class SalesOrderSpecification extends AbstractSpecification<SalesOrder> i
     @Override
     protected boolean isEnumField() {
         return false;
+    }
+
+    @Override
+    protected boolean isBooleanField() {
+        return BOOLEAN_FIELDS.contains(getCriteria().getKey());
     }
 }
