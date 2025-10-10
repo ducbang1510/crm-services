@@ -1,6 +1,9 @@
 CREATE DATABASE  IF NOT EXISTS crm_db;
 USE crm_db;
 
+DELETE FROM oauth2_authorization;
+DELETE FROM oauth2_registered_client;
+DELETE FROM jwk_storage;
 DELETE FROM user;
 DELETE FROM sales_order;
 DELETE FROM contact;
