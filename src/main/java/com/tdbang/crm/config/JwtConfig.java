@@ -37,7 +37,6 @@ public class JwtConfig {
         // Important: not refactor collect(Collectors.toList()) here to toList() that cause error, Jackson can't safely serialize and deserialize
         return context -> {
             if (context.getPrincipal() != null && context.getPrincipal().getAuthorities() != null) {
-                log.info(context.getPrincipal().getAuthorities());
                 var authorities = context.getPrincipal().getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .filter(auth -> auth.startsWith(ROLE_PREFIX))

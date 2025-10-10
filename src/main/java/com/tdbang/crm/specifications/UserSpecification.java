@@ -14,6 +14,8 @@ public class UserSpecification extends AbstractSpecification<User> implements Sp
 
     protected static final Set<String> ENUM_FIELDS = Set.of();
 
+    protected static final Set<String> BOOLEAN_FIELDS = Set.of("isAdmin", "isActive");
+
     public UserSpecification(SearchCriteria criteria) {
         super(criteria);
     }
@@ -26,6 +28,11 @@ public class UserSpecification extends AbstractSpecification<User> implements Sp
     @Override
     protected boolean isEnumField() {
         return ENUM_FIELDS.contains(getCriteria().getKey());
+    }
+
+    @Override
+    protected boolean isBooleanField() {
+        return BOOLEAN_FIELDS.contains(getCriteria().getKey());
     }
 
 }
