@@ -1,4 +1,4 @@
-package com.tdbang.crm.config;
+package com.tdbang.crm.authentication;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;

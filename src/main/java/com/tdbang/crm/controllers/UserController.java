@@ -47,7 +47,7 @@ public class UserController extends BaseController {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public MappingJacksonValue createUser(@RequestBody @Valid UserDTO userDTO) {
         log.info("Start createUser");
         ResponseDTO responseDTO = userService.createNewUser(userDTO);
@@ -57,7 +57,7 @@ public class UserController extends BaseController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public MappingJacksonValue retrieveUserInfo(@PathVariable Long id) {
         log.info("Start retrieveUserInfo");
         FilterProvider filters = buildFilterProvider(USER_DTO_FILTER, EXCLUDE_USER_FIELDS);
@@ -91,7 +91,7 @@ public class UserController extends BaseController {
 
     @GetMapping("/list/name")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public MappingJacksonValue retrieveListNameOfUsers() {
         log.info("Start retrieveListNameOfUsers");
         ResponseDTO listOfNameUsers = userService.retrieveListNameOfUsers();
