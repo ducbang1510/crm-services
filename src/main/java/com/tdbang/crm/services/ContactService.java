@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import com.tdbang.crm.dtos.nativequerydto.DashboardQueryDTO;
 import com.tdbang.crm.entities.Contact;
 import com.tdbang.crm.entities.User;
 import com.tdbang.crm.enums.LeadSource;
+import com.tdbang.crm.enums.NotificationType;
 import com.tdbang.crm.enums.Salutation;
 import com.tdbang.crm.exceptions.CRMException;
 import com.tdbang.crm.mappers.ContactMapper;
@@ -45,6 +47,10 @@ public class ContactService extends AbstractService<Contact> {
     private JpaUserRepository jpaUserRepository;
     @Autowired
     private ContactMapper contactMapper;
+    @Autowired
+    private NotificationService notificationService;
+    @Autowired
+    private SocketEventService socketEventService;
 
     public ContactService(SpecificationFilterUtil<Contact> filterUtil, CustomRepository<Contact> repository) {
         super(filterUtil, repository);
@@ -70,8 +76,7 @@ public class ContactService extends AbstractService<Contact> {
             }
         } catch (Exception e) {
             throw new CRMException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE,
-                    new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_ERROR));
+                    MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE, e.getMessage());
         }
 
         return result;
@@ -94,13 +99,13 @@ public class ContactService extends AbstractService<Contact> {
             }
         } catch (Exception e) {
             throw new CRMException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE,
-                    new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_ERROR));
+                    MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE, e.getMessage());
         }
 
         return result;
     }
 
+    @Transactional
     public ResponseDTO createNewContact(ContactDTO contactDTO, Long creatorFk) {
         ResponseDTO result;
         User creatorUser = jpaUserRepository.findUserByPk(creatorFk);
@@ -110,10 +115,14 @@ public class ContactService extends AbstractService<Contact> {
                     ? jpaUserRepository.getUsersByNames(contactDTO.getAssignedTo()).get(0)
                     : jpaUserRepository.findUserByPk(contactDTO.getAssignedToUserFk());
             Contact saveContact = contactMapper.mappingContactDTOToEntity(contactDTO, creatorUser, userAssignedTo, true);
-            jpaContactRepository.save(saveContact);
+            Contact savedContact = jpaContactRepository.save(saveContact);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_CONTACT_SUCCESS);
+
+            // Create and send notification
+            notificationService.createNotifications(creatorFk, List.of(userAssignedTo.getPk()), NotificationType.CONTACT_ASSIGNED, savedContact.getPk());
+            socketEventService.sendNotifications(List.of(userAssignedTo.getPk()));
         } catch (Exception e) {
-            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_CONTACT_ERROR);
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_CONTACT_ERROR, e.getMessage());
         }
         return result;
     }
@@ -129,6 +138,7 @@ public class ContactService extends AbstractService<Contact> {
         return result;
     }
 
+    @Transactional
     public ResponseDTO updateContactDetails(Long contactPk, Long creatorFk, ContactDTO contactDTO) {
         ResponseDTO result;
         Contact updatedContact = jpaContactRepository.findByPk(contactPk)

@@ -86,7 +86,7 @@ public class UserService extends AbstractService<User> {
                 result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_USERS_SUCCESS, resultMapQuery);
             }
         } catch (Exception e) {
-            throw new CRMException(HttpStatus.INTERNAL_SERVER_ERROR, MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE);
+            throw new CRMException(HttpStatus.INTERNAL_SERVER_ERROR, MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE, e.getMessage());
         }
 
         return result;
@@ -118,7 +118,7 @@ public class UserService extends AbstractService<User> {
             jpaUserRepository.save(saveUser);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_USER_SUCCESS);
         } catch (Exception e) {
-            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_USER_ERROR);
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_USER_ERROR, e.getMessage());
         }
         return result;
     }
@@ -134,7 +134,7 @@ public class UserService extends AbstractService<User> {
             jpaUserRepository.save(user);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.UPDATING_USER_SUCCESS);
         } catch (Exception e) {
-            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.UPDATING_USER_ERROR);
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.UPDATING_USER_ERROR, e.getMessage());
         }
         return result;
     }
@@ -150,7 +150,7 @@ public class UserService extends AbstractService<User> {
             jpaUserRepository.save(user);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CHANGING_USER_PASSWORD_SUCCESS);
         } catch (Exception e) {
-            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CHANGING_USER_PASSWORD_ERROR);
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CHANGING_USER_PASSWORD_ERROR, e.getMessage());
         }
         return result;
     }

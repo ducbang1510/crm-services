@@ -14,6 +14,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.tdbang.crm.repositories.JpaNotificationMessageRepository;
+
 @Log4j2
 @Getter
 @Service
@@ -21,7 +23,7 @@ import org.springframework.util.CollectionUtils;
 public class SocketEventService {
 
     private final SocketIOServer socketIOServer;
-//    private final EmployeeNotificationRepository employeeNotificationRepository;
+    private final JpaNotificationMessageRepository jpaNotificationMessageRepository;
 
     private static final String UNREAD_COUNT_EVENT = "UNREAD_COUNT";
 
@@ -59,13 +61,16 @@ public class SocketEventService {
     }
 
     public void sendNotifications(List<Long> receivers) {
-        if (!CollectionUtils.isEmpty(receivers)) {
-            for (Long receiver : receivers) {
-                String room = "user_" + receiver;
-                // TODO: create repo to store notification and send here
-                Long unreadCount = 0L;
-                sendToRoom(room, UNREAD_COUNT_EVENT, unreadCount);
+        try {
+            if (!CollectionUtils.isEmpty(receivers)) {
+                for (Long receiver : receivers) {
+                    String room = "user_" + receiver;
+                    Long unreadCount = jpaNotificationMessageRepository.countUnreadNotifications(receiver);
+                    sendToRoom(room, UNREAD_COUNT_EVENT, unreadCount);
+                }
             }
+        } catch (Exception e) {
+            log.error("Error when send notification: {}", e.getMessage());
         }
     }
 }

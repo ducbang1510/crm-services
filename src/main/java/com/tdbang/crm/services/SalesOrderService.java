@@ -149,7 +149,7 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
             jpaSalesOrderRepository.save(saveSalesOrder);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_SALES_ORDER_SUCCESS);
         } catch (Exception e) {
-            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_SALES_ORDER_ERROR);
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_SALES_ORDER_ERROR, e.getMessage());
         }
         return result;
     }
