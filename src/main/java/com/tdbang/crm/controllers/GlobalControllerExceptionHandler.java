@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.tdbang.crm.exceptions.CRMException;
 import com.tdbang.crm.exceptions.ErrorResponse;
@@ -186,6 +187,21 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<Object> handleSocketIOException(SocketIOException ex, WebRequest request) {
         log.error("Socket IO error: {}", ex.getMessage());
         return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    /**
+     * Handle Entity Not Found Exception method.
+     *
+     * @param e       EntityNotFoundException
+     * @param request HttpServletRequest
+     * @return Response Entity
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Object> handleEntityNotFoundException(NoResourceFoundException e, HttpServletRequest request) {
+        log.error(e.getMessage(), e);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(),
+                MessageConstants.NOT_FOUND_CODE, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
 }

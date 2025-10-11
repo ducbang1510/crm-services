@@ -128,7 +128,7 @@ public class SalesOderController extends BaseController {
         return new MappingJacksonValue(responseDTO);
     }
 
-    @GetMapping("/list/status")
+    @GetMapping("/status")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public MappingJacksonValue retrieveStatusEnumOfSalesOrder() {

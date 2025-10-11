@@ -139,7 +139,7 @@ public class ContactController extends BaseController {
         return new MappingJacksonValue(responseDTO);
     }
 
-    @GetMapping("/list/salutation")
+    @GetMapping("/salutation")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public MappingJacksonValue retrieveSalutationEnumOfContact() {
@@ -149,7 +149,7 @@ public class ContactController extends BaseController {
         return new MappingJacksonValue(status);
     }
 
-    @GetMapping("/list/lead-source")
+    @GetMapping("/lead-source")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public MappingJacksonValue retrieveLeadSourceEnumOfContact() {

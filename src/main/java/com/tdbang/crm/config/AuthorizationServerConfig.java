@@ -24,6 +24,8 @@ import org.springframework.security.oauth2.server.authorization.settings.Authori
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
+import com.tdbang.crm.authentication.DatabaseJwkSource;
+
 @Configuration
 public class AuthorizationServerConfig implements InitializingBean {
     @Value("${authorization-server.jwk-source.kid}")
@@ -41,6 +43,13 @@ public class AuthorizationServerConfig implements InitializingBean {
     private int accessTokenTimeToLive;
     @Value("${spring.security.oauth2.authorization-server.token.refresh-token-time-to-live:10080}")
     private int refreshTokenTimeToLive;
+
+    @Value("${spring.security.oauth2.authorization-server.swagger-redirect-uri}")
+    private String swaggerRedirectURI;
+    @Value("${authorization-server.swagger-client.id}")
+    private String swaggerClientId;
+    @Value("${authorization-server.swagger-client.secret}")
+    private String swaggerClientSecret;
 
     private final DatabaseJwkSource databaseJwkSource;
 
@@ -98,6 +107,26 @@ public class AuthorizationServerConfig implements InitializingBean {
                     .build();
 
             clientRepository.save(crmAppClient);
+        }
+
+        if (clientRepository.findByClientId(swaggerClientId) == null) {
+            RegisteredClient swaggerClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                    .clientId(swaggerClientId)
+                    .clientSecret(swaggerClientSecret)
+                    .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                    .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+                    .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                    .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                    .redirectUri("http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html")
+                    .redirectUri("http://localhost:8080/swagger-ui/oauth2-redirect.html")
+                    .scope("api:read")
+                    .scope("api:write")
+                    .clientSettings(ClientSettings.builder()
+                            .requireProofKey(false)
+                            .requireAuthorizationConsent(false)
+                            .build())
+                    .build();
+            clientRepository.save(swaggerClient);
         }
     }
 

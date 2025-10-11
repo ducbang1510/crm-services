@@ -75,9 +75,9 @@ public class UserService extends AbstractService<User> {
 
             resultMapQuery.replace(AppConstants.RECORD_LIST_KEY, userDTOList);
             if (pageSize == 0) {
-                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS, userDTOList);
+                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_USERS_SUCCESS, userDTOList);
             } else {
-                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS, resultMapQuery);
+                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_USERS_SUCCESS, resultMapQuery);
             }
         } catch (Exception e) {
             throw new CRMException(HttpStatus.INTERNAL_SERVER_ERROR,
