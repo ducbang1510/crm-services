@@ -62,10 +62,10 @@ App runs at **[http://localhost:8080](http://localhost:8080)**
 
 1. Populate data by `populate_data.sql` file
 
-2. Enjoy with admin user, credential below:
+2. Enjoy with any users, credential below:
 
 ```text
-username: jdoe
+username: any username in db
 password: 123456
 ```
 
@@ -86,6 +86,7 @@ OAuth2 Authorization Server endpoints:
 
 * Swagger UI → **[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
 * OpenAPI JSON → **[http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)**
+* The Swagger is included Authentication configuration, use button 'Authorize' and input below *Client ID/Client Secret* to login
 
 ---
 
@@ -93,8 +94,8 @@ OAuth2 Authorization Server endpoints:
 
 **Client Info (for testing):**
 
-* **Client ID**: `crm-app`
-* **Client Secret**: `secret`
+* **Client ID**: `crm-app` (for UI) and `swagger-ui` (for swagger)
+* **Client Secret**: `secret` (for UI) and `swagger-secret` (for swagger)
 * **Redirect URI**: `http://localhost:4200`
 * **Scopes**: `api:read api:write openid profile`
 
