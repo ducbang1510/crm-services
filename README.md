@@ -63,7 +63,7 @@ App runs at **[http://localhost:8080](http://localhost:8080)**
 2. Enjoy with admin user, credential below:
 
 ```text
-username: user1
+username: jdoe
 password: 123456
 ```
 
