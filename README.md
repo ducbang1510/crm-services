@@ -62,10 +62,10 @@ App runs at **[http://localhost:8080](http://localhost:8080)**
 
 1. Populate data by `populate_data.sql` file
 
-2. Enjoy with admin user, credential below:
+2. Enjoy with any users, credential below:
 
 ```text
-username: jdoe
+username: any username in db
 password: 123456
 ```
 
