@@ -105,8 +105,11 @@ public class ContactService extends AbstractService<Contact> {
         ResponseDTO result;
         User creatorUser = jpaUserRepository.findUserByPk(creatorFk);
         try {
-            User assignedTo = jpaUserRepository.getUsersByNames(contactDTO.getAssignedTo()).get(0);
-            Contact saveContact = contactMapper.mappingContactDTOToEntity(contactDTO, creatorUser, assignedTo, true);
+            // TODO: Will remove save info by name in future
+            User userAssignedTo = contactDTO.getAssignedToUserFk() == null
+                    ? jpaUserRepository.getUsersByNames(contactDTO.getAssignedTo()).get(0)
+                    : jpaUserRepository.findUserByPk(contactDTO.getAssignedToUserFk());
+            Contact saveContact = contactMapper.mappingContactDTOToEntity(contactDTO, creatorUser, userAssignedTo, true);
             jpaContactRepository.save(saveContact);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_CONTACT_SUCCESS);
         } catch (Exception e) {
@@ -129,10 +132,13 @@ public class ContactService extends AbstractService<Contact> {
     public ResponseDTO updateContactDetails(Long contactPk, Long creatorFk, ContactDTO contactDTO) {
         ResponseDTO result;
         Contact updatedContact = jpaContactRepository.findByPk(contactPk)
-                .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, "CONTACT_NOT_FOUND", "Contact not found"));
+                .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
         if (updatedContact.getCreator().getPk().equals(creatorFk)) {
-            User assignedTo = jpaUserRepository.getUsersByNames(contactDTO.getAssignedTo()).get(0);
-            updatedContact = contactMapper.mappingContactDTOToEntity(contactDTO, null, assignedTo, false);
+            // TODO: Will remove save info by name in future
+            User userAssignedTo = contactDTO.getAssignedToUserFk() == null
+                    ? jpaUserRepository.getUsersByNames(contactDTO.getAssignedTo()).get(0)
+                    : jpaUserRepository.findUserByPk(contactDTO.getAssignedToUserFk());
+            updatedContact = contactMapper.mappingContactDTOToEntity(contactDTO, null, userAssignedTo, false);
             jpaContactRepository.save(updatedContact);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.UPDATING_CONTACT_SUCCESS);
         } else {
@@ -144,7 +150,7 @@ public class ContactService extends AbstractService<Contact> {
     public ResponseDTO deleteContactDetails(Long contactPk, Long creatorFk) {
         ResponseDTO result;
         Contact deletedContact = jpaContactRepository.findByPk(contactPk)
-                .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, "CONTACT_NOT_FOUND", "Contact not found"));
+                .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
         if (deletedContact.getCreator().getPk().equals(creatorFk)) {
             jpaContactRepository.delete(deletedContact);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_CONTACT_SUCCESS);
