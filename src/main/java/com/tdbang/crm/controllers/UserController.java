@@ -13,14 +13,19 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tdbang.crm.dtos.ChangePasswordRequestDTO;
 import com.tdbang.crm.dtos.ResponseDTO;
+import com.tdbang.crm.dtos.UpdateUserRequestDTO;
 import com.tdbang.crm.dtos.UserDTO;
+import com.tdbang.crm.exceptions.CRMException;
+import com.tdbang.crm.utils.MessageConstants;
 
 @Log4j2
 @RestController
@@ -45,6 +50,17 @@ public class UserController extends BaseController {
         return mappingJacksonValue;
     }
 
+    @PutMapping("")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public MappingJacksonValue changePassword(@RequestBody @Valid ChangePasswordRequestDTO changePasswordRequestDTO) {
+        log.info("Start changePassword");
+        Long userPk = getPkUserLogged();
+        ResponseDTO responseDTO = userService.changePassword(userPk, changePasswordRequestDTO);
+        log.info("End changePassword");
+        return new MappingJacksonValue(responseDTO);
+    }
+
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
@@ -67,6 +83,20 @@ public class UserController extends BaseController {
         mappingJacksonValue.setFilters(filters);
         log.info("End retrieveUserInfo");
         return mappingJacksonValue;
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public MappingJacksonValue editUser(@PathVariable Long id,
+                                        @RequestBody @Valid UpdateUserRequestDTO updateUserRequestDTO) {
+        log.info("Start editUser");
+        if (!id.equals(updateUserRequestDTO.getPk())) {
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.UPDATING_USER_ERROR);
+        }
+        ResponseDTO responseDTO = userService.editUser(id, updateUserRequestDTO);
+        log.info("End editUser");
+        return new MappingJacksonValue(responseDTO);
     }
 
     @GetMapping("/list")

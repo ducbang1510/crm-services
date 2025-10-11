@@ -10,7 +10,7 @@ import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 /**
- * Generic Exception for Employee Portal Application.
+ * Generic Exception for CRM Application.
  */
 @Setter
 @Getter

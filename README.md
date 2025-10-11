@@ -4,6 +4,8 @@ A modern **Customer Relationship Management (CRM)** backend built with **Java 17
 
 It features secure **OAuth2 authorization**, a **MySQL** database, and interactive **Swagger API docs** for smooth development and integration.
 
+UI repository built with Angular for integration: https://github.com/luuthanhvan/CRM-new-version.git
+
 ---
 
 ## ✨ Features

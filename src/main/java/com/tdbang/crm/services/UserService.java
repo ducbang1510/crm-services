@@ -11,9 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.tdbang.crm.dtos.ChangePasswordRequestDTO;
 import com.tdbang.crm.dtos.ResponseDTO;
+import com.tdbang.crm.dtos.UpdateUserRequestDTO;
 import com.tdbang.crm.dtos.UserDTO;
 import com.tdbang.crm.entities.User;
 import com.tdbang.crm.exceptions.CRMException;
@@ -35,6 +38,9 @@ public class UserService extends AbstractService<User> {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserService(SpecificationFilterUtil<User> filterUtil, CustomRepository<User> repository) {
         super(filterUtil, repository);
@@ -80,9 +86,7 @@ public class UserService extends AbstractService<User> {
                 result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_USERS_SUCCESS, resultMapQuery);
             }
         } catch (Exception e) {
-            throw new CRMException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE,
-                    new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_USERS_ERROR));
+            throw new CRMException(HttpStatus.INTERNAL_SERVER_ERROR, MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE, e.getMessage());
         }
 
         return result;
@@ -110,11 +114,43 @@ public class UserService extends AbstractService<User> {
     public ResponseDTO createNewUser(UserDTO userDTO) {
         ResponseDTO result;
         try {
-            User saveUser = userMapper.mappingUserDTOToUserEntity(userDTO, true);
+            User saveUser = userMapper.mappingUserDTOToUserEntity(userDTO);
             jpaUserRepository.save(saveUser);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_USER_SUCCESS);
         } catch (Exception e) {
-            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_USER_ERROR);
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_USER_ERROR, e.getMessage());
+        }
+        return result;
+    }
+
+    public ResponseDTO editUser(Long pk, UpdateUserRequestDTO updateUserRequestDTO) {
+        ResponseDTO result;
+        User user = jpaUserRepository.findUserByPk(pk);
+        if (user == null) {
+            throw new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE);
+        }
+        try {
+            userMapper.mappingUpdateUserRequestDTOToUserEntity(updateUserRequestDTO, user);
+            jpaUserRepository.save(user);
+            result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.UPDATING_USER_SUCCESS);
+        } catch (Exception e) {
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.UPDATING_USER_ERROR, e.getMessage());
+        }
+        return result;
+    }
+
+    public ResponseDTO changePassword(Long pk, ChangePasswordRequestDTO changePasswordRequestDTO) {
+        ResponseDTO result;
+        User user = jpaUserRepository.findUserByPk(pk);
+        if(!passwordEncoder.matches(changePasswordRequestDTO.getOldPassword(), user.getPassword())) {
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.INCORRECT_OLD_PASSWORD);
+        }
+        try {
+            user.setPassword(passwordEncoder.encode(changePasswordRequestDTO.getNewPassword()));
+            jpaUserRepository.save(user);
+            result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CHANGING_USER_PASSWORD_SUCCESS);
+        } catch (Exception e) {
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CHANGING_USER_PASSWORD_ERROR, e.getMessage());
         }
         return result;
     }

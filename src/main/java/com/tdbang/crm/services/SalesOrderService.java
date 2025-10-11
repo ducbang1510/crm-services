@@ -114,10 +114,16 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
     public ResponseDTO updateSalesOrderDetails(Long orderPk, Long creatorFk, SalesOrderDTO salesOrderDTO) {
         ResponseDTO result;
         SalesOrder updatedOrder = jpaSalesOrderRepository.findByPk(orderPk)
-                .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, "SALES_ORDER_NOT_FOUND", "Sales order not found"));
+                .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
         if (updatedOrder.getCreator().getPk().equals(creatorFk)) {
-            User userAssignedTo = jpaUserRepository.getUsersByNames(salesOrderDTO.getAssignedTo()).get(0);
-            Contact contact = jpaContactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0);
+            // TODO: Will remove save info by name in future
+            User userAssignedTo = salesOrderDTO.getAssignedToUserFk() == null
+                    ? jpaUserRepository.getUsersByNames(salesOrderDTO.getAssignedTo()).get(0)
+                    : jpaUserRepository.findUserByPk(salesOrderDTO.getAssignedToUserFk());
+            Contact contact = salesOrderDTO.getContactFk() == null
+                    ? jpaContactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0)
+                    : jpaContactRepository.findByPk(salesOrderDTO.getContactFk()).orElse(null);
+
             updatedOrder = salesOrderMapper.mappingSalesOrderDTOToEntity(salesOrderDTO, null, userAssignedTo, contact, false);
             jpaSalesOrderRepository.save(updatedOrder);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.UPDATING_SALES_ORDER_SUCCESS);
@@ -131,13 +137,19 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
         ResponseDTO result;
         User creatorUser = jpaUserRepository.findUserByPk(creatorFk);
         try {
-            User userAssignedTo = jpaUserRepository.getUsersByNames(salesOrderDTO.getAssignedTo()).get(0);
-            Contact contact = jpaContactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0);
+            // TODO: Will remove save info by name in future
+            User userAssignedTo = salesOrderDTO.getAssignedToUserFk() == null
+                    ? jpaUserRepository.getUsersByNames(salesOrderDTO.getAssignedTo()).get(0)
+                    : jpaUserRepository.findUserByPk(salesOrderDTO.getAssignedToUserFk());
+            Contact contact = salesOrderDTO.getContactFk() == null
+                    ? jpaContactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0)
+                    : jpaContactRepository.findByPk(salesOrderDTO.getContactFk()).orElse(null);
+
             SalesOrder saveSalesOrder = salesOrderMapper.mappingSalesOrderDTOToEntity(salesOrderDTO, creatorUser, userAssignedTo, contact, true);
             jpaSalesOrderRepository.save(saveSalesOrder);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_SALES_ORDER_SUCCESS);
         } catch (Exception e) {
-            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_SALES_ORDER_ERROR);
+            throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_SALES_ORDER_ERROR, e.getMessage());
         }
         return result;
     }

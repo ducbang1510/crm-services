@@ -22,6 +22,7 @@ public class MessageConstants {
     public static final String UPDATING_USER_ERROR = "Error while updating user information";
     public static final String CHANGING_USER_PASSWORD_SUCCESS = "Changing user password successfully!";
     public static final String CHANGING_USER_PASSWORD_ERROR = "Error while changing user password";
+    public static final String INCORRECT_OLD_PASSWORD = "Old Password is incorrect";
     public static final String CREATING_NEW_SALES_ORDER_SUCCESS = "Creating new sales order successfully!";
     public static final String CREATING_NEW_SALES_ORDER_ERROR = "Error while creating new sales order";
     public static final String FETCHING_LIST_OF_SALES_ORDER_SUCCESS = "Fetching list of sales order successfully!";
