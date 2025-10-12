@@ -43,7 +43,8 @@ public class SecurityConfig implements InitializingBean {
             "/swagger-ui/**",
             "/login",
             "/css/**", "/js/**", "/images/**",
-            "/socket.io/**"
+            "/socket.io/**",
+            "/actuator/**"
     };
     @Value("${authentication.cors.allowed.urls:*}")
     private String allowedUrlsRaw;
