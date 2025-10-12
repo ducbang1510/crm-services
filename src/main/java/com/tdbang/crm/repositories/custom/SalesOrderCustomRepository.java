@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 import com.tdbang.crm.entities.SalesOrder;
 
 @Repository
-public class SalesOrderRepository extends CustomRepository<SalesOrder> {
-    protected SalesOrderRepository(EntityManager entityManager) {
+public class SalesOrderCustomRepository extends CustomRepository<SalesOrder> {
+    protected SalesOrderCustomRepository(EntityManager entityManager) {
         super(entityManager);
     }
 

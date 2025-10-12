@@ -25,9 +25,9 @@ import com.tdbang.crm.entities.User;
 import com.tdbang.crm.enums.SalesOrderStatus;
 import com.tdbang.crm.exceptions.CRMException;
 import com.tdbang.crm.mappers.SalesOrderMapper;
-import com.tdbang.crm.repositories.JpaContactRepository;
-import com.tdbang.crm.repositories.JpaSalesOrderRepository;
-import com.tdbang.crm.repositories.JpaUserRepository;
+import com.tdbang.crm.repositories.ContactRepository;
+import com.tdbang.crm.repositories.SalesOrderRepository;
+import com.tdbang.crm.repositories.UserRepository;
 import com.tdbang.crm.repositories.custom.CustomRepository;
 import com.tdbang.crm.specifications.SpecificationFilterUtil;
 import com.tdbang.crm.specifications.builders.SalesOrderSpecificationBuilder;
@@ -41,13 +41,13 @@ import com.tdbang.crm.utils.MessageConstants;
 public class SalesOrderService extends AbstractService<SalesOrder> {
 
     @Autowired
-    private JpaSalesOrderRepository jpaSalesOrderRepository;
+    private SalesOrderRepository salesOrderRepository;
 
     @Autowired
-    private JpaUserRepository jpaUserRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private JpaContactRepository jpaContactRepository;
+    private ContactRepository contactRepository;
 
     @Autowired
     private SalesOrderMapper salesOrderMapper;
@@ -88,12 +88,12 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
         if (pageNumber != null && pageSize != null) {
             Map<String, Object> resultMap = new HashMap<>();
             Pageable pageable = PageRequest.of(pageNumber, pageSize);
-            Page<SalesOrderQueryDTO> salesOrderQueryDTOPagePage = jpaSalesOrderRepository.getSalesOrderPageable(subjectFilter, pageable);
+            Page<SalesOrderQueryDTO> salesOrderQueryDTOPagePage = salesOrderRepository.getSalesOrderPageable(subjectFilter, pageable);
             resultMap.put(AppConstants.RECORD_LIST_KEY, salesOrderMapper.mappingToListSalesOrderDTO(salesOrderQueryDTOPagePage.getContent()));
             resultMap.put(AppConstants.TOTAL_RECORD_KEY, salesOrderQueryDTOPagePage.getTotalElements());
             result.setData(resultMap);
         } else {
-            List<SalesOrderQueryDTO> salesOrderQueryDTOs = jpaSalesOrderRepository.getAllSalesOrder(subjectFilter);
+            List<SalesOrderQueryDTO> salesOrderQueryDTOs = salesOrderRepository.getAllSalesOrder(subjectFilter);
             result.setData(salesOrderMapper.mappingToListSalesOrderDTO(salesOrderQueryDTOs));
         }
 
@@ -103,7 +103,7 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
     public ResponseDTO getSalesOrderDetails(Long orderPk) {
         ResponseDTO result = new ResponseDTO();
         if (orderPk != null) {
-            SalesOrderQueryDTO salesOrderQueryDTO = jpaSalesOrderRepository.getSalesOrderDetailsByPk(orderPk);
+            SalesOrderQueryDTO salesOrderQueryDTO = salesOrderRepository.getSalesOrderDetailsByPk(orderPk);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_SALES_ORDER_SUCCESS,
                     salesOrderMapper.mappingSalesOrderQueryDTOToSalesOrderDTO(salesOrderQueryDTO));
         }
@@ -113,19 +113,19 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
 
     public ResponseDTO updateSalesOrderDetails(Long orderPk, Long creatorFk, SalesOrderDTO salesOrderDTO) {
         ResponseDTO result;
-        SalesOrder updatedOrder = jpaSalesOrderRepository.findByPk(orderPk)
+        SalesOrder updatedOrder = salesOrderRepository.findByPk(orderPk)
                 .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
         if (updatedOrder.getCreator().getPk().equals(creatorFk)) {
             // TODO: Will remove save info by name in future
             User userAssignedTo = salesOrderDTO.getAssignedToUserFk() == null
-                    ? jpaUserRepository.getUsersByNames(salesOrderDTO.getAssignedTo()).get(0)
-                    : jpaUserRepository.findUserByPk(salesOrderDTO.getAssignedToUserFk());
+                    ? userRepository.getUsersByNames(salesOrderDTO.getAssignedTo()).get(0)
+                    : userRepository.findUserByPk(salesOrderDTO.getAssignedToUserFk());
             Contact contact = salesOrderDTO.getContactFk() == null
-                    ? jpaContactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0)
-                    : jpaContactRepository.findByPk(salesOrderDTO.getContactFk()).orElse(null);
+                    ? contactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0)
+                    : contactRepository.findByPk(salesOrderDTO.getContactFk()).orElse(null);
 
             updatedOrder = salesOrderMapper.mappingSalesOrderDTOToEntity(salesOrderDTO, null, userAssignedTo, contact, false);
-            jpaSalesOrderRepository.save(updatedOrder);
+            salesOrderRepository.save(updatedOrder);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.UPDATING_SALES_ORDER_SUCCESS);
         } else {
             throw new CRMException(HttpStatus.FORBIDDEN, MessageConstants.FORBIDDEN_CODE, MessageConstants.FORBIDDEN_MESSAGE);
@@ -135,18 +135,18 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
 
     public ResponseDTO createNewSalesOrder(SalesOrderDTO salesOrderDTO, Long creatorFk) {
         ResponseDTO result;
-        User creatorUser = jpaUserRepository.findUserByPk(creatorFk);
+        User creatorUser = userRepository.findUserByPk(creatorFk);
         try {
             // TODO: Will remove save info by name in future
             User userAssignedTo = salesOrderDTO.getAssignedToUserFk() == null
-                    ? jpaUserRepository.getUsersByNames(salesOrderDTO.getAssignedTo()).get(0)
-                    : jpaUserRepository.findUserByPk(salesOrderDTO.getAssignedToUserFk());
+                    ? userRepository.getUsersByNames(salesOrderDTO.getAssignedTo()).get(0)
+                    : userRepository.findUserByPk(salesOrderDTO.getAssignedToUserFk());
             Contact contact = salesOrderDTO.getContactFk() == null
-                    ? jpaContactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0)
-                    : jpaContactRepository.findByPk(salesOrderDTO.getContactFk()).orElse(null);
+                    ? contactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0)
+                    : contactRepository.findByPk(salesOrderDTO.getContactFk()).orElse(null);
 
             SalesOrder saveSalesOrder = salesOrderMapper.mappingSalesOrderDTOToEntity(salesOrderDTO, creatorUser, userAssignedTo, contact, true);
-            jpaSalesOrderRepository.save(saveSalesOrder);
+            salesOrderRepository.save(saveSalesOrder);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_SALES_ORDER_SUCCESS);
         } catch (Exception e) {
             throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_SALES_ORDER_ERROR, e.getMessage());
@@ -156,10 +156,10 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
 
     public ResponseDTO deleteSalesOrderDetails(Long orderPk, Long creatorFk) {
         ResponseDTO result;
-        SalesOrder deletedOrder = jpaSalesOrderRepository.findByPk(orderPk)
+        SalesOrder deletedOrder = salesOrderRepository.findByPk(orderPk)
                 .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
         if (deletedOrder.getCreator().getPk().equals(creatorFk)) {
-            jpaSalesOrderRepository.delete(deletedOrder);
+            salesOrderRepository.delete(deletedOrder);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_SALES_ORDER_SUCCESS);
         } else {
             throw new CRMException(HttpStatus.FORBIDDEN, MessageConstants.FORBIDDEN_CODE, MessageConstants.FORBIDDEN_MESSAGE);
@@ -169,7 +169,7 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
 
     public ResponseDTO retrieveOrderDashboardByStatus() {
         ResponseDTO result;
-        List<DashboardQueryDTO> dashboardQueryDTOs = jpaSalesOrderRepository.countOrderGroupByStatus();
+        List<DashboardQueryDTO> dashboardQueryDTOs = salesOrderRepository.countOrderGroupByStatus();
         List<DashboardDTO> dashboardDTOs = new ArrayList<>();
         for (DashboardQueryDTO i : dashboardQueryDTOs) {
             DashboardDTO dashboardDTO = new DashboardDTO();
@@ -184,11 +184,11 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
 
     public ResponseDTO deleteSaleOrders(List<Long> orderPks, Long creatorFk) {
         ResponseDTO result;
-        List<SalesOrder> deletedListOrders = jpaSalesOrderRepository.getSaleOrdersByOrderPks(orderPks);
+        List<SalesOrder> deletedListOrders = salesOrderRepository.getSaleOrdersByOrderPks(orderPks);
         boolean hasOtherCreator = deletedListOrders.stream()
                 .anyMatch(i -> !creatorFk.equals(i.getCreator().getPk()));
         if (!hasOtherCreator && orderPks.size() == deletedListOrders.size()) {
-            jpaSalesOrderRepository.deleteAllById(deletedListOrders.stream().map(SalesOrder::getPk).toList());
+            salesOrderRepository.deleteAllById(deletedListOrders.stream().map(SalesOrder::getPk).toList());
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_LIST_OF_SALES_ORDERS_SUCCESS);
         } else {
             throw new CRMException(HttpStatus.FORBIDDEN, MessageConstants.FORBIDDEN_CODE, MessageConstants.FORBIDDEN_MESSAGE);

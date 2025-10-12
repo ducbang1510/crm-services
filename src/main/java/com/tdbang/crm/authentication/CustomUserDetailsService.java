@@ -8,21 +8,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.tdbang.crm.entities.User;
-import com.tdbang.crm.repositories.JpaUserRepository;
+import com.tdbang.crm.repositories.UserRepository;
 import com.tdbang.crm.services.SecurityService;
 
 @Log4j2
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
-    private JpaUserRepository jpaUserRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private SecurityService securityService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = jpaUserRepository.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
         return org.springframework.security.core.userdetails.User.builder()

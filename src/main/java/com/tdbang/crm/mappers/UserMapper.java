@@ -52,6 +52,7 @@ public class UserMapper {
         userEntity.setPhone(userDTO.getPhone());
         userEntity.setIsActive(userDTO.getIsActive() != null && userDTO.getIsActive());
         userEntity.setIsAdmin(userDTO.getIsAdmin() != null && userDTO.getIsAdmin());
+        userEntity.setIsStaff(userDTO.getIsStaff() != null && userDTO.getIsStaff());
         return userEntity;
     }
 
@@ -64,6 +65,8 @@ public class UserMapper {
             userEntity.setIsActive(updateUserRequestDTO.getIsActive());
         if (updateUserRequestDTO.getIsAdmin() != null)
             userEntity.setIsAdmin(updateUserRequestDTO.getIsAdmin());
+        if (updateUserRequestDTO.getIsStaff() != null)
+            userEntity.setIsStaff(updateUserRequestDTO.getIsStaff());
         userEntity.setUpdatedOn(new Date());
     }
 
@@ -75,6 +78,7 @@ public class UserMapper {
         userDTO.setEmail(user.getEmail());
         userDTO.setPhone(user.getPhone());
         userDTO.setIsActive(user.getIsActive());
+        userDTO.setIsStaff(user.getIsStaff());
         userDTO.setIsAdmin(user.getIsAdmin());
         return userDTO;
     }

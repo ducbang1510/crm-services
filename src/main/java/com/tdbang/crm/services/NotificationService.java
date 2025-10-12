@@ -13,23 +13,23 @@ import org.springframework.stereotype.Service;
 import com.tdbang.crm.dtos.NotificationMessageDTO;
 import com.tdbang.crm.entities.NotificationMessage;
 import com.tdbang.crm.enums.NotificationType;
-import com.tdbang.crm.repositories.JpaNotificationMessageRepository;
+import com.tdbang.crm.repositories.NotificationMessageRepository;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
-    private final JpaNotificationMessageRepository jpaNotificationMessageRepository;
+    private final NotificationMessageRepository notificationMessageRepository;
     private final SocketEventService socketEventService;
 
     public List<NotificationMessageDTO> retrieveNotifications(Long userPk, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        List<NotificationMessageDTO> result = jpaNotificationMessageRepository.retrieveNotificationMessagesByUserFk(userPk, pageable);
+        List<NotificationMessageDTO> result = notificationMessageRepository.retrieveNotificationMessagesByUserFk(userPk, pageable);
 
         List<Long> notificationPks = result.stream().map(NotificationMessageDTO::getPk).toList();
-        List<NotificationMessage> notificationMessages = jpaNotificationMessageRepository.findAllById(notificationPks);
+        List<NotificationMessage> notificationMessages = notificationMessageRepository.findAllById(notificationPks);
         notificationMessages.forEach(r -> r.setUnread(false));
-        jpaNotificationMessageRepository.saveAll(notificationMessages);
+        notificationMessageRepository.saveAll(notificationMessages);
 
         return result;
     }
@@ -48,7 +48,7 @@ public class NotificationService {
                     notificationMessage.setCreatedOn(new Date());
                     notificationMessages.add(notificationMessage);
                 }
-                jpaNotificationMessageRepository.saveAll(notificationMessages);
+                notificationMessageRepository.saveAll(notificationMessages);
             } catch (Exception e) {
                 log.error("Error when create notifications: {}", e.getMessage());
             }

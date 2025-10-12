@@ -27,8 +27,8 @@ import com.tdbang.crm.enums.NotificationType;
 import com.tdbang.crm.enums.Salutation;
 import com.tdbang.crm.exceptions.CRMException;
 import com.tdbang.crm.mappers.ContactMapper;
-import com.tdbang.crm.repositories.JpaContactRepository;
-import com.tdbang.crm.repositories.JpaUserRepository;
+import com.tdbang.crm.repositories.ContactRepository;
+import com.tdbang.crm.repositories.UserRepository;
 import com.tdbang.crm.repositories.custom.CustomRepository;
 import com.tdbang.crm.specifications.SpecificationFilterUtil;
 import com.tdbang.crm.specifications.builders.ContactSpecificationBuilder;
@@ -42,9 +42,9 @@ import com.tdbang.crm.utils.MessageConstants;
 public class ContactService extends AbstractService<Contact> {
 
     @Autowired
-    private JpaContactRepository jpaContactRepository;
+    private ContactRepository contactRepository;
     @Autowired
-    private JpaUserRepository jpaUserRepository;
+    private UserRepository userRepository;
     @Autowired
     private ContactMapper contactMapper;
     @Autowired
@@ -88,12 +88,12 @@ public class ContactService extends AbstractService<Contact> {
             if (pageNumber != null && pageSize != null) {
                 Map<String, Object> resultMap = new HashMap<>();
                 Pageable pageable = PageRequest.of(pageNumber, pageSize);
-                Page<ContactQueryDTO> contactQueryDTOPage = jpaContactRepository.getContactsPageable(contactName, pageable);
+                Page<ContactQueryDTO> contactQueryDTOPage = contactRepository.getContactsPageable(contactName, pageable);
                 resultMap.put(AppConstants.RECORD_LIST_KEY, contactMapper.mappingToListContactDTO(contactQueryDTOPage.getContent()));
                 resultMap.put(AppConstants.TOTAL_RECORD_KEY, contactQueryDTOPage.getTotalElements());
                 result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS, resultMap);
             } else {
-                List<ContactQueryDTO> contactQueryDTOs = jpaContactRepository.getAllContacts(contactName);
+                List<ContactQueryDTO> contactQueryDTOs = contactRepository.getAllContacts(contactName);
                 result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS,
                         contactMapper.mappingToListContactDTO(contactQueryDTOs));
             }
@@ -108,14 +108,14 @@ public class ContactService extends AbstractService<Contact> {
     @Transactional
     public ResponseDTO createNewContact(ContactDTO contactDTO, Long creatorFk) {
         ResponseDTO result;
-        User creatorUser = jpaUserRepository.findUserByPk(creatorFk);
+        User creatorUser = userRepository.findUserByPk(creatorFk);
         try {
             // TODO: Will remove save info by name in future
             User userAssignedTo = contactDTO.getAssignedToUserFk() == null
-                    ? jpaUserRepository.getUsersByNames(contactDTO.getAssignedTo()).get(0)
-                    : jpaUserRepository.findUserByPk(contactDTO.getAssignedToUserFk());
+                    ? userRepository.getUsersByNames(contactDTO.getAssignedTo()).get(0)
+                    : userRepository.findUserByPk(contactDTO.getAssignedToUserFk());
             Contact saveContact = contactMapper.mappingContactDTOToEntity(contactDTO, creatorUser, userAssignedTo, true);
-            Contact savedContact = jpaContactRepository.save(saveContact);
+            Contact savedContact = contactRepository.save(saveContact);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_CONTACT_SUCCESS);
 
             // Create and send notification
@@ -130,7 +130,7 @@ public class ContactService extends AbstractService<Contact> {
     public ResponseDTO getContactDetails(Long contactPk) {
         ResponseDTO result = new ResponseDTO();
         if (contactPk != null) {
-            ContactQueryDTO contactQueryDTO = jpaContactRepository.getContactDetailsByPk(contactPk);
+            ContactQueryDTO contactQueryDTO = contactRepository.getContactDetailsByPk(contactPk);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_CONTACT_SUCCESS,
                     contactMapper.mappingContactQueryDTOToContactDTO(contactQueryDTO));
         }
@@ -141,15 +141,15 @@ public class ContactService extends AbstractService<Contact> {
     @Transactional
     public ResponseDTO updateContactDetails(Long contactPk, Long creatorFk, ContactDTO contactDTO) {
         ResponseDTO result;
-        Contact updatedContact = jpaContactRepository.findByPk(contactPk)
+        Contact updatedContact = contactRepository.findByPk(contactPk)
                 .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
         if (updatedContact.getCreator().getPk().equals(creatorFk)) {
             // TODO: Will remove save info by name in future
             User userAssignedTo = contactDTO.getAssignedToUserFk() == null
-                    ? jpaUserRepository.getUsersByNames(contactDTO.getAssignedTo()).get(0)
-                    : jpaUserRepository.findUserByPk(contactDTO.getAssignedToUserFk());
+                    ? userRepository.getUsersByNames(contactDTO.getAssignedTo()).get(0)
+                    : userRepository.findUserByPk(contactDTO.getAssignedToUserFk());
             updatedContact = contactMapper.mappingContactDTOToEntity(contactDTO, null, userAssignedTo, false);
-            jpaContactRepository.save(updatedContact);
+            contactRepository.save(updatedContact);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.UPDATING_CONTACT_SUCCESS);
         } else {
             throw new CRMException(HttpStatus.FORBIDDEN, MessageConstants.FORBIDDEN_CODE, MessageConstants.FORBIDDEN_MESSAGE);
@@ -159,10 +159,10 @@ public class ContactService extends AbstractService<Contact> {
 
     public ResponseDTO deleteContactDetails(Long contactPk, Long creatorFk) {
         ResponseDTO result;
-        Contact deletedContact = jpaContactRepository.findByPk(contactPk)
+        Contact deletedContact = contactRepository.findByPk(contactPk)
                 .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
         if (deletedContact.getCreator().getPk().equals(creatorFk)) {
-            jpaContactRepository.delete(deletedContact);
+            contactRepository.delete(deletedContact);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_CONTACT_SUCCESS);
         } else {
             throw new CRMException(HttpStatus.FORBIDDEN, MessageConstants.FORBIDDEN_CODE, MessageConstants.FORBIDDEN_MESSAGE);
@@ -172,7 +172,7 @@ public class ContactService extends AbstractService<Contact> {
 
     public ResponseDTO getListOfContactName() {
         ResponseDTO result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_CONTACTS_SUCCESS);
-        List<ContactQueryDTO> contactQueryDTOs = jpaContactRepository.getAllContacts(null);
+        List<ContactQueryDTO> contactQueryDTOs = contactRepository.getAllContacts(null);
         List<String> contactNames = contactMapper.mappingToListContactDTO(contactQueryDTOs).stream().map(ContactDTO::getContactName).toList();
         result.setData(contactNames);
 
@@ -181,7 +181,7 @@ public class ContactService extends AbstractService<Contact> {
 
     public ResponseDTO retrieveContactDashboardByLeadSource() {
         ResponseDTO result;
-        List<DashboardQueryDTO> dashboardQueryDTOs = jpaContactRepository.countContactGroupByLeadSource();
+        List<DashboardQueryDTO> dashboardQueryDTOs = contactRepository.countContactGroupByLeadSource();
         List<DashboardDTO> dashboardDTOs = new ArrayList<>();
         for (DashboardQueryDTO i : dashboardQueryDTOs) {
             DashboardDTO dashboardDTO = new DashboardDTO();
@@ -196,11 +196,11 @@ public class ContactService extends AbstractService<Contact> {
 
     public ResponseDTO deleteContacts(List<Long> contactPks, Long creatorFk) {
         ResponseDTO result;
-        List<Contact> deletedListContacts = jpaContactRepository.getContactsByContactPks(contactPks);
+        List<Contact> deletedListContacts = contactRepository.getContactsByContactPks(contactPks);
         boolean hasOtherCreator = deletedListContacts.stream()
                 .anyMatch(i -> !creatorFk.equals(i.getCreator().getPk()));
         if (!hasOtherCreator && contactPks.size() == deletedListContacts.size()) {
-            jpaContactRepository.deleteAllById(deletedListContacts.stream().map(Contact::getPk).toList());
+            contactRepository.deleteAllById(deletedListContacts.stream().map(Contact::getPk).toList());
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_LIST_OF_CONTACTS_SUCCESS);
         } else {
             throw new CRMException(HttpStatus.FORBIDDEN, MessageConstants.FORBIDDEN_CODE, MessageConstants.FORBIDDEN_MESSAGE);

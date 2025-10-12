@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 import com.tdbang.crm.entities.Contact;
 
 @Repository
-public class ContactRepository extends CustomRepository<Contact> {
-    protected ContactRepository(EntityManager entityManager) {
+public class ContactCustomRepository extends CustomRepository<Contact> {
+    protected ContactCustomRepository(EntityManager entityManager) {
         super(entityManager);
     }
 

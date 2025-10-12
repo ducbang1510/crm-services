@@ -14,7 +14,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.tdbang.crm.repositories.JpaNotificationMessageRepository;
+import com.tdbang.crm.repositories.NotificationMessageRepository;
 
 @Log4j2
 @Getter
@@ -23,7 +23,7 @@ import com.tdbang.crm.repositories.JpaNotificationMessageRepository;
 public class SocketEventService {
 
     private final SocketIOServer socketIOServer;
-    private final JpaNotificationMessageRepository jpaNotificationMessageRepository;
+    private final NotificationMessageRepository notificationMessageRepository;
 
     private static final String UNREAD_COUNT_EVENT = "UNREAD_COUNT";
 
@@ -65,7 +65,7 @@ public class SocketEventService {
             if (!CollectionUtils.isEmpty(receivers)) {
                 for (Long receiver : receivers) {
                     String room = "user_" + receiver;
-                    Long unreadCount = jpaNotificationMessageRepository.countUnreadNotifications(receiver);
+                    Long unreadCount = notificationMessageRepository.countUnreadNotifications(receiver);
                     sendToRoom(room, UNREAD_COUNT_EVENT, unreadCount);
                 }
             }

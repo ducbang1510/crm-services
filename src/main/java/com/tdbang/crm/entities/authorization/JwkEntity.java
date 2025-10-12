@@ -1,4 +1,4 @@
-package com.tdbang.crm.entities;
+package com.tdbang.crm.entities.authorization;
 
 import java.time.Instant;
 

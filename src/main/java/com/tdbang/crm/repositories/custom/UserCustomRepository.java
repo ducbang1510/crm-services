@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 import com.tdbang.crm.entities.User;
 
 @Repository
-public class UserRepository extends CustomRepository<User> {
-    protected UserRepository(EntityManager entityManager) {
+public class UserCustomRepository extends CustomRepository<User> {
+    protected UserCustomRepository(EntityManager entityManager) {
         super(entityManager);
     }
 

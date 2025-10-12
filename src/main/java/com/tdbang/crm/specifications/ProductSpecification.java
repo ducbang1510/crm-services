@@ -4,19 +4,18 @@ import java.util.Set;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.tdbang.crm.entities.User;
+import com.tdbang.crm.entities.Product;
 
-public class UserSpecification extends AbstractSpecification<User> implements Specification<User> {
-
+public class ProductSpecification extends AbstractSpecification<Product> implements Specification<Product> {
     private static final long serialVersionUID = 1L;
 
     protected static final Set<String> DATE_FIELDS = Set.of("createdOn", "updatedOn");
 
     protected static final Set<String> ENUM_FIELDS = Set.of();
 
-    protected static final Set<String> BOOLEAN_FIELDS = Set.of("isAdmin", "isStaff", "isActive");
+    protected static final Set<String> BOOLEAN_FIELDS = Set.of("isActive");
 
-    public UserSpecification(SearchCriteria criteria) {
+    public ProductSpecification(SearchCriteria criteria) {
         super(criteria);
     }
 
@@ -34,5 +33,4 @@ public class UserSpecification extends AbstractSpecification<User> implements Sp
     protected boolean isBooleanField() {
         return BOOLEAN_FIELDS.contains(getCriteria().getKey());
     }
-
 }

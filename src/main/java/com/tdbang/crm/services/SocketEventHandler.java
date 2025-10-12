@@ -7,13 +7,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 import com.tdbang.crm.authentication.JwtTokenService;
-import com.tdbang.crm.repositories.JpaUserRepository;
+import com.tdbang.crm.repositories.UserRepository;
 
 @Log4j2
 @Component
 @RequiredArgsConstructor
 public class SocketEventHandler {
-    private final JpaUserRepository jpaUserRepository;
+    private final UserRepository userRepository;
 
     private final SocketEventService socketEventService;
 

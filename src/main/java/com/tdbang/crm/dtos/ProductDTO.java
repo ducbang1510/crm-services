@@ -1,6 +1,9 @@
 package com.tdbang.crm.dtos;
 
-import jakarta.validation.constraints.Email;
+import java.math.BigDecimal;
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,22 +14,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateUserRequestDTO {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ProductDTO {
     private Long pk;
-
     @NotBlank(message = "Name is required")
     private String name;
-
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
-    private String email;
-
-    @NotBlank(message = "Phone is required")
-    private String phone;
-
-    private Boolean isAdmin;
-
-    private Boolean isStaff;
-
+    @NotBlank(message = "Price is required")
+    private BigDecimal price;
     private Boolean isActive;
+    private String description;
+    private Date createdTime;
+    private Date updatedTime;
 }

@@ -40,11 +40,13 @@ public class UserDTO {
 
     private Boolean isAdmin;
 
+    private Boolean isStaff;
+
     private Boolean isActive;
 
     private Date createdTime;
 
-    public UserDTO(Long pk, String name, String email, String phone, Boolean isAdmin, Boolean isActive, Date createdTime) {
+    public UserDTO(Long pk, String name, String email, String phone, Boolean isAdmin, Boolean isStaff, Boolean isActive, Date createdTime) {
         this.pk = pk;
         this.name = name;
         this.email = email;
