@@ -1,4 +1,4 @@
-package com.tdbang.crm.repositories;
+package com.tdbang.crm.repositories.authorization;
 
 import java.util.Optional;
 
@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.tdbang.crm.entities.Authorization;
+import com.tdbang.crm.entities.authorization.Authorization;
 
 @Repository
 public interface JpaAuthorizationRepository extends JpaRepository<Authorization, String> {

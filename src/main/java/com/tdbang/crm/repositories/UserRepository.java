@@ -13,7 +13,7 @@ import com.tdbang.crm.dtos.UserDTO;
 import com.tdbang.crm.entities.User;
 
 @Repository
-public interface JpaUserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.pk = :pk")
     User findUserByPk(Long pk);
@@ -23,10 +23,10 @@ public interface JpaUserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u.pk FROM User u WHERE u.username = :username")
     Long getUserPkByUsername(String username);
 
-    @Query("SELECT new com.tdbang.crm.dtos.UserDTO(u.pk, u.name, u.email, u.phone, u.isAdmin, u.isActive, u.createdOn) FROM User u")
+    @Query("SELECT new com.tdbang.crm.dtos.UserDTO(u.pk, u.name, u.email, u.phone, u.isAdmin, u.isStaff, u.isActive, u.createdOn) FROM User u")
     Page<UserDTO> getUsersPageable(Pageable pageable);
 
-    @Query("SELECT new com.tdbang.crm.dtos.UserDTO(u.pk, u.name, u.email, u.phone, u.isAdmin, u.isActive, u.createdOn) FROM User u")
+    @Query("SELECT new com.tdbang.crm.dtos.UserDTO(u.pk, u.name, u.email, u.phone, u.isAdmin, u.isStaff, u.isActive, u.createdOn) FROM User u")
     List<UserDTO> getAllUsers();
 
     @Query("SELECT u FROM User u WHERE u.name = :name")

@@ -13,8 +13,8 @@ import com.nimbusds.jose.proc.SecurityContext;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
-import com.tdbang.crm.entities.JwkEntity;
-import com.tdbang.crm.repositories.JpaJwkRepository;
+import com.tdbang.crm.entities.authorization.JwkEntity;
+import com.tdbang.crm.repositories.authorization.JpaJwkRepository;
 
 @Component
 public class DatabaseJwkSource {

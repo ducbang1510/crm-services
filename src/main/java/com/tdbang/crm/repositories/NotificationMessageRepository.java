@@ -11,7 +11,7 @@ import com.tdbang.crm.dtos.NotificationMessageDTO;
 import com.tdbang.crm.entities.NotificationMessage;
 
 @Repository
-public interface JpaNotificationMessageRepository extends JpaRepository<NotificationMessage, Long> {
+public interface NotificationMessageRepository extends JpaRepository<NotificationMessage, Long> {
     @Query("SELECT nm FROM NotificationMessage nm WHERE nm.pk = :pk")
     NotificationMessage findByPk(Long pk);
 

@@ -21,7 +21,7 @@ import com.tdbang.crm.dtos.UserDTO;
 import com.tdbang.crm.entities.User;
 import com.tdbang.crm.exceptions.CRMException;
 import com.tdbang.crm.mappers.UserMapper;
-import com.tdbang.crm.repositories.JpaUserRepository;
+import com.tdbang.crm.repositories.UserRepository;
 import com.tdbang.crm.repositories.custom.CustomRepository;
 import com.tdbang.crm.specifications.SpecificationFilterUtil;
 import com.tdbang.crm.specifications.builders.SpecificationBuilder;
@@ -34,7 +34,7 @@ import com.tdbang.crm.utils.MessageConstants;
 @Service
 public class UserService extends AbstractService<User> {
     @Autowired
-    private JpaUserRepository jpaUserRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private UserMapper userMapper;
@@ -47,20 +47,20 @@ public class UserService extends AbstractService<User> {
     }
 
     public Long getUserPkByUsername(String username) {
-        return jpaUserRepository.getUserPkByUsername(username);
+        return userRepository.getUserPkByUsername(username);
     }
 
     public ResponseDTO getListOfUsers(Integer pageNumber, Integer pageSize) {
         ResponseDTO result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_NAMES_USERS_SUCCESS);
         if (pageNumber != null && pageSize != null) {
             Pageable pageable = PageRequest.of(pageNumber, pageSize);
-            Page<UserDTO> userDTOPage = jpaUserRepository.getUsersPageable(pageable);
+            Page<UserDTO> userDTOPage = userRepository.getUsersPageable(pageable);
             Map<String, Object> resultMap = new HashMap<>();
             resultMap.put(AppConstants.RECORD_LIST_KEY, userDTOPage.getContent());
             resultMap.put(AppConstants.TOTAL_RECORD_KEY, userDTOPage.getTotalElements());
             result.setData(resultMap);
         } else {
-            List<UserDTO> userDTOs = jpaUserRepository.getAllUsers();
+            List<UserDTO> userDTOs = userRepository.getAllUsers();
             result.setData(userDTOs);
         }
 
@@ -95,7 +95,7 @@ public class UserService extends AbstractService<User> {
     public ResponseDTO getUserInfo(Long pk) {
         ResponseDTO result;
         UserDTO userDTO = new UserDTO();
-        User user = jpaUserRepository.findUserByPk(pk);
+        User user = userRepository.findUserByPk(pk);
         if (user != null) {
             userDTO.setPk(user.getPk());
             userDTO.setName(user.getName());
@@ -115,7 +115,7 @@ public class UserService extends AbstractService<User> {
         ResponseDTO result;
         try {
             User saveUser = userMapper.mappingUserDTOToUserEntity(userDTO);
-            jpaUserRepository.save(saveUser);
+            userRepository.save(saveUser);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_USER_SUCCESS);
         } catch (Exception e) {
             throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_USER_ERROR, e.getMessage());
@@ -125,13 +125,13 @@ public class UserService extends AbstractService<User> {
 
     public ResponseDTO editUser(Long pk, UpdateUserRequestDTO updateUserRequestDTO) {
         ResponseDTO result;
-        User user = jpaUserRepository.findUserByPk(pk);
+        User user = userRepository.findUserByPk(pk);
         if (user == null) {
             throw new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE);
         }
         try {
             userMapper.mappingUpdateUserRequestDTOToUserEntity(updateUserRequestDTO, user);
-            jpaUserRepository.save(user);
+            userRepository.save(user);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.UPDATING_USER_SUCCESS);
         } catch (Exception e) {
             throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.UPDATING_USER_ERROR, e.getMessage());
@@ -141,13 +141,13 @@ public class UserService extends AbstractService<User> {
 
     public ResponseDTO changePassword(Long pk, ChangePasswordRequestDTO changePasswordRequestDTO) {
         ResponseDTO result;
-        User user = jpaUserRepository.findUserByPk(pk);
+        User user = userRepository.findUserByPk(pk);
         if(!passwordEncoder.matches(changePasswordRequestDTO.getOldPassword(), user.getPassword())) {
             throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.INCORRECT_OLD_PASSWORD);
         }
         try {
             user.setPassword(passwordEncoder.encode(changePasswordRequestDTO.getNewPassword()));
-            jpaUserRepository.save(user);
+            userRepository.save(user);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CHANGING_USER_PASSWORD_SUCCESS);
         } catch (Exception e) {
             throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CHANGING_USER_PASSWORD_ERROR, e.getMessage());
@@ -158,7 +158,7 @@ public class UserService extends AbstractService<User> {
     public ResponseDTO retrieveListNameOfUsers() {
         ResponseDTO result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_LIST_OF_NAMES_USERS_SUCCESS);
 
-        List<UserDTO> userDTOs = jpaUserRepository.getAllUsers();
+        List<UserDTO> userDTOs = userRepository.getAllUsers();
         List<String> nameOfUsers = userDTOs.stream().map(UserDTO::getName).toList();
         result.setData(nameOfUsers);
 
@@ -167,7 +167,7 @@ public class UserService extends AbstractService<User> {
 
     @Override
     protected String getProfileFields() {
-        return "pk,name,username,password,email,phone,isAdmin,isActive,createdOn,updatedOn";
+        return "pk,name,username,password,email,phone,isAdmin,isStaff,isActive,createdOn,updatedOn";
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.tdbang.crm.entities;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -18,8 +19,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Getter
 @Setter
 @Entity
-@Table(name = "user")
-public class User {
+@Table(name = "product")
+public class Product {
     @Id
     @Column(name = "pk")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,26 +29,14 @@ public class User {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "username", nullable = false)
-    private String username;
-
-    @Column(name = "password", nullable = false)
-    private String password;
-
-    @Column(name = "email", nullable = false)
-    private String email;
-
-    @Column(name = "phone", nullable = false)
-    private String phone;
-
-    @Column(name = "is_admin")
-    private Boolean isAdmin;
-
-    @Column(name = "is_staff")
-    private Boolean isStaff;
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
 
     @Column(name = "is_active")
     private Boolean isActive;
+
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "created_on")
     @Temporal(TemporalType.TIMESTAMP)
