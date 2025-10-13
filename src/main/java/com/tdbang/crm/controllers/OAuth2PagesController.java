@@ -42,6 +42,11 @@ public class OAuth2PagesController {
         return "login";
     }
 
+    @GetMapping("/logout-success")
+    public String logoutSuccess(HttpServletRequest request) {
+        return "logout-success";
+    }
+
     @Operation(summary = "Logout endpoint", description = "Remove access token")
     @PostMapping("/oauth2/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {

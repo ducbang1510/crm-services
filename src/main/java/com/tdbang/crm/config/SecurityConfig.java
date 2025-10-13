@@ -81,7 +81,10 @@ public class SecurityConfig implements InitializingBean {
                         .loginPage("/login")
                         .permitAll()
                 )
-                .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/logout-success")
+                        .permitAll()
+                )
                 .build();
     }
 
@@ -113,7 +116,10 @@ public class SecurityConfig implements InitializingBean {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .permitAll())
-                .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/logout-success")
+                        .permitAll()
+                )
                 .build();
     }
 
