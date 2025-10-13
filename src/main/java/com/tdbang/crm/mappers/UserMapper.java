@@ -47,6 +47,8 @@ public class UserMapper {
         User userEntity = new User();
         userEntity.setUsername(userDTO.getUsername());
         userEntity.setName(userDTO.getName());
+        userEntity.setFirstName(userDTO.getFirstName());
+        userEntity.setLastName(userDTO.getLastName());
         userEntity.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(userDTO.getPassword()));
         userEntity.setEmail(userDTO.getEmail());
         userEntity.setPhone(userDTO.getPhone());
@@ -59,6 +61,8 @@ public class UserMapper {
     public void mappingUpdateUserRequestDTOToUserEntity(UpdateUserRequestDTO updateUserRequestDTO, User userEntity) {
         userEntity.setPk(updateUserRequestDTO.getPk());
         userEntity.setName(updateUserRequestDTO.getName());
+        userEntity.setFirstName(updateUserRequestDTO.getFirstName());
+        userEntity.setLastName(updateUserRequestDTO.getLastName());
         userEntity.setEmail(updateUserRequestDTO.getEmail());
         userEntity.setPhone(updateUserRequestDTO.getPhone());
         if (updateUserRequestDTO.getIsActive() != null)
@@ -75,6 +79,8 @@ public class UserMapper {
         userDTO.setPk(user.getPk());
         userDTO.setUsername(user.getUsername());
         userDTO.setName(user.getName());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
         userDTO.setEmail(user.getEmail());
         userDTO.setPhone(user.getPhone());
         userDTO.setIsActive(user.getIsActive());

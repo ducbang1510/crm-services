@@ -167,7 +167,7 @@ public class UserService extends AbstractService<User> {
 
     @Override
     protected String getProfileFields() {
-        return "pk,name,username,password,email,phone,isAdmin,isStaff,isActive,createdOn,updatedOn";
+        return "pk,name,firstName,lastName,username,password,email,phone,isAdmin,isStaff,isActive,createdOn,updatedOn";
     }
 
     @Override

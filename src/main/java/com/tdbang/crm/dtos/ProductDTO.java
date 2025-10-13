@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ public class ProductDTO {
     private Long pk;
     @NotBlank(message = "Name is required")
     private String name;
-    @NotBlank(message = "Price is required")
+    @NotNull(message = "Price is required")
     private BigDecimal price;
     private Boolean isActive;
     private String description;

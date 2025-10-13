@@ -10,26 +10,26 @@ DELETE FROM user;
 DELETE FROM sales_order;
 DELETE FROM contact;
 DELETE FROM product;
-ALTER TABLE user AUTO_INCREMENT = 0;
-ALTER TABLE sales_order AUTO_INCREMENT = 0;
-ALTER TABLE contact AUTO_INCREMENT = 0;
-ALTER TABLE product AUTO_INCREMENT = 0;
+ALTER TABLE user AUTO_INCREMENT = 1;
+ALTER TABLE sales_order AUTO_INCREMENT = 1;
+ALTER TABLE contact AUTO_INCREMENT = 1;
+ALTER TABLE product AUTO_INCREMENT = 1;
 
 -- ======================================
 -- 1️. USER TABLE (10 Users)
 -- ======================================
-INSERT INTO user (pk, name, first_name, last_name, username, password, email, phone, is_admin, is_active, created_on, updated_on)
+INSERT INTO user (pk, name, first_name, last_name, username, password, email, phone, is_admin, is_staff, is_active, created_on, updated_on)
 VALUES
-(1, 'John Doe', 'John', 'Doe', 'jdoe', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'jdoe@example.com', '1234567890', 1, 1, NOW(), NOW()),
-(2, 'Jane Smith', 'Jane', 'Smith', 'jsmith', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'jsmith@example.com', '0987654321', 0, 1, NOW(), NOW()),
-(3, 'Michael Johnson', 'Michael', 'Johnson', 'mjohnson', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'mjohnson@example.com', '1112223333', 0, 1, NOW(), NOW()),
-(4, 'Emily Davis', 'Emily', 'Davis', 'edavis', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'edavis@example.com', '4445556666', 0, 1, NOW(), NOW()),
-(5, 'Robert Brown', 'Robert', 'Brown', 'rbrown', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'rbrown@example.com', '7778889999', 0, 1, NOW(), NOW()),
-(6, 'Olivia Wilson', 'Olivia', 'Wilson', 'owilson', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'owilson@example.com', '2223334444', 0, 1, NOW(), NOW()),
-(7, 'David Taylor', 'David', 'Taylor', 'dtaylor', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'dtaylor@example.com', '5556667777', 0, 1, NOW(), NOW()),
-(8, 'Sophia Miller', 'Sophia', 'Miller', 'smiller', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'smiller@example.com', '8889990000', 0, 1, NOW(), NOW()),
-(9, 'James Anderson', 'James', 'Anderson', 'janderson', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'janderson@example.com', '6667778888', 0, 1, NOW(), NOW()),
-(10, 'Linda Martinez', 'Linda', 'Martinez', 'lmartinez', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'lmartinez@example.com', '3334445555', 0, 1, NOW(), NOW());
+(1, 'John Doe', 'John', 'Doe', 'jdoe', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'jdoe@example.com', '1234567890', 1, 1, 1, NOW(), NOW()),
+(2, 'Jane Smith', 'Jane', 'Smith', 'jsmith', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'jsmith@example.com', '0987654321', 0, 0, 1, NOW(), NOW()),
+(3, 'Michael Johnson', 'Michael', 'Johnson', 'mjohnson', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'mjohnson@example.com', '1112223333', 0, 0, 1, NOW(), NOW()),
+(4, 'Emily Davis', 'Emily', 'Davis', 'edavis', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'edavis@example.com', '4445556666', 0, 0, 1, NOW(), NOW()),
+(5, 'Robert Brown', 'Robert', 'Brown', 'rbrown', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'rbrown@example.com', '7778889999', 0, 0, 1, NOW(), NOW()),
+(6, 'Olivia Wilson', 'Olivia', 'Wilson', 'owilson', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'owilson@example.com', '2223334444', 0, 0, 1, NOW(), NOW()),
+(7, 'David Taylor', 'David', 'Taylor', 'dtaylor', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'dtaylor@example.com', '5556667777', 0, 0, 1, NOW(), NOW()),
+(8, 'Sophia Miller', 'Sophia', 'Miller', 'smiller', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'smiller@example.com', '8889990000', 0, 0, 1, NOW(), NOW()),
+(9, 'James Anderson', 'James', 'Anderson', 'janderson', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'janderson@example.com', '6667778888', 0, 0, 1, NOW(), NOW()),
+(10, 'Linda Martinez', 'Linda', 'Martinez', 'lmartinez', '{bcrypt}$2a$10$fO7/DMQiXzQiDEHLc944LOsC81FJrXEAUc2n1d.M4zWeuDMx7PtZG', 'lmartinez@example.com', '3334445555', 0, 1, 0, NOW(), NOW());
 
 -- ======================================
 -- 2️. CONTACT TABLE (30 contacts)
