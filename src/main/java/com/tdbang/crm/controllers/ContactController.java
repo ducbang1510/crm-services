@@ -85,7 +85,7 @@ public class ContactController extends BaseController {
             @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "contactName,organization") String fields,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "0") int pageSize,
-            @RequestParam(required = false) String sortColumn,
+            @RequestParam(required = false, defaultValue = "pk") String sortColumn,
             @RequestParam(required = false, defaultValue = "ASC") String sortOrder) {
         log.info("Start retrieveContactList");
         ResponseDTO listOfContact = contactService.getListOfContact(filter, pageSize, pageNumber, sortColumn, sortOrder, fields);

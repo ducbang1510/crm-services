@@ -1,6 +1,7 @@
 package com.tdbang.crm.mappers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.tdbang.crm.dtos.ProductDTO;
 import com.tdbang.crm.entities.Product;
 import com.tdbang.crm.utils.AppConstants;
 
@@ -37,5 +39,30 @@ public class ProductMapper {
         }
 
         return products;
+    }
+
+    public Product mappingProductDTOToEntity(ProductDTO productDTO, boolean isCreateNew) {
+        Product product = new Product();
+        product.setPk(productDTO.getPk());
+        product.setName(productDTO.getName());
+        product.setPrice(productDTO.getPrice());
+        product.setIsActive(productDTO.getIsActive());
+        product.setDescription(productDTO.getDescription());
+        product.setName(productDTO.getName());
+        if (isCreateNew)
+            product.setUpdatedOn(new Date());
+        return product;
+    }
+
+    public ProductDTO mappingProductEntityToProductDTO(Product product) {
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setPk(product.getPk());
+        productDTO.setName(product.getName());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setIsActive(product.getIsActive());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setCreatedTime(product.getCreatedOn());
+        productDTO.setUpdatedTime(product.getUpdatedOn());
+        return productDTO;
     }
 }

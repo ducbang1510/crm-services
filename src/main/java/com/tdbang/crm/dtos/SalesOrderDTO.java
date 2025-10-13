@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ public class SalesOrderDTO {
     private Long contactFk;
     @NotBlank(message = "Status is required")
     private String status;
-    @NotBlank(message = "Total is required")
+    @NotNull(message = "Total is required")
     private BigDecimal total;
     @NotBlank(message = "Assigned To is required")
     private String assignedTo;

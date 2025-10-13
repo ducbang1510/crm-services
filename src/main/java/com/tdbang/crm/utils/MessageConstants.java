@@ -56,6 +56,11 @@ public class MessageConstants {
     public static final String FINDING_CONTACT_ERROR = "Error while finding contacts";
     public static final String COUNTING_NO_CONTACTS_BY_LEAD_SRC_SUCCESS = "Counting number of contacts based on Lead source successfully!";
     public static final String COUNTING_NO_CONTACTS_BY_LEAD_SRC_ERROR = "Error while counting number of contacts based on Lead source";
+    public static final String FETCHING_LIST_OF_PRODUCTS_SUCCESS = "Fetching list of products successfully!";
+    public static final String CREATING_NEW_PRODUCT_SUCCESS = "Creating new product successfully!";
+    public static final String CREATING_NEW_PRODUCT_ERROR = "Error while creating new product";
+    public static final String UPDATING_PRODUCT_SUCCESS = "Updating product successfully!";
+    public static final String DELETING_LIST_OF_PRODUCTS_SUCCESS = "Deleting list of products successfully!";
 
     public static final String ERROR_CODE = "ERROR";
     public static final String SUCCESS_CODE = "SUCCESS";
