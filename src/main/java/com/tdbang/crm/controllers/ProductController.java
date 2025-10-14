@@ -36,7 +36,7 @@ public class ProductController extends BaseController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyAuthority('ROLE_STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF')")
     public MappingJacksonValue createProduct(@RequestBody @Valid ProductDTO productDTO) {
         log.info("Start createProduct");
         ResponseDTO responseDTO = productService.createNewProduct(productDTO);
@@ -46,7 +46,7 @@ public class ProductController extends BaseController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'STAFF', 'USER')")
     public MappingJacksonValue retrieveProductDetails(@PathVariable Long id) {
         log.info("Start retrieveProductDetails");
         ResponseDTO orderDetails = productService.getProductDetails(id);
@@ -56,7 +56,7 @@ public class ProductController extends BaseController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF')")
     public MappingJacksonValue updateProductDetails(@PathVariable Long id,
                                                     @RequestBody @Valid ProductDTO productDTO) {
         log.info("Start updateProductDetails");
@@ -67,7 +67,7 @@ public class ProductController extends BaseController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF')")
     public MappingJacksonValue deleteProductDetails(@PathVariable Long id) {
         log.info("Start deleteProductDetails");
         ResponseDTO responseDTO = productService.deleteProducts(List.of(id));
@@ -77,7 +77,7 @@ public class ProductController extends BaseController {
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'STAFF', 'USER')")
     public MappingJacksonValue retrieveProductList(
             @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "name:*Monitor*") String filter,
             @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "pk,name") String fields,
@@ -93,7 +93,7 @@ public class ProductController extends BaseController {
 
     @PostMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF')")
     public MappingJacksonValue deleteProducts(@RequestBody List<Long> ids) {
         log.info("Start deleteProducts");
         ResponseDTO responseDTO = productService.deleteProducts(ids);

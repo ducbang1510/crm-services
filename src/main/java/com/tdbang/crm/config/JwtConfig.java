@@ -23,7 +23,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 @Log4j2
 @Configuration
 public class JwtConfig {
-    private static final String ROLE_PREFIX = "ROLE_";
+    private static final String ROLE_PREFIX = "";
     private static final String SCOPE_PREFIX = "SCOPE_";
     private static final String ROLE_CLAIM_NAME = "roles";
     private static final String SCOPE_CLAIM_NAME = "scope";
@@ -39,8 +39,6 @@ public class JwtConfig {
             if (context.getPrincipal() != null && context.getPrincipal().getAuthorities() != null) {
                 var authorities = context.getPrincipal().getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
-                        .filter(auth -> auth.startsWith(ROLE_PREFIX))
-                        .map(auth -> auth.substring(5))
                         .collect(Collectors.toList());
 
                 context.getClaims().claim(ROLE_CLAIM_NAME, authorities);

@@ -165,6 +165,23 @@ public class UserService extends AbstractService<User> {
         return result;
     }
 
+    public List<String> getUserRole(Long pk) {
+        User user = userRepository.findUserByPk(pk);
+        List<String> roles = new ArrayList<>();
+        if (user != null) {
+            if (Boolean.TRUE.equals(user.getIsActive())) {
+                roles.add(AppConstants.ROLE_USER);
+                if (Boolean.TRUE.equals(user.getIsStaff()))
+                    roles.add(AppConstants.ROLE_STAFF);
+                if (Boolean.TRUE.equals(user.getIsAdmin()))
+                    roles.add(AppConstants.ROLE_ADMIN);
+            }
+        } else {
+            throw new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE);
+        }
+        return roles;
+    }
+
     @Override
     protected String getProfileFields() {
         return "pk,name,firstName,lastName,username,password,email,phone,isAdmin,isStaff,isActive,createdOn,updatedOn";
