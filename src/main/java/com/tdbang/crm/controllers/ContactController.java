@@ -38,7 +38,7 @@ public class ContactController extends BaseController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue createContact(@RequestBody @Valid ContactDTO contactDTO) {
         log.info("Start createContact");
         ResponseDTO responseDTO = contactService.createNewContact(contactDTO, getPkUserLogged());
@@ -48,7 +48,7 @@ public class ContactController extends BaseController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveContactDetails(@PathVariable Long id) {
         log.info("Start retrieveContactDetails");
         ResponseDTO orderDetails = contactService.getContactDetails(id);
@@ -58,7 +58,7 @@ public class ContactController extends BaseController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue updateContactDetails(@PathVariable Long id,
                                                     @RequestBody @Valid ContactDTO contactDTO) {
         log.info("Start updateContactDetails");
@@ -69,7 +69,7 @@ public class ContactController extends BaseController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue deleteContactDetails(@PathVariable Long id) {
         log.info("Start deleteContactDetails");
         ResponseDTO responseDTO = contactService.deleteContactDetails(id, getPkUserLogged());
@@ -79,7 +79,7 @@ public class ContactController extends BaseController {
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveContactList(
             @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "contactName:John,organization:OrgName") String filter,
             @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "contactName,organization") String fields,
@@ -95,7 +95,7 @@ public class ContactController extends BaseController {
 
     @GetMapping("/list/contact-name")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveContactNameList() {
         log.info("Start retrieveContactNameList");
         ResponseDTO listOfContactName = contactService.getListOfContactName();
@@ -109,7 +109,7 @@ public class ContactController extends BaseController {
     @Deprecated(since="1.1.0", forRemoval = true)
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveContactListWithNonDynamicFilter(@RequestParam(required = false) Integer pageNumber,
                                                                        @RequestParam(required = false) Integer pageSize,
                                                                        @RequestParam(required = false) String contactName) {
@@ -121,7 +121,7 @@ public class ContactController extends BaseController {
 
     @GetMapping("/count/lead-source")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveContactDashboardByLeadSource() {
         log.info("Start retrieveContactDashboardByLeadSource");
         ResponseDTO responseDTO = contactService.retrieveContactDashboardByLeadSource();
@@ -131,7 +131,7 @@ public class ContactController extends BaseController {
 
     @PostMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue deleteContacts(@RequestBody List<Long> ids) {
         log.info("Start deleteContacts");
         ResponseDTO responseDTO = contactService.deleteContacts(ids, getPkUserLogged());
@@ -141,7 +141,7 @@ public class ContactController extends BaseController {
 
     @GetMapping("/salutation")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveSalutationEnumOfContact() {
         log.info("Start retrieveSalutationEnumOfContact");
         List<Salutation> status = contactService.retrieveSalutationEnumOfContact();
@@ -151,7 +151,7 @@ public class ContactController extends BaseController {
 
     @GetMapping("/lead-source")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveLeadSourceEnumOfContact() {
         log.info("Start retrieveLeadSourceEnumOfContact");
         List<LeadSource> status = contactService.retrieveLeadSourceEnumOfContact();

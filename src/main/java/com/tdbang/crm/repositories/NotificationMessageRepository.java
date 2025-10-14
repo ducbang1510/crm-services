@@ -1,7 +1,6 @@
 package com.tdbang.crm.repositories;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,7 +22,7 @@ public interface NotificationMessageRepository extends JpaRepository<Notificatio
             + " JOIN User recipient ON nm.recipientUserFk = recipient.pk"
             + " WHERE nm.recipientUserFk = :userFk"
             + " ORDER BY nm.createdOn DESC")
-    List<NotificationMessageDTO> retrieveNotificationMessagesByUserFk(Long userFk, Pageable pageable);
+    Page<NotificationMessageDTO> retrieveNotificationMessagesByUserFk(Long userFk, Pageable pageable);
 
     @Query("SELECT COUNT(nm.pk) FROM NotificationMessage nm WHERE nm.recipientUserFk = :userFk AND nm.unread = TRUE")
     Long countUnreadNotifications(Long userFk);

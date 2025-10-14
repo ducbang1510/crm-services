@@ -37,7 +37,7 @@ public class SalesOderController extends BaseController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue createSalesOrder(@RequestBody @Valid SalesOrderDTO salesOrderDTO) {
         log.info("Start createSalesOrder");
         ResponseDTO responseDTO = salesOrderService.createNewSalesOrder(salesOrderDTO, getPkUserLogged());
@@ -47,7 +47,7 @@ public class SalesOderController extends BaseController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveOrderDetails(@PathVariable Long id) {
         log.info("Start retrieveOrderDetails");
         ResponseDTO orderDetails = salesOrderService.getSalesOrderDetails(id);
@@ -57,7 +57,7 @@ public class SalesOderController extends BaseController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue updateOrderDetails(@PathVariable Long id,
                                                   @RequestBody @Valid SalesOrderDTO salesOrderDTO) {
         log.info("Start updateOrderDetails");
@@ -68,7 +68,7 @@ public class SalesOderController extends BaseController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue deleteOrderDetails(@PathVariable Long id) {
         log.info("Start deleteOrderDetails");
         ResponseDTO responseDTO = salesOrderService.deleteSalesOrderDetails(id, getPkUserLogged());
@@ -78,7 +78,7 @@ public class SalesOderController extends BaseController {
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveOrderList(
             @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "contact.contactName:John,subject:SubjectTxt") String filter,
             @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "subject,status") String fields,
@@ -98,7 +98,7 @@ public class SalesOderController extends BaseController {
     @Deprecated(since="1.1.0", forRemoval = true)
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveOrderListWithNonDynamicFilter(@RequestParam(required = false) Integer pageNumber,
                                                                      @RequestParam(required = false) Integer pageSize,
                                                                      @RequestParam(required = false) String subject) {
@@ -110,7 +110,7 @@ public class SalesOderController extends BaseController {
 
     @GetMapping("/count/status")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveOrderDashboardByStatus() {
         log.info("Start retrieveOrderDashboardByStatus");
         ResponseDTO responseDTO = salesOrderService.retrieveOrderDashboardByStatus();
@@ -120,7 +120,7 @@ public class SalesOderController extends BaseController {
 
     @PostMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue deleteSaleOrders(@RequestBody List<Long> ids) {
         log.info("Start deleteSaleOrders");
         ResponseDTO responseDTO = salesOrderService.deleteSaleOrders(ids, getPkUserLogged());
@@ -130,7 +130,7 @@ public class SalesOderController extends BaseController {
 
     @GetMapping("/status")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveStatusEnumOfSalesOrder() {
         log.info("Start retrieveStatusEnumOfSalesOrder");
         List<SalesOrderStatus> status = salesOrderService.retrieveStatusEnumOfSalesOrder();
