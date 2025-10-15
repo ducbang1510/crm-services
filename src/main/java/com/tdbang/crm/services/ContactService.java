@@ -51,6 +51,8 @@ public class ContactService extends AbstractService<Contact> {
     private NotificationService notificationService;
     @Autowired
     private SocketEventService socketEventService;
+    @Autowired
+    private EmailService emailService;
 
     public ContactService(SpecificationFilterUtil<Contact> filterUtil, CustomRepository<Contact> repository) {
         super(filterUtil, repository);
@@ -121,6 +123,8 @@ public class ContactService extends AbstractService<Contact> {
             // Create and send notification
             notificationService.createNotifications(creatorFk, List.of(userAssignedTo.getPk()), NotificationType.CONTACT_ASSIGNED, savedContact.getPk());
             socketEventService.sendNotifications(List.of(userAssignedTo.getPk()));
+            // Send mail
+            emailService.sendSimpleEmail(saveContact.getEmail(), "Contact created", "This is mail for created contact");
         } catch (Exception e) {
             throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_CONTACT_ERROR, e.getMessage());
         }
