@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.controllers;
 
 import java.util.List;
@@ -82,7 +87,8 @@ public class ContactController extends BaseController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveContactList(
             @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "contactName:John,organization:OrgName") String filter,
-            @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "contactName,organization") String fields,
+            @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "contactName,organization")
+            String fields,
             @RequestParam(required = false, defaultValue = "0") int pageNumber,
             @RequestParam(required = false, defaultValue = "0") int pageSize,
             @RequestParam(required = false, defaultValue = "pk") String sortColumn,
@@ -106,7 +112,7 @@ public class ContactController extends BaseController {
     /**
      * @deprecated (This function will be removed, use retrieveContactList instead)
      */
-    @Deprecated(since="1.1.0", forRemoval = true)
+    @Deprecated(since = "1.1.0", forRemoval = true)
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")

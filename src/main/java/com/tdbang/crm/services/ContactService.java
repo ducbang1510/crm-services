@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.services;
 
 import java.util.ArrayList;
@@ -66,7 +71,7 @@ public class ContactService extends AbstractService<Contact> {
 
             Map<String, Object> resultMapQuery = get(filter, pageSize, pageNumber, sortColumn, sortOrder, AppUtils.convertFields(fields));
             List<Contact> results = contactMapper.mapRecordList(resultMapQuery);
-            for(Contact r: results) {
+            for (Contact r : results) {
                 contactDTOList.add(contactMapper.mappingContactEntityToContactDTO(r));
             }
 
@@ -123,8 +128,7 @@ public class ContactService extends AbstractService<Contact> {
             // Create and send notification
             notificationService.createNotifications(creatorFk, List.of(userAssignedTo.getPk()), NotificationType.CONTACT_ASSIGNED, savedContact.getPk());
             socketEventService.sendNotifications(List.of(userAssignedTo.getPk()));
-            // Send mail
-            emailService.sendSimpleEmail(saveContact.getEmail(), "Contact created", "This is mail for created contact");
+            // TODO: Send mail
         } catch (Exception e) {
             throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_CONTACT_ERROR, e.getMessage());
         }

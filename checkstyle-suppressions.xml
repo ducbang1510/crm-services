@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.0//EN"
+        "https://checkstyle.org/dtds/suppressions_1_0.dtd">
+
+<suppressions>
+
+    <!-- disabling all checks(rules) for a given package -->
+    <!--    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]authentication[\\/]"/>-->
+    <!--    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]collections[\\/]"/>-->
+    <!--    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]commons[\\/]"/>-->
+    <!--    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]config[\\/]"/>-->
+    <!--    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]controllers[\\/]"/>-->
+    <!--    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]dtos[\\/]"/>-->
+    <!--    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]entities[\\/]"/>-->
+    <!--    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]enums[\\/]"/>-->
+    <!--    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]exceptions[\\/]"/>-->
+    <!--    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]mappers[\\/]"/>-->
+    <!--    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]repositories[\\/]"/>-->
+    <!--    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]services[\\/]"/>-->
+    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]specifications[\\/]"/>
+    <!--    <suppress checks=".*" files="com[\\/]tdbang[\\/]crm[\\/]utils[\\/]"/>-->
+
+
+    <!--disabling a given single rule for whole crm main package: -->
+
+    <!--suppress checks="Indentation" files="com[\\/]tdbang[\\/]crm[\\/]"/-->
+    <!--suppress checks="LineLength" files="com[\\/]tdbang[\\/]crm[\\/]"/-->
+
+    <suppress checks=".*Javadoc.*" files="com[\\/]tdbang[\\/]crm[\\/]"/>
+    <suppress checks="javadoc" files="com[\\/]tdbang[\\/]crm[\\/]"/>
+
+    <suppress checks="OperatorWrap" files="com[\\/]tdbang[\\/]crm[\\/]"/>
+    <suppress checks="AbbreviationAsWordInName" files="com[\\/]tdbang[\\/]crm[\\/]"/>
+    <suppress checks="MemberName" files="com[\\/]tdbang[\\/]crm[\\/]"/>
+    <suppress checks="MemberName" files="com[\\/]tdbang[\\/]crm[\\/]"/>
+
+
+</suppressions>

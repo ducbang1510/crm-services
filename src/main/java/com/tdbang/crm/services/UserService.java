@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.services;
 
 import java.util.ArrayList;
@@ -75,7 +80,7 @@ public class UserService extends AbstractService<User> {
 
             Map<String, Object> resultMapQuery = get(filter, pageSize, pageNumber, sortColumn, sortOrder, AppUtils.convertFields(fields));
             List<User> results = userMapper.mapRecordList(resultMapQuery);
-            for(User r: results) {
+            for (User r : results) {
                 userDTOList.add(userMapper.mappingUserEntityToUserDTO(r));
             }
 
@@ -142,7 +147,7 @@ public class UserService extends AbstractService<User> {
     public ResponseDTO changePassword(Long pk, ChangePasswordRequestDTO changePasswordRequestDTO) {
         ResponseDTO result;
         User user = userRepository.findUserByPk(pk);
-        if(!passwordEncoder.matches(changePasswordRequestDTO.getOldPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(changePasswordRequestDTO.getOldPassword(), user.getPassword())) {
             throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.INCORRECT_OLD_PASSWORD);
         }
         try {

@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.services;
 
 import java.util.Arrays;
@@ -7,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.naming.directory.InvalidSearchFilterException;
 
 import org.springframework.data.domain.Page;

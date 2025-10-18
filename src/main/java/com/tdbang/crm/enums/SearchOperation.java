@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.enums;
 
 /**
@@ -9,7 +14,7 @@ public enum SearchOperation {
     /**
      * The supported operations
      */
-    public static final String[] SIMPLE_OPERATION_SET = { ":", "!", ">", "<", "~" };
+    public static final String[] SIMPLE_OPERATION_SET = {":", "!", ">", "<", "~"};
 
     public static final String OR_PREDICATE_FLAG = "'";
 

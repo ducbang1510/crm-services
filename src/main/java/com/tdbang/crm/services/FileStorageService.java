@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.services;
 
 import java.io.IOException;
@@ -37,34 +42,25 @@ public class FileStorageService {
         this.objectMapper = new ObjectMapper();
     }
 
-    public FileAttachmentDto store(MultipartFile file,
-                                   String entityType,
-                                   Long entityFk,
-                                   Long uploadedBy,
-                                   String description) throws IOException {
+    public FileAttachmentDto store(MultipartFile file, String entityType, Long entityFk, Long uploadedBy, String description) throws IOException {
 
-        // Basic validation
         if (file.isEmpty()) throw new IllegalArgumentException("File is empty");
         if (file.getSize() > (10L * 1024 * 1024)) { // 10 MB example limit
             throw new IllegalArgumentException("File too large");
         }
-
         // Optional: sanitize filename
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-
         // Prepare metadata for GridFS
         Document metadata = new Document();
         metadata.put("entityType", entityType);
         metadata.put("entityFk", entityFk);
         metadata.put("uploadedBy", uploadedBy);
         metadata.put("description", description);
-
         // Store in GridFS
         ObjectId gridFsId;
         try (InputStream inputStream = file.getInputStream()) {
             gridFsId = gridFsTemplate.store(inputStream, filename, file.getContentType(), metadata);
         }
-
         // Save metadata in MySQL
         FileAttachment entity = new FileAttachment();
         entity.setEntityType(entityType);
@@ -77,7 +73,6 @@ public class FileStorageService {
         entity.setDescription(description);
         entity.setIsActive(true);
         fileAttachmentRepository.save(entity);
-
         return FileAttachmentDto.from(entity);
     }
 

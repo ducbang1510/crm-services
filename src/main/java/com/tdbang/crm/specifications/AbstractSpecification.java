@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.specifications;
 
 import java.util.Date;
@@ -111,7 +116,7 @@ public abstract class AbstractSpecification<T> implements Specification<T> {
         Class<?> type = path.getJavaType();
         @SuppressWarnings("unchecked")
         Class<? extends Enum<?>> enumType = (Class<? extends Enum<?>>) type;
-        return  Enum.valueOf((Class) enumType, valueToString().toUpperCase());
+        return Enum.valueOf((Class) enumType, valueToString().toUpperCase());
     }
 
     private Date valueToDate() {

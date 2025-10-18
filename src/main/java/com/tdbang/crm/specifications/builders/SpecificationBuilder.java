@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.specifications.builders;
 
 import java.util.ArrayList;
@@ -8,7 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import com.tdbang.crm.enums.SearchOperation;
 import com.tdbang.crm.specifications.SearchCriteria;
 
-public abstract class SpecificationBuilder <T> {
+public abstract class SpecificationBuilder<T> {
     private final List<SearchCriteria> params;
 
     public SpecificationBuilder() {

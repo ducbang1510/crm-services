@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.config;
 
 import java.time.Duration;
@@ -109,7 +114,10 @@ public class AuthorizationServerConfig implements InitializingBean {
 
             clientRepository.save(crmAppClient);
         }
+        initializeSwaggerClient(clientRepository);
+    }
 
+    private void initializeSwaggerClient(RegisteredClientRepository clientRepository) {
         if (clientRepository.findByClientId(swaggerClientId) == null) {
             RegisteredClient swaggerClient = RegisteredClient.withId(UUID.randomUUID().toString())
                     .clientId(swaggerClientId)

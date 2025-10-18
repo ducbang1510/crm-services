@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.repositories.custom;
 
 import java.lang.reflect.Field;
@@ -293,6 +298,7 @@ public abstract class CustomRepository<S> {
     protected abstract Root<S> getTupleRoot(CriteriaQuery<Tuple> query);
 
     protected abstract Root<S> getLongRoot(CriteriaQuery<Long> query);
+
     protected abstract Class<S> getEntityClass();
 
 }

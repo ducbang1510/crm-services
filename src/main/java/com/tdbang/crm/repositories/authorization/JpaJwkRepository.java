@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.repositories.authorization;
 
 import org.springframework.data.jpa.repository.JpaRepository;
