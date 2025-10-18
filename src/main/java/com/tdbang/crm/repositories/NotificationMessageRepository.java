@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.repositories;
 
 import org.springframework.data.domain.Page;

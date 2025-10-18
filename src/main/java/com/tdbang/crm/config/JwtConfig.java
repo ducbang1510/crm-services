@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.config;
 
 import java.util.Collection;
@@ -27,6 +32,7 @@ public class JwtConfig {
     private static final String SCOPE_PREFIX = "SCOPE_";
     private static final String ROLE_CLAIM_NAME = "roles";
     private static final String SCOPE_CLAIM_NAME = "scope";
+
     @Bean
     public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);

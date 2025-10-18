@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.controllers;
 
 import java.util.List;
@@ -95,7 +100,7 @@ public class SalesOderController extends BaseController {
     /**
      * @deprecated (This function will be removed, use retrieveOrderList instead)
      */
-    @Deprecated(since="1.1.0", forRemoval = true)
+    @Deprecated(since = "1.1.0", forRemoval = true)
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")

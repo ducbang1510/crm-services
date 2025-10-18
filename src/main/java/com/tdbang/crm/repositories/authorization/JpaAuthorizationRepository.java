@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.repositories.authorization;
 
 import java.util.Optional;
@@ -33,5 +38,6 @@ public interface JpaAuthorizationRepository extends JpaRepository<Authorization,
             " or a.userCodeValue = :token" +
             " or a.deviceCodeValue = :token"
     )
-    Optional<Authorization> findByStateOrAuthorizationCodeValueOrAccessTokenValueOrRefreshTokenValueOrOidcIdTokenValueOrUserCodeValueOrDeviceCodeValue(@Param("token") String token);
+    Optional<Authorization> findByStateOrAuthorizationCodeValueOrAccessTokenValueOrRefreshTokenValueOrOidcIdTokenValueOrUserCodeValueOrDeviceCodeValue(
+            @Param("token") String token);
 }

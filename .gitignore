@@ -24,7 +24,13 @@ hs_err_pid*
 replay_pid*
 
 .idea/
+/crm-services.iml
 .vscode/
+# Eclipse IDE
+.project
+.classpath
+.settings/
+/.checkstyle
 
 logs/
 target/

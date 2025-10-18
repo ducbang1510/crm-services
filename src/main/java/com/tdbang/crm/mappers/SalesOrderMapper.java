@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.mappers;
 
 import java.util.ArrayList;
@@ -30,28 +35,21 @@ public class SalesOrderMapper {
         Object recordsObj = resultMap.get(AppConstants.RECORD_LIST_KEY);
         if (recordsObj instanceof List<?>) {
             List<?> recordList = (List<?>) recordsObj;
-
             for (Object obj : recordList) {
                 if (obj instanceof Map) {
                     Map<String, Object> salesOrderMap = (Map<String, Object>) obj;
-
                     if (salesOrderMap.containsKey("contact") && salesOrderMap.get("contact") instanceof Map) {
                         Contact contact = modelMapper.map(salesOrderMap.get("contact"), Contact.class);
                         salesOrderMap.put("contact", contact);
                     }
-
-                    // Convert nested maps for creator and assignedTo
                     if (salesOrderMap.containsKey("creator") && salesOrderMap.get("creator") instanceof Map) {
                         User creator = modelMapper.map(salesOrderMap.get("creator"), User.class);
                         salesOrderMap.put("creator", creator);
                     }
-
                     if (salesOrderMap.containsKey("assignedTo") && salesOrderMap.get("assignedTo") instanceof Map) {
                         User assignedTo = modelMapper.map(salesOrderMap.get("assignedTo"), User.class);
                         salesOrderMap.put("assignedTo", assignedTo);
                     }
-
-                    // Map to SalesOrder
                     SalesOrder contact = modelMapper.map(salesOrderMap, SalesOrder.class);
                     salesOrders.add(contact);
                 }

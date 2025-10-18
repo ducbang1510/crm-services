@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.services;
 
 import java.util.ArrayList;
@@ -64,7 +69,7 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
 
             Map<String, Object> resultMapQuery = get(filter, pageSize, pageNumber, sortColumn, sortOrder, AppUtils.convertFields(fields));
             List<SalesOrder> results = salesOrderMapper.mapRecordList(resultMapQuery);
-            for(SalesOrder r: results) {
+            for (SalesOrder r : results) {
                 salesOrderDTOList.add(salesOrderMapper.mappingSalesOrderEntityToSalesOrderDTO(r));
             }
 

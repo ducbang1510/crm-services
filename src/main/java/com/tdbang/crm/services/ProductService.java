@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2025 by tdbang.
+ * All rights reserved.
+ */
+
 package com.tdbang.crm.services;
 
 import java.util.ArrayList;
@@ -26,7 +31,7 @@ import com.tdbang.crm.utils.MessageConstants;
 
 @Log4j2
 @Service
-public class ProductService extends AbstractService<Product>{
+public class ProductService extends AbstractService<Product> {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
@@ -44,7 +49,7 @@ public class ProductService extends AbstractService<Product>{
 
             Map<String, Object> resultMapQuery = get(filter, pageSize, pageNumber, sortColumn, sortOrder, AppUtils.convertFields(fields));
             List<Product> results = productMapper.mapRecordList(resultMapQuery);
-            for(Product r: results) {
+            for (Product r : results) {
                 productDTOList.add(productMapper.mappingProductEntityToProductDTO(r));
             }
 
@@ -78,7 +83,8 @@ public class ProductService extends AbstractService<Product>{
     public ResponseDTO getProductDetails(Long productPk) {
         ResponseDTO result = new ResponseDTO();
         if (productPk != null) {
-            Product product = productRepository.findByPk(productPk).orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
+            Product product = productRepository.findByPk(productPk)
+                    .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
             ProductDTO productDTO = productMapper.mappingProductEntityToProductDTO(product);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_CONTACT_SUCCESS, productDTO);
         }

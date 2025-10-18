@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 ICON Clinical Research Ltd.
+ * Copyright © 2025 by tdbang.
  * All rights reserved.
  */
 
