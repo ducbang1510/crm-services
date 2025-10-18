@@ -32,7 +32,7 @@ UI repository built with Angular for integration: https://github.com/luuthanhvan
 | **Database (Relational)**         | MySQL 8+                                       |
 | **Database (Binary/File)**        | MongoDB 8.2.0 (GridFS)                         |
 | **Messaging / Real-Time**         | Socket.IO                                      |
-| **Email**                         | Spring Mail (Outlook SMTP / OAuth2)            |
+| **Email**                         | Spring Mail (Basic Auth)                       |
 | **Build Tool**                    | Maven                                          |
 | **Security**                      | Spring Security with Spring Boot Oauth2 server |
 | **Batch & Scheduling** (Incoming) | Spring Batch, `@Scheduled`                     |
