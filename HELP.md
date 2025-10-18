@@ -1,4 +1,5 @@
 # Read Me First
+
 The following was discovered as part of building this project:
 
 * The original package name 'com.tdbang.crm'.
@@ -6,6 +7,7 @@ The following was discovered as part of building this project:
 # Getting Started
 
 ### Reference Documentation
+
 For further reference, please consider the following sections:
 
 * [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
@@ -18,6 +20,7 @@ For further reference, please consider the following sections:
 * [Spring Security](https://docs.spring.io/spring-boot/3.5.5/reference/web/spring-security.html)
 
 ### Guides
+
 The following guides illustrate how to use some features concretely:
 
 * [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
@@ -32,7 +35,8 @@ The following guides illustrate how to use some features concretely:
 ### Maven Parent overrides
 
 Due to Maven's design, elements are inherited from the parent POM to the project POM.
-While most of the inheritance is fine, it also inherits unwanted elements like `<license>` and `<developers>` from the parent.
+While most of the inheritance is fine, it also inherits unwanted elements like `<license>` and `<developers>` from the
+parent.
 To prevent this, the project POM contains empty overrides for these elements.
 If you manually switch to a different parent and actually want the inheritance, you need to remove those overrides.
 
@@ -40,10 +44,10 @@ If you manually switch to a different parent and actually want the inheritance, 
 
 The following instructions are for Windows OS.
 
-### Install Java 17
+### ![Java 17](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 
 1. Download: https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html -> Choose Windows x64
-   Installer
+   Installer (for this project, we're using java 17)
 2. Install jdk file
 3. Setup JAVA_HOME environment variable
     1. Open Setting -> System -> About -> Advanced system settings -> Environment Variables
@@ -51,17 +55,29 @@ The following instructions are for Windows OS.
     3. Edit `Path`, add `%JAVA_HOME%\bin;`
     4. Open cmd and run `java --version` to verify.
 
-### Install Maven 3.9+
+### ![Maven 3.9+](https://img.shields.io/badge/Apache_Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
 
 1. Download Maven 3.9: https://maven.apache.org/download.cgi -> Choose Binary zip archive
 2. Extract the zip file and copy path to bin folder (e.g. `C:\Program Files\Maven\apache-maven-3.9.9\bin`)
 3. Add the path into variable `Path` in Environment Variables.
 4. Open cmd and run `mvn -v to verify.
 
-### Install MySQL and MySQL Workbench
+### ![MySQL 8+](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 
 1. Download MySQL: https://dev.mysql.com/downloads/installer/ -> Choose mysql-installer-community-8+.msi not the web
    version
 2. Follow these step in https://www.w3schools.com/mysql/mysql_install_windows.asp
 3. Recommend to choose the 'Full' installation in order to have both MySQL server and MySQL Workbench/Shell.
 4. Check the option autostart MySQL80 service with Windows.
+
+### ![MongoDB 8.2.0](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+
+1. Download MongoDB - Visit this page https://www.mongodb.com/try/download/community-kubernetes-operator, just keep
+   everything as default and download it.
+2. After the download process is completed, let’s move on to install it. When you reach this step so clicking on the <b>
+   Complete</b> button
+3. Keep everything as default and <b>Next</b>, <b>Next</b> and <b>Next</b> and then <b>Install</b>
+4. After the installing process is completed, it needs to be added to the MongoDB’s bin folder (e.g.
+   `C:\Program Files\MongoDB\Server\<version>\bin`) to the `Path`
+5. Check the configuration by opening your cmd and run the command `mongod --version`. If you can see the result as the
+   screenshot below, the configuration is completed.

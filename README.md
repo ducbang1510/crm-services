@@ -1,8 +1,9 @@
 # CRM Project 🚀
 
-A modern **Customer Relationship Management (CRM)** backend built with **Java 17** and **Spring Boot 3.5.5**.
-
-It features secure **OAuth2 authorization**, a **MySQL** database, and interactive **Swagger API docs** for smooth development and integration.
+A lightweight, modular **Customer Relationship Management (CRM)** web application built with **Spring Boot 3.5.5** and
+**Java 17**. It provides a foundation for managing contacts, products, sales orders, and user accounts, etc. — with
+built-in
+support for file uploads, email notifications, and real-time communication.
 
 UI repository built with Angular for integration: https://github.com/luuthanhvan/CRM-new-version.git
 
@@ -10,55 +11,79 @@ UI repository built with Angular for integration: https://github.com/luuthanhvan
 
 ## ✨ Features
 
-* Customer management (CRUD APIs)
-* OAuth2 Authorization Server (secure login & tokens)
-* Role-based access control
-* RESTful API endpoints
-* Swagger-powered documentation
+* 🧱 Customer management (RESTful APIs)
+* ✉️ Email Notifications (Spring Mail)
+* 📂 File Uploads (MongoDB + GridFS)
+* ⏰ Background Tasks & Scheduling (Spring Batch / Cron)
+* 🔔 Real-Time Notifications (Socket.IO)
+* 🔐 Authentication & Authorization (OAuth2)
+* 🗃️ Database Design
+  * MySQL (Relational Data)
+  * MongoDB (File Storage)
+* 📑Swagger-powered documentation
 
 ---
 
 ## 🛠 Tech Stack
 
-* **Java**: 17
-* **Spring Boot**: 3.5.5
-* **MySQL**: 8.x
-* **OAuth2**: spring-boot-starter-oauth2-authorization-server
-* **API Docs**: springdoc-openapi-starter-webmvc-ui 2.8.5 (OpenAPI 3)
-* **Build Tool**: Maven
+| Category                          | Technology                                     |
+|-----------------------------------|------------------------------------------------|
+| **Backend Framework**             | Spring Boot 3.5 (Java 17)                      |
+| **Database (Relational)**         | MySQL 8+                                       |
+| **Database (Binary/File)**        | MongoDB 8.2.0 (GridFS)                         |
+| **Messaging / Real-Time**         | Socket.IO                                      |
+| **Email**                         | Spring Mail (Outlook SMTP / OAuth2)            |
+| **Build Tool**                    | Maven                                          |
+| **Security**                      | Spring Security with Spring Boot Oauth2 server |
+| **Batch & Scheduling** (Incoming) | Spring Batch, `@Scheduled`                     |
+| **Testing**  (Incoming)           | JUnit 5 / Postman Collections                  |
 
 ---
 
-## 🚀 Getting Started
+## 🧪 Getting Started
 
-### Prerequisites
+### 1️⃣ Prerequisites
 
-* Java 17+
-* Maven 3.9+
-* MySQL 8.x
+Please refer to `HELP.md` file for installing required items
 
-### Database Setup
+### 2️⃣ Run local app
 
-```sql
-CREATE DATABASE crm_db;
-```
+1. Create new schema in MySQL
 
-Update your `crm-services.properties` with DB credentials:
+    ```sh
+    CREATE SCHEMA IF NOT EXISTS crm_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+    ```
 
-```properties
-spring.datasource.username=db-user
-spring.datasource.password=db-password
-```
+2. Build the jar file
 
-### Run Application
+    ```sh
+    cd crm-services
+    mvn clean install
+    ```
 
-```bash
-mvn spring-boot:run
-```
+3. Copy properties files to target folder and update configuration
 
-App runs at **[http://localhost:8080](http://localhost:8080)**
+    ```sh
+    cd target
+    cp ..\src\main\resources\crm-services.properties (use 'copy' instead of 'cp' for Windows os)
+    ```
 
-### Populate Data and Quick Experience
+   Update `crm-services.properties` file
+
+    ```properties
+    spring.datasource.username=[USERNAME_MYSQL]
+    spring.datasource.password=[PASSWORD_MYSQL]
+    ```
+
+4. Start application
+
+    ```sh
+    java -jar crm-services-<version>-SNAPSHOT.jar
+    ```
+
+App runs at port 8080, Base API url **[http://localhost:8080/api/v1](http://localhost:8080/api/v1)**
+
+### 3️⃣ Populate Data and Quick Experience
 
 1. Populate data by `populate_data.sql` file
 
@@ -80,17 +105,7 @@ OAuth2 Authorization Server endpoints:
 * `/oauth2/jwks` – JWKS endpoint
 * `/oauth2/introspect` – Token introspection
 
----
-
-## 📑 API Documentation
-
-* Swagger UI → **[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
-* OpenAPI JSON → **[http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)**
-* The Swagger is included Authentication configuration, use button 'Authorize' and input below *Client ID/Client Secret* to login
-
----
-
-## 🔑 Sample OAuth2 Client Config (Authorization Code Grant)
+### 🔑 Sample OAuth2 Client Config (Authorization Code Grant)
 
 **Client Info (for testing):**
 
@@ -98,11 +113,6 @@ OAuth2 Authorization Server endpoints:
 * **Client Secret**: `secret` (for UI) and `swagger-secret` (for swagger)
 * **Redirect URI**: `http://localhost:4200`
 * **Scopes**: `api:read api:write openid profile`
-
-**OAuth2 Endpoints:**
-
-* **Authorization URL**: `http://localhost:8080/oauth2/authorize`
-* **Token URL**: `http://localhost:8080/oauth2/token`
 
 ### Example (Postman Setup)
 
@@ -118,10 +128,9 @@ OAuth2 Authorization Server endpoints:
 
 ---
 
-## 🏗 Build
+## 📑 API Documentation
 
-```bash
-mvn clean install
-```
-
-JAR available in `target/` directory.
+* Swagger UI → **[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
+* OpenAPI JSON → **[http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)**
+* The Swagger is included Authentication configuration, use button 'Authorize' and input above *Client ID/Client Secret*
+  to login
