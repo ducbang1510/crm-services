@@ -47,10 +47,10 @@ public class FileController extends BaseController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('STAFF')")
     public MappingJacksonValue uploadFile(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("entityType") String entityType,
-            @RequestParam("entityFk") Long entityFk,
-            @RequestParam(value = "description", required = false) String description) throws IOException {
+        @RequestParam("file") MultipartFile file,
+        @RequestParam("entityType") String entityType,
+        @RequestParam("entityFk") Long entityFk,
+        @RequestParam(value = "description", required = false) String description) throws IOException {
 
         Long uploadedBy = getPkUserLogged(); // implement according to your security
         FileAttachmentDto dto = fileStorageService.store(file, entityType, entityFk, uploadedBy, description);
@@ -62,24 +62,24 @@ public class FileController extends BaseController {
     @PreAuthorize("hasAnyAuthority('STAFF')")
     public ResponseEntity<Resource> downloadFile(@PathVariable Long id) throws IOException {
         FileAttachment meta = fileStorageService.findMetadata(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         GridFsResource resource = fileStorageService.getGridFsResource(meta.getMongoFileId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(meta.getContentType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + meta.getFileName() + "\"")
-                .body(new InputStreamResource(resource.getInputStream()));
+            .contentType(MediaType.parseMediaType(meta.getContentType()))
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + meta.getFileName() + "\"")
+            .body(new InputStreamResource(resource.getInputStream()));
     }
 
     @GetMapping("/entity/{entityType}/{entityFk}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('STAFF')")
     public MappingJacksonValue listFilesByEntity(
-            @PathVariable String entityType,
-            @PathVariable Long entityFk) {
+        @PathVariable String entityType,
+        @PathVariable Long entityFk) {
         List<FileAttachmentDto> list = fileStorageService.listForEntity(entityType, entityFk)
-                .stream().map(FileAttachmentDto::from).collect(Collectors.toList());
+            .stream().map(FileAttachmentDto::from).collect(Collectors.toList());
         return new MappingJacksonValue(list);
     }
 

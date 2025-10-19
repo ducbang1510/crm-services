@@ -84,12 +84,12 @@ public class ProductController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STAFF', 'USER')")
     public MappingJacksonValue retrieveProductList(
-            @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "name:*Monitor*") String filter,
-            @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "pk,name") String fields,
-            @RequestParam(required = false, defaultValue = "0") int pageNumber,
-            @RequestParam(required = false, defaultValue = "0") int pageSize,
-            @RequestParam(required = false, defaultValue = "pk") String sortColumn,
-            @RequestParam(required = false, defaultValue = "ASC") String sortOrder) {
+        @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "name:*Monitor*") String filter,
+        @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "pk,name") String fields,
+        @RequestParam(required = false, defaultValue = "0") int pageNumber,
+        @RequestParam(required = false, defaultValue = "0") int pageSize,
+        @RequestParam(required = false, defaultValue = "pk") String sortColumn,
+        @RequestParam(required = false, defaultValue = "ASC") String sortOrder) {
         log.info("Start retrieveProductList");
         ResponseDTO listOfProduct = productService.getListOfProduct(filter, pageSize, pageNumber, sortColumn, sortOrder, fields);
         log.info("End retrieveProductList");

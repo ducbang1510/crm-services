@@ -81,8 +81,8 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
             }
         } catch (Exception e) {
             throw new CRMException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE,
-                    new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_SALES_ORDER_ERROR));
+                MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE,
+                new ResponseDTO(MessageConstants.ERROR_STATUS, MessageConstants.FETCHING_LIST_OF_SALES_ORDER_ERROR));
         }
 
         return result;
@@ -110,7 +110,7 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
         if (orderPk != null) {
             SalesOrderQueryDTO salesOrderQueryDTO = salesOrderRepository.getSalesOrderDetailsByPk(orderPk);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_SALES_ORDER_SUCCESS,
-                    salesOrderMapper.mappingSalesOrderQueryDTOToSalesOrderDTO(salesOrderQueryDTO));
+                salesOrderMapper.mappingSalesOrderQueryDTOToSalesOrderDTO(salesOrderQueryDTO));
         }
 
         return result;
@@ -119,15 +119,15 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
     public ResponseDTO updateSalesOrderDetails(Long orderPk, Long creatorFk, SalesOrderDTO salesOrderDTO) {
         ResponseDTO result;
         SalesOrder updatedOrder = salesOrderRepository.findByPk(orderPk)
-                .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
+            .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
         if (updatedOrder.getCreator().getPk().equals(creatorFk)) {
             // TODO: Will remove save info by name in future
             User userAssignedTo = salesOrderDTO.getAssignedToUserFk() == null
-                    ? userRepository.getUsersByNames(salesOrderDTO.getAssignedTo()).get(0)
-                    : userRepository.findUserByPk(salesOrderDTO.getAssignedToUserFk());
+                ? userRepository.getUsersByNames(salesOrderDTO.getAssignedTo()).get(0)
+                : userRepository.findUserByPk(salesOrderDTO.getAssignedToUserFk());
             Contact contact = salesOrderDTO.getContactFk() == null
-                    ? contactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0)
-                    : contactRepository.findByPk(salesOrderDTO.getContactFk()).orElse(null);
+                ? contactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0)
+                : contactRepository.findByPk(salesOrderDTO.getContactFk()).orElse(null);
 
             updatedOrder = salesOrderMapper.mappingSalesOrderDTOToEntity(salesOrderDTO, null, userAssignedTo, contact, false);
             salesOrderRepository.save(updatedOrder);
@@ -144,11 +144,11 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
         try {
             // TODO: Will remove save info by name in future
             User userAssignedTo = salesOrderDTO.getAssignedToUserFk() == null
-                    ? userRepository.getUsersByNames(salesOrderDTO.getAssignedTo()).get(0)
-                    : userRepository.findUserByPk(salesOrderDTO.getAssignedToUserFk());
+                ? userRepository.getUsersByNames(salesOrderDTO.getAssignedTo()).get(0)
+                : userRepository.findUserByPk(salesOrderDTO.getAssignedToUserFk());
             Contact contact = salesOrderDTO.getContactFk() == null
-                    ? contactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0)
-                    : contactRepository.findByPk(salesOrderDTO.getContactFk()).orElse(null);
+                ? contactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0)
+                : contactRepository.findByPk(salesOrderDTO.getContactFk()).orElse(null);
 
             SalesOrder saveSalesOrder = salesOrderMapper.mappingSalesOrderDTOToEntity(salesOrderDTO, creatorUser, userAssignedTo, contact, true);
             salesOrderRepository.save(saveSalesOrder);
@@ -162,7 +162,7 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
     public ResponseDTO deleteSalesOrderDetails(Long orderPk, Long creatorFk) {
         ResponseDTO result;
         SalesOrder deletedOrder = salesOrderRepository.findByPk(orderPk)
-                .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
+            .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
         if (deletedOrder.getCreator().getPk().equals(creatorFk)) {
             salesOrderRepository.delete(deletedOrder);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_SALES_ORDER_SUCCESS);
@@ -191,7 +191,7 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
         ResponseDTO result;
         List<SalesOrder> deletedListOrders = salesOrderRepository.getSaleOrdersByOrderPks(orderPks);
         boolean hasOtherCreator = deletedListOrders.stream()
-                .anyMatch(i -> !creatorFk.equals(i.getCreator().getPk()));
+            .anyMatch(i -> !creatorFk.equals(i.getCreator().getPk()));
         if (!hasOtherCreator && orderPks.size() == deletedListOrders.size()) {
             salesOrderRepository.deleteAllById(deletedListOrders.stream().map(SalesOrder::getPk).toList());
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_LIST_OF_SALES_ORDERS_SUCCESS);

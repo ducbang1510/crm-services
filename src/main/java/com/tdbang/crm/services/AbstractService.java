@@ -30,11 +30,11 @@ import com.tdbang.crm.utils.AppConstants;
 @Service
 public abstract class AbstractService<S> {
 
-    private SpecificationFilterUtil<S> filterUtil;
+    private final SpecificationFilterUtil<S> filterUtil;
 
-    private CustomRepository<S> repository;
+    private final CustomRepository<S> repository;
 
-    public AbstractService(SpecificationFilterUtil<S> filterUtil, CustomRepository<S> repository) {
+    protected AbstractService(SpecificationFilterUtil<S> filterUtil, CustomRepository<S> repository) {
         this.filterUtil = filterUtil;
         this.repository = repository;
     }
@@ -58,56 +58,8 @@ public abstract class AbstractService<S> {
             return getResponse(filter, sortColumn, sortOrder, null == fields ? new HashSet<>() : fields);
         } else {
             return getPagedResponse(filter, pageSize, pageNumber, sortColumn, sortOrder,
-                    null == fields ? new HashSet<>() : fields);
+                null == fields ? new HashSet<>() : fields);
         }
-    }
-
-    private List<Map<String, Object>> find(Set<String> fields) {
-        return repository.findAll(getFields(fields));
-    }
-
-    private List<Map<String, Object>> find(Specification<S> specification, Set<String> fields) {
-        return repository.findAll(specification, getFields(fields));
-    }
-
-    private List<Map<String, Object>> find(Sort sort, Set<String> fields) {
-        return repository.findAll(sort, getFields(fields));
-    }
-
-    private List<Map<String, Object>> find(Specification<S> specification, Sort sort, Set<String> fields) {
-        return repository.findAll(specification, sort, getFields(fields));
-    }
-
-    private Page<Map<String, Object>> find(Pageable pageable, Set<String> fields) {
-        return repository.findAll(pageable, getFields(fields));
-    }
-
-    private Page<Map<String, Object>> find(Specification<S> specification, Pageable pageable, Set<String> fields) {
-        return repository.findAll(specification, pageable, getFields(fields));
-    }
-
-    private List<S> findEntityResult(Set<String> fields) {
-        return repository.findAllEntityResult(getFields(fields));
-    }
-
-    private List<S> findEntityResult(Specification<S> specification, Set<String> fields) {
-        return repository.findAllEntityResult(specification, getFields(fields));
-    }
-
-    private List<S> findEntityResult(Sort sort, Set<String> fields) {
-        return repository.findAllEntityResult(sort, getFields(fields));
-    }
-
-    private List<S> findEntityResult(Specification<S> specification, Sort sort, Set<String> fields) {
-        return repository.findAllEntityResult(specification, sort, getFields(fields));
-    }
-
-    private Page<S> findEntityResult(Pageable pageable, Set<String> fields) {
-        return repository.findAllEntityResult(pageable, getFields(fields));
-    }
-
-    private Page<S> findEntityResult(Specification<S> specification, Pageable pageable, Set<String> fields) {
-        return repository.findAllEntityResult(specification, pageable, getFields(fields));
     }
 
     private Specification<S> buildSpecification(String filter) {
@@ -126,7 +78,7 @@ public abstract class AbstractService<S> {
 
     private Sort getSort(String sortColumn, String sortOrder) {
         if (StringUtils.hasLength(sortOrder)
-                && StringUtils.startsWithIgnoreCase(sortOrder, Sort.Direction.DESC.name())) {
+            && StringUtils.startsWithIgnoreCase(sortOrder, Sort.Direction.DESC.name())) {
             return Sort.by(getSortColumn(sortColumn)).descending();
         } else {
             return Sort.by(getSortColumn(sortColumn));
@@ -198,6 +150,30 @@ public abstract class AbstractService<S> {
         return records;
     }
 
+    private Page<Map<String, Object>> find(Pageable pageable, Set<String> fields) {
+        return repository.findAll(pageable, getFields(fields));
+    }
+
+    private Page<Map<String, Object>> find(Specification<S> specification, Pageable pageable, Set<String> fields) {
+        return repository.findAll(specification, pageable, getFields(fields));
+    }
+
+    private List<Map<String, Object>> find(Set<String> fields) {
+        return repository.findAll(getFields(fields));
+    }
+
+    private List<Map<String, Object>> find(Specification<S> specification, Set<String> fields) {
+        return repository.findAll(specification, getFields(fields));
+    }
+
+    private List<Map<String, Object>> find(Sort sort, Set<String> fields) {
+        return repository.findAll(sort, getFields(fields));
+    }
+
+    private List<Map<String, Object>> find(Specification<S> specification, Sort sort, Set<String> fields) {
+        return repository.findAll(specification, sort, getFields(fields));
+    }
+
     private Page<S> findEntityRecords(String filter, Pageable pageable, Set<String> fields) {
         Page<S> records;
         if (StringUtils.hasLength(filter)) {
@@ -231,9 +207,33 @@ public abstract class AbstractService<S> {
         return records;
     }
 
+    private Page<S> findEntityResult(Pageable pageable, Set<String> fields) {
+        return repository.findAllEntityResult(pageable, getFields(fields));
+    }
+
+    private Page<S> findEntityResult(Specification<S> specification, Pageable pageable, Set<String> fields) {
+        return repository.findAllEntityResult(specification, pageable, getFields(fields));
+    }
+
+    private List<S> findEntityResult(Set<String> fields) {
+        return repository.findAllEntityResult(getFields(fields));
+    }
+
+    private List<S> findEntityResult(Specification<S> specification, Set<String> fields) {
+        return repository.findAllEntityResult(specification, getFields(fields));
+    }
+
+    private List<S> findEntityResult(Sort sort, Set<String> fields) {
+        return repository.findAllEntityResult(sort, getFields(fields));
+    }
+
+    private List<S> findEntityResult(Specification<S> specification, Sort sort, Set<String> fields) {
+        return repository.findAllEntityResult(specification, sort, getFields(fields));
+    }
+
     private String getSortColumn(String sortColumn) {
         return (Arrays.asList(getEntityClass().getDeclaredFields()).stream()
-                .anyMatch(f -> f.getName().equals(sortColumn)) ? sortColumn : getDefaultSortColumn());
+            .anyMatch(f -> f.getName().equals(sortColumn)) ? sortColumn : getDefaultSortColumn());
     }
 
     private Specification<S> build(String filter) {

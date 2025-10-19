@@ -18,8 +18,8 @@ UI repository built with Angular for integration: https://github.com/luuthanhvan
 * 🔔 Real-Time Notifications (Socket.IO)
 * 🔐 Authentication & Authorization (OAuth2)
 * 🗃️ Database Design
-  * MySQL (Relational Data)
-  * MongoDB (File Storage)
+    * MySQL (Relational Data)
+    * MongoDB (File Storage)
 * 📑Swagger-powered documentation
 
 ---
@@ -33,7 +33,7 @@ UI repository built with Angular for integration: https://github.com/luuthanhvan
 | **Database (Binary/File)**        | MongoDB 8.2.0 (GridFS)                         |
 | **Messaging / Real-Time**         | Socket.IO                                      |
 | **Email**                         | Spring Mail (Basic Auth)                       |
-| **Build Tool**                    | Maven                                          |
+| **Build Tool**                    | Maven 3.9                                      |
 | **Security**                      | Spring Security with Spring Boot Oauth2 server |
 | **Batch & Scheduling** (Incoming) | Spring Batch, `@Scheduled`                     |
 | **Testing**  (Incoming)           | JUnit 5 / Postman Collections                  |

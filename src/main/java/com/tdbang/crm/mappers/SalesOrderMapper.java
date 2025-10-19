@@ -109,8 +109,9 @@ public class SalesOrderMapper {
         salesOrder.setAssignedTo(userAssignedTo);
         salesOrder.setDescription(salesOrderDTO.getDescription());
         if (isCreateNew) {
-            if (creatorUser != null)
+            if (creatorUser != null) {
                 salesOrder.setCreator(creatorUser);
+            }
         } else {
             salesOrder.setUpdatedOn(new Date());
         }

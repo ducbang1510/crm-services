@@ -38,19 +38,15 @@ public class SecurityService implements InitializingBean {
         // Handle JWT authentication
         if (authentication.getPrincipal() instanceof Jwt jwt) {
             return jwt.getSubject(); // This should be the username
-        }
-        // Handle other authentication types
-        else if (authentication.getPrincipal() instanceof String principal) {
+        } else if (authentication.getPrincipal() instanceof String principal) {
             return principal;
-        }
-        // Handle UserDetails
-        else if (authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User user) {
+        } else if (authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User user) {
             return user.getUsername();
         }
 
         throw new IllegalStateException("Unknown principal type: " +
-                (authentication.getPrincipal() != null ?
-                        authentication.getPrincipal().getClass().getName() : "null"));
+            (authentication.getPrincipal() != null ?
+                authentication.getPrincipal().getClass().getName() : "null"));
     }
 
     public List<GrantedAuthority> getGrantedAuthority(User user) {

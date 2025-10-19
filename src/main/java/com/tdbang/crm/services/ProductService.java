@@ -61,7 +61,7 @@ public class ProductService extends AbstractService<Product> {
             }
         } catch (Exception e) {
             throw new CRMException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE, e.getMessage());
+                MessageConstants.INTERNAL_ERROR_CODE, MessageConstants.INTERNAL_ERROR_MESSAGE, e.getMessage());
         }
 
         return result;
@@ -84,7 +84,7 @@ public class ProductService extends AbstractService<Product> {
         ResponseDTO result = new ResponseDTO();
         if (productPk != null) {
             Product product = productRepository.findByPk(productPk)
-                    .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
+                .orElseThrow(() -> new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, MessageConstants.NOT_FOUND_MESSAGE));
             ProductDTO productDTO = productMapper.mappingProductEntityToProductDTO(product);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_CONTACT_SUCCESS, productDTO);
         }

@@ -54,8 +54,9 @@ public class ProductMapper {
         product.setIsActive(productDTO.getIsActive());
         product.setDescription(productDTO.getDescription());
         product.setName(productDTO.getName());
-        if (isCreateNew)
+        if (isCreateNew) {
             product.setUpdatedOn(new Date());
+        }
         return product;
     }
 

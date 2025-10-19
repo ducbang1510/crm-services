@@ -85,12 +85,12 @@ public class SalesOderController extends BaseController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue retrieveOrderList(
-            @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "contact.contactName:John,subject:SubjectTxt") String filter,
-            @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "subject,status") String fields,
-            @RequestParam(required = false, defaultValue = "0") int pageNumber,
-            @RequestParam(required = false, defaultValue = "0") int pageSize,
-            @RequestParam(required = false, defaultValue = "pk") String sortColumn,
-            @RequestParam(required = false, defaultValue = "ASC") String sortOrder) {
+        @RequestParam(required = false) @Parameter(description = "Optional filter on fields", example = "contact.contactName:John,subject:SubjectTxt") String filter,
+        @RequestParam(required = false) @Parameter(description = "Optional fields to be included in the response", example = "subject,status") String fields,
+        @RequestParam(required = false, defaultValue = "0") int pageNumber,
+        @RequestParam(required = false, defaultValue = "0") int pageSize,
+        @RequestParam(required = false, defaultValue = "pk") String sortColumn,
+        @RequestParam(required = false, defaultValue = "ASC") String sortOrder) {
         log.info("Start retrieveOrderList");
         ResponseDTO listOfOrder = salesOrderService.getListOfOrder(filter, pageSize, pageNumber, sortColumn, sortOrder, fields);
         log.info("End retrieveOrderList");

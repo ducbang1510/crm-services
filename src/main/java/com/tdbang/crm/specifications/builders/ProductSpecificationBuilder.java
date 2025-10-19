@@ -19,8 +19,8 @@ public class ProductSpecificationBuilder extends SpecificationBuilder<Product> {
         Specification<Product> result = new ProductSpecification(getParams().get(0));
         for (int i = 1; i < getParams().size(); i++) {
             result = getParams().get(i).isOrPredicate()
-                    ? Specification.anyOf(result, new ProductSpecification(getParams().get(i)))
-                    : Specification.allOf(result, new ProductSpecification(getParams().get(i)));
+                ? Specification.anyOf(result, new ProductSpecification(getParams().get(i)))
+                : Specification.allOf(result, new ProductSpecification(getParams().get(i)));
         }
         return result;
     }

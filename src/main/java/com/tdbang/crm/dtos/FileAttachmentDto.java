@@ -37,17 +37,17 @@ public class FileAttachmentDto {
 
     public static FileAttachmentDto from(FileAttachment entity) {
         return new FileAttachmentDto(
-                entity.getPk(),
-                entity.getEntityType(),
-                entity.getEntityFk(),
-                entity.getFileName(),
-                entity.getContentType(),
-                entity.getSize(),
-                entity.getMongoFileId(),
-                entity.getUploadedBy(),
-                entity.getUploadedOn(),
-                entity.getDescription(),
-                entity.getIsActive()
+            entity.getPk(),
+            entity.getEntityType(),
+            entity.getEntityFk(),
+            entity.getFileName(),
+            entity.getContentType(),
+            entity.getSize(),
+            entity.getMongoFileId(),
+            entity.getUploadedBy(),
+            entity.getUploadedOn(),
+            entity.getDescription(),
+            entity.getIsActive()
         );
     }
 }

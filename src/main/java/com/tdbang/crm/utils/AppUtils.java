@@ -31,15 +31,15 @@ public class AppUtils {
         return fieldsSet;
     }
 
-    public static Sort getPageableSort(Class<?> tClass, String methodName, String sortColumn, String sortOrder) {
+    public static Sort getPageableSort(Class<?> tclass, String methodName, String sortColumn, String sortOrder) {
         Sort sort = null;
-        Method method = Arrays.stream(tClass.getDeclaredMethods()).filter(m -> methodName.equalsIgnoreCase(m.getName()))
-                .findFirst().orElse(null);
+        Method method = Arrays.stream(tclass.getDeclaredMethods()).filter(m -> methodName.equalsIgnoreCase(m.getName()))
+            .findFirst().orElse(null);
         if (method != null && method.isAnnotationPresent(SortableFields.class)) {
             SortableFields sortableFields = method.getAnnotation(SortableFields.class);
             String sortValue = sortableFields.defaultColumn();
             if (!StringUtils.isNullOrEmpty(sortColumn) &&
-                    Arrays.asList(sortableFields.columns().split(",")).contains(sortColumn)) {
+                Arrays.asList(sortableFields.columns().split(",")).contains(sortColumn)) {
                 sortValue = sortColumn;
             }
 

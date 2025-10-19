@@ -24,27 +24,27 @@ public class OpenApiConfig {
         final String securitySchemeName = "oauth2";
 
         return new OpenAPI()
-                .info(new Info()
-                        .title("CRM Services API")
-                        .version("v1")
-                        .description("CRM backend API with OAuth2 secured endpoints"))
-                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
-                .components(new io.swagger.v3.oas.models.Components()
-                        .addSecuritySchemes(securitySchemeName,
-                                new SecurityScheme()
-                                        .type(SecurityScheme.Type.OAUTH2)
-                                        .description("OAuth2 Authorization Code flow")
-                                        .flows(new OAuthFlows()
-                                                .authorizationCode(new OAuthFlow()
-                                                        .authorizationUrl("http://localhost:8080/oauth2/authorize")
-                                                        .tokenUrl("http://localhost:8080/oauth2/token")
-                                                        .scopes(new Scopes()
-                                                                .addString("api:read", "Read access to API")
-                                                                .addString("api:write", "Write access to API")
-                                                        )
-                                                )
-                                        )
+            .info(new Info()
+                .title("CRM Services API")
+                .version("v1")
+                .description("CRM backend API with OAuth2 secured endpoints"))
+            .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
+            .components(new io.swagger.v3.oas.models.Components()
+                .addSecuritySchemes(securitySchemeName,
+                    new SecurityScheme()
+                        .type(SecurityScheme.Type.OAUTH2)
+                        .description("OAuth2 Authorization Code flow")
+                        .flows(new OAuthFlows()
+                            .authorizationCode(new OAuthFlow()
+                                .authorizationUrl("http://localhost:8080/oauth2/authorize")
+                                .tokenUrl("http://localhost:8080/oauth2/token")
+                                .scopes(new Scopes()
+                                    .addString("api:read", "Read access to API")
+                                    .addString("api:write", "Write access to API")
+                                )
+                            )
                         )
-                );
+                )
+            );
     }
 }

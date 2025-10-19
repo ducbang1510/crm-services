@@ -49,8 +49,8 @@ public class SocketEventService {
 
     public void broadcastExcept(String eventName, Object data, UUID senderId) {
         socketIOServer.getBroadcastOperations().getClients().stream()
-                .filter(client -> !client.getSessionId().equals(senderId))
-                .forEach(client -> client.sendEvent(eventName, data));
+            .filter(client -> !client.getSessionId().equals(senderId))
+            .forEach(client -> client.sendEvent(eventName, data));
     }
 
     public Set<String> getAllRooms() {

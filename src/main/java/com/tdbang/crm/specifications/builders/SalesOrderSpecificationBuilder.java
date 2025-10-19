@@ -19,8 +19,8 @@ public class SalesOrderSpecificationBuilder extends SpecificationBuilder<SalesOr
         Specification<SalesOrder> result = new SalesOrderSpecification(getParams().get(0));
         for (int i = 1; i < getParams().size(); i++) {
             result = getParams().get(i).isOrPredicate()
-                    ? Specification.anyOf(result, new SalesOrderSpecification(getParams().get(i)))
-                    : Specification.allOf(result, new SalesOrderSpecification(getParams().get(i)));
+                ? Specification.anyOf(result, new SalesOrderSpecification(getParams().get(i)))
+                : Specification.allOf(result, new SalesOrderSpecification(getParams().get(i)));
         }
         return result;
     }

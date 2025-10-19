@@ -19,8 +19,8 @@ public class UserSpecificationBuilder extends SpecificationBuilder<User> {
         Specification<User> result = new UserSpecification(getParams().get(0));
         for (int i = 1; i < getParams().size(); i++) {
             result = getParams().get(i).isOrPredicate()
-                    ? Specification.anyOf(result, new UserSpecification(getParams().get(i)))
-                    : Specification.allOf(result, new UserSpecification(getParams().get(i)));
+                ? Specification.anyOf(result, new UserSpecification(getParams().get(i)))
+                : Specification.allOf(result, new UserSpecification(getParams().get(i)));
         }
         return result;
     }

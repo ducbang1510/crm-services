@@ -44,8 +44,8 @@ public class JwtConfig {
         return context -> {
             if (context.getPrincipal() != null && context.getPrincipal().getAuthorities() != null) {
                 var authorities = context.getPrincipal().getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.toList());
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
 
                 context.getClaims().claim(ROLE_CLAIM_NAME, authorities);
             }

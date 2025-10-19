@@ -20,13 +20,13 @@ public interface NotificationMessageRepository extends JpaRepository<Notificatio
     NotificationMessage findByPk(Long pk);
 
     @Query("SELECT new com.tdbang.crm.dtos.NotificationMessageDTO(nm.pk, nm.senderUserFk, sender.name,"
-            + " nm.recipientUserFk, recipient.name,"
-            + " nm.type, nm.message, nm.notificationObjectFk, nm.unread, nm.createdOn)"
-            + " FROM NotificationMessage nm"
-            + " JOIN User sender ON nm.senderUserFk = sender.pk"
-            + " JOIN User recipient ON nm.recipientUserFk = recipient.pk"
-            + " WHERE nm.recipientUserFk = :userFk"
-            + " ORDER BY nm.createdOn DESC")
+        + " nm.recipientUserFk, recipient.name,"
+        + " nm.type, nm.message, nm.notificationObjectFk, nm.unread, nm.createdOn)"
+        + " FROM NotificationMessage nm"
+        + " JOIN User sender ON nm.senderUserFk = sender.pk"
+        + " JOIN User recipient ON nm.recipientUserFk = recipient.pk"
+        + " WHERE nm.recipientUserFk = :userFk"
+        + " ORDER BY nm.createdOn DESC")
     Page<NotificationMessageDTO> retrieveNotificationMessagesByUserFk(Long userFk, Pageable pageable);
 
     @Query("SELECT COUNT(nm.pk) FROM NotificationMessage nm WHERE nm.recipientUserFk = :userFk AND nm.unread = TRUE")

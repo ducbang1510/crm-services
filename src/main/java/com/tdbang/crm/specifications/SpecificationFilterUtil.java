@@ -24,8 +24,8 @@ public class SpecificationFilterUtil<S> {
                 String key = s.split(operator)[0].trim();
                 String value = s.split(operator)[1].trim();
                 builder.with(orPredicate(key) ? SearchOperation.OR_PREDICATE_FLAG : StringUtils.EMPTY, stripOrPredicate(key), operator,
-                        stripPrefixSuffix(value), hasPrefix(value) ? SearchOperation.ZERO_OR_MORE_REGEX : StringUtils.EMPTY,
-                        hasSuffix(value) ? SearchOperation.ZERO_OR_MORE_REGEX : StringUtils.EMPTY);
+                    stripPrefixSuffix(value), hasPrefix(value) ? SearchOperation.ZERO_OR_MORE_REGEX : StringUtils.EMPTY,
+                    hasSuffix(value) ? SearchOperation.ZERO_OR_MORE_REGEX : StringUtils.EMPTY);
             }
         }
         return builder;

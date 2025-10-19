@@ -40,7 +40,7 @@ public class DatabaseJwkSource {
 
     public JWKSource<SecurityContext> getJwkSource(String kid) {
         JwkEntity jwkEntity = jpaJwkRepository.findById(kid)
-                .orElseGet(this::generateAndSaveNewKey);
+            .orElseGet(this::generateAndSaveNewKey);
 
         try {
             RSAKey rsaKey = RSAKey.parse(jwkEntity.getJwkJson());
@@ -80,9 +80,9 @@ public class DatabaseJwkSource {
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
         return new RSAKey.Builder(publicKey)
-                .privateKey(privateKey)
-                .keyID("default-key")
-                .build();
+            .privateKey(privateKey)
+            .keyID("default-key")
+            .build();
     }
 
     private KeyPair generateRsaKeyPair() {

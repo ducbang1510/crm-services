@@ -102,8 +102,9 @@ public class ContactMapper {
         contact.setAddress(contactDTO.getAddress());
         contact.setDescription(contactDTO.getDescription());
         if (isCreateNew) {
-            if (creatorUser != null)
+            if (creatorUser != null) {
                 contact.setCreator(creatorUser);
+            }
         } else {
             contact.setUpdatedOn(new Date());
         }

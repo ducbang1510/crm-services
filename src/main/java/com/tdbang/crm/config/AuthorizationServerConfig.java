@@ -89,28 +89,28 @@ public class AuthorizationServerConfig implements InitializingBean {
     private void initializeDefaultClients(RegisteredClientRepository clientRepository) {
         if (clientRepository.findByClientId(clientId) == null) {
             RegisteredClient crmAppClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                    .clientId(clientId)
-                    .clientSecret(clientSecret)
-                    .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                    .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
-                    .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                    .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                    .redirectUri(redirectURI)
-                    .scope(OidcScopes.OPENID)
-                    .scope(OidcScopes.PROFILE)
-                    .scope("api:read")
-                    .scope("api:write")
-                    .clientSettings(ClientSettings.builder()
-                            .requireProofKey(false)
-                            .requireAuthorizationConsent(false)
-                            .build())
-                    .tokenSettings(TokenSettings.builder()
-                            .accessTokenTimeToLive(Duration.ofMinutes(accessTokenTimeToLive))
-                            .refreshTokenTimeToLive(Duration.ofMinutes(refreshTokenTimeToLive))
-                            .authorizationCodeTimeToLive(Duration.ofMinutes(authCodeTimeToLive))
-                            .reuseRefreshTokens(false)
-                            .build())
-                    .build();
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .redirectUri(redirectURI)
+                .scope(OidcScopes.OPENID)
+                .scope(OidcScopes.PROFILE)
+                .scope("api:read")
+                .scope("api:write")
+                .clientSettings(ClientSettings.builder()
+                    .requireProofKey(false)
+                    .requireAuthorizationConsent(false)
+                    .build())
+                .tokenSettings(TokenSettings.builder()
+                    .accessTokenTimeToLive(Duration.ofMinutes(accessTokenTimeToLive))
+                    .refreshTokenTimeToLive(Duration.ofMinutes(refreshTokenTimeToLive))
+                    .authorizationCodeTimeToLive(Duration.ofMinutes(authCodeTimeToLive))
+                    .reuseRefreshTokens(false)
+                    .build())
+                .build();
 
             clientRepository.save(crmAppClient);
         }
@@ -120,21 +120,21 @@ public class AuthorizationServerConfig implements InitializingBean {
     private void initializeSwaggerClient(RegisteredClientRepository clientRepository) {
         if (clientRepository.findByClientId(swaggerClientId) == null) {
             RegisteredClient swaggerClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                    .clientId(swaggerClientId)
-                    .clientSecret(swaggerClientSecret)
-                    .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                    .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
-                    .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                    .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                    .redirectUri("http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html")
-                    .redirectUri("http://localhost:8080/swagger-ui/oauth2-redirect.html")
-                    .scope("api:read")
-                    .scope("api:write")
-                    .clientSettings(ClientSettings.builder()
-                            .requireProofKey(false)
-                            .requireAuthorizationConsent(false)
-                            .build())
-                    .build();
+                .clientId(swaggerClientId)
+                .clientSecret(swaggerClientSecret)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .redirectUri("http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html")
+                .redirectUri("http://localhost:8080/swagger-ui/oauth2-redirect.html")
+                .scope("api:read")
+                .scope("api:write")
+                .clientSettings(ClientSettings.builder()
+                    .requireProofKey(false)
+                    .requireAuthorizationConsent(false)
+                    .build())
+                .build();
             clientRepository.save(swaggerClient);
         }
     }
@@ -142,15 +142,15 @@ public class AuthorizationServerConfig implements InitializingBean {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer("http://localhost:8080")
-                .authorizationEndpoint("/oauth2/authorize")
-                .tokenEndpoint("/oauth2/token")
-                .tokenIntrospectionEndpoint("/oauth2/introspect")
-                .tokenRevocationEndpoint("/oauth2/revoke")
-                .jwkSetEndpoint("/oauth2/jwks")
-                .oidcUserInfoEndpoint("/userinfo")
-                .oidcClientRegistrationEndpoint("/connect/register")
-                .build();
+            .issuer("http://localhost:8080")
+            .authorizationEndpoint("/oauth2/authorize")
+            .tokenEndpoint("/oauth2/token")
+            .tokenIntrospectionEndpoint("/oauth2/introspect")
+            .tokenRevocationEndpoint("/oauth2/revoke")
+            .jwkSetEndpoint("/oauth2/jwks")
+            .oidcUserInfoEndpoint("/userinfo")
+            .oidcClientRegistrationEndpoint("/connect/register")
+            .build();
     }
 
     @Bean

@@ -46,7 +46,7 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request) {
         log.error(e.getMessage(), e);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT.value(),
-                MessageConstants.CONFLICT_CODE, e.getMessage(), request.getRequestURI());
+            MessageConstants.CONFLICT_CODE, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
@@ -61,7 +61,22 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException e, HttpServletRequest request) {
         log.error(e.getMessage(), e);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(),
-                MessageConstants.NOT_FOUND_CODE, e.getMessage(), request.getRequestURI());
+            MessageConstants.NOT_FOUND_CODE, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    /**
+     * Handle Entity Not Found Exception method.
+     *
+     * @param e       NoResourceFoundException
+     * @param request HttpServletRequest
+     * @return Response Entity
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException e, HttpServletRequest request) {
+        log.error(e.getMessage(), e);
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(),
+            MessageConstants.NOT_FOUND_CODE, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
@@ -76,7 +91,7 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException e, HttpServletRequest request) {
         log.error(e.getMessage(), e);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
-                MessageConstants.BAD_REQUEST_CODE, e.getMessage(), request.getRequestURI());
+            MessageConstants.BAD_REQUEST_CODE, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
@@ -91,7 +106,7 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<Object> handleJsonException(JacksonException e, HttpServletRequest request) {
         log.error(e.getMessage(), e);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(),
-                MessageConstants.BAD_REQUEST_CODE, e.getMessage(), request.getRequestURI());
+            MessageConstants.BAD_REQUEST_CODE, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
@@ -106,7 +121,7 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e, HttpServletRequest request) {
         log.error(e.getMessage());
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN.value(),
-                MessageConstants.FORBIDDEN_CODE, e.getMessage(), request.getRequestURI());
+            MessageConstants.FORBIDDEN_CODE, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 
@@ -121,7 +136,7 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<Object> handleGenericException(Exception e, HttpServletRequest request) {
         log.error(e.getMessage(), e);
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                MessageConstants.INTERNAL_ERROR_CODE, e.getMessage(), request.getRequestURI());
+            MessageConstants.INTERNAL_ERROR_CODE, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
@@ -136,7 +151,7 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ErrorResponse> handleCRMException(CRMException e, HttpServletRequest request) {
         log.error(e.getMessage(), e);
         ErrorResponse errorResponse = new ErrorResponse(e.getStatus().value(),
-                e.getErrorCode(), e.getMessage(), request.getRequestURI(), e.getDetails());
+            e.getErrorCode(), e.getMessage(), request.getRequestURI(), e.getDetails());
         return ResponseEntity.status(e.getStatus()).body(errorResponse);
     }
 
@@ -151,7 +166,7 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ErrorResponse> handleHttpClientErrorException(HttpClientErrorException e, HttpServletRequest request) {
         log.error(e.getMessage(), e);
         ErrorResponse errorResponse = new ErrorResponse(e.getStatusCode().value(),
-                MessageConstants.ERROR_CODE, e.getMessage(), request.getRequestURI());
+            MessageConstants.ERROR_CODE, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(e.getStatusCode()).body(errorResponse);
     }
 
@@ -166,16 +181,16 @@ public class GlobalControllerExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpServletRequest request) {
         Map<String, String> validationErrors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(
-                error -> validationErrors.put(error.getField(), error.getDefaultMessage())
+            error -> validationErrors.put(error.getField(), error.getDefaultMessage())
         );
         log.error("Validation failed: {}", validationErrors.toString());
 
         ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                MessageConstants.VALIDATION_FAILED_CODE,
-                MessageConstants.VALIDATION_FAILED_MESSAGE,
-                request.getRequestURI(),
-                validationErrors
+            HttpStatus.BAD_REQUEST.value(),
+            MessageConstants.VALIDATION_FAILED_CODE,
+            MessageConstants.VALIDATION_FAILED_MESSAGE,
+            request.getRequestURI(),
+            validationErrors
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -192,21 +207,6 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<Object> handleSocketIOException(SocketIOException ex, WebRequest request) {
         log.error("Socket IO error: {}", ex.getMessage());
         return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
-    }
-
-    /**
-     * Handle Entity Not Found Exception method.
-     *
-     * @param e       EntityNotFoundException
-     * @param request HttpServletRequest
-     * @return Response Entity
-     */
-    @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<Object> handleEntityNotFoundException(NoResourceFoundException e, HttpServletRequest request) {
-        log.error(e.getMessage(), e);
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(),
-                MessageConstants.NOT_FOUND_CODE, e.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
 }

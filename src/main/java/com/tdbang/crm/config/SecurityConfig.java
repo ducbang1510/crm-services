@@ -37,19 +37,19 @@ import com.tdbang.crm.utils.AppConstants;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig implements InitializingBean {
     private static final String[] AUTH_WHITELIST = {
-            //Swagger API
-            "/swagger-resources",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/webjars/**",
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/login",
-            "/css/**", "/js/**", "/images/**",
-            "/socket.io/**",
-            "/actuator/**"
+        //Swagger API
+        "/swagger-resources",
+        "/swagger-resources/**",
+        "/configuration/ui",
+        "/configuration/security",
+        "/swagger-ui.html",
+        "/webjars/**",
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/login",
+        "/css/**", "/js/**", "/images/**",
+        "/socket.io/**",
+        "/actuator/**"
     };
     @Value("${authentication.cors.allowed.urls:*}")
     private String allowedUrlsRaw;
@@ -71,61 +71,61 @@ public class SecurityConfig implements InitializingBean {
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
-                OAuth2AuthorizationServerConfigurer.authorizationServer();
+            OAuth2AuthorizationServerConfigurer.authorizationServer();
 
         return http
-                .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .anyRequest().authenticated()
-                )
-                .csrf(AbstractHttpConfigurer::disable)
-                .with(authorizationServerConfigurer, Customizer.withDefaults())
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/logout-success")
-                        .permitAll()
-                )
-                .build();
+            .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource))
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers(AUTH_WHITELIST).permitAll()
+                .anyRequest().authenticated()
+            )
+            .csrf(AbstractHttpConfigurer::disable)
+            .with(authorizationServerConfigurer, Customizer.withDefaults())
+            .formLogin(form -> form
+                .loginPage("/login")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/logout-success")
+                .permitAll()
+            )
+            .build();
     }
 
     @Bean
     @Order(2)
     public SecurityFilterChain apiFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         return http
-                .securityMatcher("/api/**")
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .anyRequest().authenticated())
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConfig.jwtAuthenticationConverter()))
-                )
-                .build();
+            .securityMatcher("/api/**")
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(AUTH_WHITELIST).permitAll()
+                .anyRequest().authenticated())
+            .oauth2ResourceServer(oauth2 -> oauth2
+                .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConfig.jwtAuthenticationConverter()))
+            )
+            .build();
     }
 
     @Bean
     @Order(3)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .anyRequest().authenticated())
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .permitAll())
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/logout-success")
-                        .permitAll()
-                )
-                .build();
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(AUTH_WHITELIST).permitAll()
+                .anyRequest().authenticated())
+            .formLogin(form -> form
+                .loginPage("/login")
+                .permitAll())
+            .logout(logout -> logout
+                .logoutSuccessUrl("/logout-success")
+                .permitAll()
+            )
+            .build();
     }
 
 
@@ -145,19 +145,19 @@ public class SecurityConfig implements InitializingBean {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(StringUtils.commaDelimitedListToSet(allowedUrlsRaw).stream().toList());
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of(
-                HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
-                HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name(),
-                HttpMethod.PATCH.name(), HttpMethod.HEAD.name()
+            HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PUT.name(),
+            HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name(),
+            HttpMethod.PATCH.name(), HttpMethod.HEAD.name()
         ));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
         config.setExposedHeaders(List.of("Content-Disposition", "Content-Length", "Access-Control-Allow-Origin",
-                "Access-Control-Allow-Credentials", AppConstants.ERROR_CODE_HEADER, AppConstants.GROUPS_HEADER));
+            "Access-Control-Allow-Credentials", AppConstants.ERROR_CODE_HEADER, AppConstants.GROUPS_HEADER));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }

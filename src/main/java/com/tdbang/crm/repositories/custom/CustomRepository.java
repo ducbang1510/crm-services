@@ -213,8 +213,8 @@ public abstract class CustomRepository<S> {
         try {
             Long count = entityManager.createQuery(countQuery).getSingleResult();
             List<Tuple> result = entityManager.createQuery(query)
-                    .setFirstResult(page.getPageNumber() * page.getPageSize()).setMaxResults(page.getPageSize())
-                    .getResultList();
+                .setFirstResult(page.getPageNumber() * page.getPageSize()).setMaxResults(page.getPageSize())
+                .getResultList();
             result.stream().forEach((record) -> {
                 Map<String, Object> resultMap = new HashMap<>();
                 fields.forEach(f -> resultMap.put(f, record.get(f)));
@@ -256,8 +256,8 @@ public abstract class CustomRepository<S> {
             Class<S> entityType = getEntityClass();
             Long count = entityManager.createQuery(countQuery).getSingleResult();
             List<Tuple> tuples = entityManager.createQuery(query)
-                    .setFirstResult(page.getPageNumber() * page.getPageSize()).setMaxResults(page.getPageSize())
-                    .getResultList();
+                .setFirstResult(page.getPageNumber() * page.getPageSize()).setMaxResults(page.getPageSize())
+                .getResultList();
 
             for (Tuple tuple : tuples) {
                 S entity = entityType.getDeclaredConstructor().newInstance();

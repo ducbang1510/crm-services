@@ -44,7 +44,9 @@ public class FileStorageService {
 
     public FileAttachmentDto store(MultipartFile file, String entityType, Long entityFk, Long uploadedBy, String description) throws IOException {
 
-        if (file.isEmpty()) throw new IllegalArgumentException("File is empty");
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("File is empty");
+        }
         if (file.getSize() > (10L * 1024 * 1024)) { // 10 MB example limit
             throw new IllegalArgumentException("File too large");
         }
@@ -78,9 +80,11 @@ public class FileStorageService {
 
     public Optional<GridFsResource> getGridFsResource(String mongoFileId) {
         GridFSFile gridFsFile = gridFsTemplate.findOne(
-                Query.query(Criteria.where("_id").is(new ObjectId(mongoFileId)))
+            Query.query(Criteria.where("_id").is(new ObjectId(mongoFileId)))
         );
-        if (gridFsFile == null) return Optional.empty();
+        if (gridFsFile == null) {
+            return Optional.empty();
+        }
         return Optional.of(gridFsTemplate.getResource(gridFsFile));
     }
 
@@ -94,7 +98,7 @@ public class FileStorageService {
 
     public void delete(Long id) {
         FileAttachment meta = fileAttachmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("File not found"));
+            .orElseThrow(() -> new EntityNotFoundException("File not found"));
 
         // Remove from GridFS
         gridFsTemplate.delete(Query.query(Criteria.where("_id").is(new ObjectId(meta.getMongoFileId()))));

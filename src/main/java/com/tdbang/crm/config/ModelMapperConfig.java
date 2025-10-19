@@ -21,10 +21,10 @@ public class ModelMapperConfig {
 
         // Optional: Strict matching (exact field names)
         mapper.getConfiguration()
-                .setMatchingStrategy(MatchingStrategies.STRICT)
-                .setSkipNullEnabled(true)
-                .setFieldMatchingEnabled(true)
-                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
+            .setMatchingStrategy(MatchingStrategies.STRICT)
+            .setSkipNullEnabled(true)
+            .setFieldMatchingEnabled(true)
+            .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
 
         Converter<String, Enum> stringToEnumConverter = new Converter<String, Enum>() {
             @Override

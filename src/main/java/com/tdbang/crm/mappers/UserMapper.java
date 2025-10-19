@@ -70,12 +70,15 @@ public class UserMapper {
         userEntity.setLastName(updateUserRequestDTO.getLastName());
         userEntity.setEmail(updateUserRequestDTO.getEmail());
         userEntity.setPhone(updateUserRequestDTO.getPhone());
-        if (updateUserRequestDTO.getIsActive() != null)
+        if (updateUserRequestDTO.getIsActive() != null) {
             userEntity.setIsActive(updateUserRequestDTO.getIsActive());
-        if (updateUserRequestDTO.getIsAdmin() != null)
+        }
+        if (updateUserRequestDTO.getIsAdmin() != null) {
             userEntity.setIsAdmin(updateUserRequestDTO.getIsAdmin());
-        if (updateUserRequestDTO.getIsStaff() != null)
+        }
+        if (updateUserRequestDTO.getIsStaff() != null) {
             userEntity.setIsStaff(updateUserRequestDTO.getIsStaff());
+        }
         userEntity.setUpdatedOn(new Date());
     }
 
