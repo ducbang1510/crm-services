@@ -40,11 +40,16 @@ UI repository built with Angular for integration: https://github.com/luuthanhvan
 
 ---
 
-## 🧪 Getting Started
+## 🏃 Getting Started
 
 ### 1️⃣ Prerequisites
 
-Please refer to `HELP.md` file for installing required items
+1. Please refer to `HELP.md` file for installing required items.
+2. If you use `maildev` for testing mail service, you need to install `maildev` by this command
+   ```npm
+   1. npm install -g maildev
+   2. maildev (to run maildev service)
+    ```
 
 ### 2️⃣ Run local app
 
@@ -82,6 +87,22 @@ Please refer to `HELP.md` file for installing required items
     ```
 
 App runs at port 8080, Base API url **[http://localhost:8080/api/v1](http://localhost:8080/api/v1)**
+
+**Note**: To simplify local setup, a helper script `start_local.bat` is included in the root project folder.
+
+This script automatically builds the Spring Boot package, copies the required configuration file, starts a local MailDev
+server (for testing emails), frees up the necessary ports, and launches the application.
+
+1. Update db credential in `crm-services.properties` file first like above.
+2. Open `start_local.bat` file and adjust path to your JDK 17
+3. From the project root `crm-services`, open a Command Prompt and run:
+    ```sh
+      start_local.bat
+    ```
+4. You’ll be prompted to choose:
+
+    * [1] Start – Use the existing JAR file in the target folder
+    * [2] Build & Start – Run mvn clean install first, then start the app
 
 ### 3️⃣ Populate Data and Quick Experience
 
