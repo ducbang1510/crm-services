@@ -54,7 +54,8 @@ public class FileStorageService {
     /**
      * Upload and store file in MongoDB GridFS and MySQL metadata table
      */
-    public FileAttachmentDto uploadFile(MultipartFile file, String entityType, Long entityFk, String collectionName, Long uploadedBy, String description) throws IOException {
+    public FileAttachmentDto uploadFile(MultipartFile file, String entityType, Long entityFk, String collectionName,
+                                        Long uploadedBy, String description) throws IOException {
         GridFSBucket bucket = getBucket(collectionName);
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         Document metadata = new Document();
