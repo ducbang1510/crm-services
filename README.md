@@ -94,7 +94,7 @@ This script automatically builds the Spring Boot package, copies the required co
 server (for testing emails), frees up the necessary ports, and launches the application.
 
 1. Update db credential in `crm-services.properties` file first like above.
-2. Open `start_local.bat` file and adjust path to your JDK 17
+2. Open `start_local.bat` file and adjust your <b>*path to JDK 17*</b> and <b>*MySQL info*</b>
 3. From the project root `crm-services`, open a Command Prompt and run:
     ```sh
       start_local.bat
