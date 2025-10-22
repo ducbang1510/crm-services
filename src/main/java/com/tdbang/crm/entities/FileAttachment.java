@@ -34,14 +34,16 @@ public class FileAttachment {
     private String entityType;
     @Column(name = "entity_fk")
     private Long entityFk;
+    @Column(name = "collection_name")
+    private String collectionName;
+    @Column(name = "mongo_file_id")
+    private String mongoFileId;
     @Column(name = "file_name")
     private String fileName;
     @Column(name = "content_type")
     private String contentType;
     @Column(name = "size")
     private Long size;
-    @Column(name = "mongo_file_id")
-    private String mongoFileId;
     @Column(name = "uploaded_by")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp

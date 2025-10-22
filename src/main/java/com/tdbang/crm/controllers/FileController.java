@@ -5,13 +5,11 @@
 
 package com.tdbang.crm.controllers;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.data.mongodb.gridfs.GridFsResource;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,17 +18,16 @@ import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.tdbang.crm.dtos.FileAttachmentDto;
-import com.tdbang.crm.entities.FileAttachment;
+import com.tdbang.crm.enums.CollectionType;
+import com.tdbang.crm.enums.EntityType;
 import com.tdbang.crm.services.FileStorageService;
 
 @RestController
@@ -46,48 +43,57 @@ public class FileController extends BaseController {
     @PostMapping("/upload")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('STAFF')")
-    public MappingJacksonValue uploadFile(
-        @RequestParam("file") MultipartFile file,
-        @RequestParam("entityType") String entityType,
-        @RequestParam("entityFk") Long entityFk,
-        @RequestParam(value = "description", required = false) String description) throws IOException {
+    public MappingJacksonValue uploadFile(@RequestParam EntityType entityType,
+                                          @RequestParam Long entityFk,
+                                          @RequestParam MultipartFile file,
+                                          @RequestParam CollectionType collectionType,
+                                          @RequestParam(required = false) String description) throws IOException {
 
-        Long uploadedBy = getPkUserLogged(); // implement according to your security
-        FileAttachmentDto dto = fileStorageService.store(file, entityType, entityFk, uploadedBy, description);
+        Long uploadedBy = getPkUserLogged();
+        FileAttachmentDto dto = fileStorageService.uploadFile(file, entityType.getName(), entityFk, collectionType.getName(), uploadedBy, description);
         return new MappingJacksonValue(dto);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/download")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('STAFF')")
-    public ResponseEntity<Resource> downloadFile(@PathVariable Long id) throws IOException {
-        FileAttachment meta = fileStorageService.findMetadata(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        GridFsResource resource = fileStorageService.getGridFsResource(meta.getMongoFileId())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public ResponseEntity<byte[]> downloadFile(@RequestParam CollectionType collectionType,
+                                               @RequestParam String fileId) {
+        String collectionName = collectionType.getName();
+        GridFSFile gridFSFile = fileStorageService.getFile(collectionName, fileId);
+        if (gridFSFile == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        fileStorageService.downloadFile(collectionName, fileId, outputStream);
+
+        String filename = gridFSFile.getFilename();
+        String contentType = gridFSFile.getMetadata() != null
+            ? gridFSFile.getMetadata().getString("contentType")
+            : "application/octet-stream";
 
         return ResponseEntity.ok()
-            .contentType(MediaType.parseMediaType(meta.getContentType()))
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + meta.getFileName() + "\"")
-            .body(new InputStreamResource(resource.getInputStream()));
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+            .contentType(MediaType.parseMediaType(contentType))
+            .body(outputStream.toByteArray());
     }
 
-    @GetMapping("/entity/{entityType}/{entityFk}")
+    @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('STAFF')")
-    public MappingJacksonValue listFilesByEntity(
-        @PathVariable String entityType,
-        @PathVariable Long entityFk) {
-        List<FileAttachmentDto> list = fileStorageService.listForEntity(entityType, entityFk)
-            .stream().map(FileAttachmentDto::from).collect(Collectors.toList());
+    public MappingJacksonValue listFileAttachments(@RequestParam EntityType entityType,
+                                                   @RequestParam Long entityFk) {
+        List<FileAttachmentDto> list = fileStorageService.listFileAttachments(entityType.getName(), entityFk)
+            .stream().map(FileAttachmentDto::from).toList();
         return new MappingJacksonValue(list);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAnyAuthority('STAFF')")
-    public void deleteFile(@PathVariable Long id) {
-        fileStorageService.delete(id);
+    public void deleteFile(@RequestParam Long pk) {
+        fileStorageService.deleteFile(pk);
     }
 }
 
