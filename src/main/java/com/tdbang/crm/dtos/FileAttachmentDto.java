@@ -26,10 +26,11 @@ public class FileAttachmentDto {
     private Long id;
     private String entityType;
     private Long entityFk;
+    private String collectionName;
+    private String mongoFileId;
     private String fileName;
     private String contentType;
     private Long size;
-    private String mongoFileId;
     private Long uploadedBy;
     private Timestamp uploadedOn;
     private String description;
@@ -40,10 +41,11 @@ public class FileAttachmentDto {
             entity.getPk(),
             entity.getEntityType(),
             entity.getEntityFk(),
+            entity.getCollectionName(),
+            entity.getMongoFileId(),
             entity.getFileName(),
             entity.getContentType(),
             entity.getSize(),
-            entity.getMongoFileId(),
             entity.getUploadedBy(),
             entity.getUploadedOn(),
             entity.getDescription(),
