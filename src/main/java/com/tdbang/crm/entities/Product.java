@@ -20,10 +20,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
 
 @Getter
 @Setter
 @Entity
+@Audited
 @Table(name = "product")
 public class Product {
     @Id

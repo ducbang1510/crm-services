@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tdbang.crm.commons.AuditAction;
 import com.tdbang.crm.dtos.ContactDTO;
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.enums.LeadSource;
@@ -42,6 +43,7 @@ public class ContactController extends BaseController {
     private ContactService contactService;
 
     @PostMapping("")
+    @AuditAction(value = "CREATE_CONTACT", description = "Create new contact")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue createContact(@RequestBody @Valid ContactDTO contactDTO) {

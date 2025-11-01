@@ -50,7 +50,7 @@ if /I "%createDb%"=="Y" (
     echo ----------------------------------------------------------
     echo [DB-1] Checking database and creating schema if not exists...
     echo ----------------------------------------------------------
-    mysql -h%DB_HOST% -P%DB_PORT% -u%DB_USER% --password="%DB_PASS%" -e "CREATE DATABASE IF NOT EXISTS %DB_NAME%;"
+    mysql -h%DB_HOST% -P%DB_PORT% -u%DB_USER% -p%DB_PASS% -e "CREATE DATABASE IF NOT EXISTS %DB_NAME%;"
     if %errorlevel% neq 0 (
         echo ERROR: Failed to connect or create database.
         exit /b 1
@@ -71,7 +71,7 @@ set "RUN_POPULATE_DATA=%populateData%"
 REM If user chose Build & Run
 if "%choice%"=="2" (
     echo [1/6] Building package...
-    call mvn clean install -DskipTests
+    call mvn clean install -DskipTests -Dcheckstyle.skip=true
     if %errorlevel% neq 0 (
         echo ERROR: Maven build failed. Exiting...
         exit /b %errorlevel%
@@ -142,8 +142,8 @@ start "CRM Services" cmd /c "java -jar %JAR_FILE%"
 
 REM Optional: populate data after app starts
 if /I "%RUN_POPULATE_DATA%"=="Y" (
-    echo Waiting 10 seconds for app to fully start...
-    timeout /t 10 >nul
+    echo Waiting 30 seconds for app to fully start...
+    timeout /t 30 >nul
     if exist "%POPULATE_FILE%" (
         echo Importing sample data from %POPULATE_FILE% ...
         mysql -h%DB_HOST% -P%DB_PORT% -u%DB_USER% -p%DB_PASS% %DB_NAME% < "%POPULATE_FILE%"

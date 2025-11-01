@@ -23,12 +23,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
 
 import com.tdbang.crm.enums.LeadSource;
 import com.tdbang.crm.enums.Salutation;
 
 @Getter
 @Setter
+@Audited
 @Entity
 @Table(name = "contact")
 public class Contact {
