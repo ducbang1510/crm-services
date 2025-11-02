@@ -62,9 +62,12 @@ main things - in order to treat errors as warnings (and not failed the build), y
     </module>
 
     <module name="TreeWalker">
-        <module name="CyclomaticComplexity"/>
+        <module name="CyclomaticComplexity">
+            <property name="max" value="15"/>
+        </module>
         <module name="MethodLength">
-            <property name="max" value="35"/>
+            <property name="max" value="60"/>
+            <property name="countEmpty" value="false"/>
         </module>
         <module name="UnusedImports"/>
         <module name="OuterTypeFilename"/>

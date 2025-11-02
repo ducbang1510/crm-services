@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
 
 import com.tdbang.crm.enums.SalesOrderStatus;
 
@@ -30,6 +31,7 @@ import com.tdbang.crm.enums.SalesOrderStatus;
 @Setter
 @Entity
 @Table(name = "sales_order")
+@Audited
 public class SalesOrder {
     @Id
     @Column(name = "pk")

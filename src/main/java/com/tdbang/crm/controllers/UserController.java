@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tdbang.crm.commons.AuditAction;
 import com.tdbang.crm.dtos.ChangePasswordRequestDTO;
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.dtos.UpdateUserRequestDTO;
@@ -57,6 +58,7 @@ public class UserController extends BaseController {
     }
 
     @PutMapping("")
+    @AuditAction(value = "CHANGE_PASSWORD", description = "Update password of user")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue changePassword(@RequestBody @Valid ChangePasswordRequestDTO changePasswordRequestDTO) {
@@ -68,6 +70,7 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("/create")
+    @AuditAction(value = "CREATE_USER", description = "Create new user")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public MappingJacksonValue createUser(@RequestBody @Valid UserDTO userDTO) {
@@ -92,6 +95,7 @@ public class UserController extends BaseController {
     }
 
     @PutMapping("/{id}")
+    @AuditAction(value = "UPDATE_USER", description = "Update existing user")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public MappingJacksonValue editUser(@PathVariable Long id,

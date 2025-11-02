@@ -10,8 +10,8 @@ import java.util.List;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,20 +26,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tdbang.crm.commons.AuditAction;
 import com.tdbang.crm.dtos.ProductDTO;
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.services.ProductService;
 
 @Log4j2
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/product")
 @Tag(name = "CRM Product APIs")
 public class ProductController extends BaseController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
     @PostMapping("")
+    @AuditAction(value = "CREATE_PRODUCT", description = "Create new product")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('STAFF')")
     public MappingJacksonValue createProduct(@RequestBody @Valid ProductDTO productDTO) {
@@ -60,6 +62,7 @@ public class ProductController extends BaseController {
     }
 
     @PutMapping("/{id}")
+    @AuditAction(value = "UPDATE_PRODUCT", description = "Update existing product")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('STAFF')")
     public MappingJacksonValue updateProductDetails(@PathVariable Long id,
@@ -71,6 +74,7 @@ public class ProductController extends BaseController {
     }
 
     @DeleteMapping("/{id}")
+    @AuditAction(value = "DELETE_PRODUCT", description = "Delete existing product")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('STAFF')")
     public MappingJacksonValue deleteProductDetails(@PathVariable Long id) {
@@ -97,6 +101,7 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/delete")
+    @AuditAction(value = "DELETE_PRODUCTS", description = "Delete existing products")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('STAFF')")
     public MappingJacksonValue deleteProducts(@RequestBody List<Long> ids) {

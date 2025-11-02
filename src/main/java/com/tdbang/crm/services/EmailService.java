@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Log4j2
@@ -22,6 +23,7 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
+    @Async
     public void sendSimpleEmail(String to, String subject, String text) {
         log.info("Start send simple email to {}", to);
         SimpleMailMessage msg = new SimpleMailMessage();
@@ -31,6 +33,7 @@ public class EmailService {
         mailSender.send(msg);
     }
 
+    @Async
     public void sendHtmlEmail(String to, String subject, String html) throws MessagingException {
         log.info("Start send Html email to {}", to);
         MimeMessage message = mailSender.createMimeMessage();

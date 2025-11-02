@@ -10,8 +10,8 @@ import java.util.List;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,21 +26,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tdbang.crm.commons.AuditAction;
 import com.tdbang.crm.dtos.ResponseDTO;
 import com.tdbang.crm.dtos.SalesOrderDTO;
 import com.tdbang.crm.enums.SalesOrderStatus;
 import com.tdbang.crm.services.SalesOrderService;
 
 @Log4j2
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/sales-order")
 @Tag(name = "CRM Sales Order APIs")
 public class SalesOderController extends BaseController {
 
-    @Autowired
-    private SalesOrderService salesOrderService;
+    private final SalesOrderService salesOrderService;
 
     @PostMapping("")
+    @AuditAction(value = "CREATE_SALES_ORDER", description = "Create new sales order")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue createSalesOrder(@RequestBody @Valid SalesOrderDTO salesOrderDTO) {
@@ -61,6 +63,7 @@ public class SalesOderController extends BaseController {
     }
 
     @PutMapping("/{id}")
+    @AuditAction(value = "UPDATE_SALES_ORDER", description = "Update existing sales order")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue updateOrderDetails(@PathVariable Long id,
@@ -72,6 +75,7 @@ public class SalesOderController extends BaseController {
     }
 
     @DeleteMapping("/{id}")
+    @AuditAction(value = "DELETE_SALES_ORDER", description = "Delete existing sales order")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue deleteOrderDetails(@PathVariable Long id) {
@@ -124,6 +128,7 @@ public class SalesOderController extends BaseController {
     }
 
     @PostMapping("/delete")
+    @AuditAction(value = "DELETE_SALES_ORDERS", description = "Delete existing sales orders")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue deleteSaleOrders(@RequestBody List<Long> ids) {
