@@ -10,8 +10,8 @@ import java.util.List;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,13 +34,13 @@ import com.tdbang.crm.enums.Salutation;
 import com.tdbang.crm.services.ContactService;
 
 @Log4j2
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/contact")
 @Tag(name = "CRM Contact APIs")
 public class ContactController extends BaseController {
 
-    @Autowired
-    private ContactService contactService;
+    private final ContactService contactService;
 
     @PostMapping("")
     @AuditAction(value = "CREATE_CONTACT", description = "Create new contact")
@@ -64,6 +64,7 @@ public class ContactController extends BaseController {
     }
 
     @PutMapping("/{id}")
+    @AuditAction(value = "UPDATE_CONTACT", description = "Update existing contact")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue updateContactDetails(@PathVariable Long id,
@@ -75,6 +76,7 @@ public class ContactController extends BaseController {
     }
 
     @DeleteMapping("/{id}")
+    @AuditAction(value = "DELETE_CONTACT", description = "Delete existing contact")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue deleteContactDetails(@PathVariable Long id) {
@@ -138,6 +140,7 @@ public class ContactController extends BaseController {
     }
 
     @PostMapping("/delete")
+    @AuditAction(value = "DELETE_CONTACTS", description = "Delete existing contacts")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public MappingJacksonValue deleteContacts(@RequestBody List<Long> ids) {

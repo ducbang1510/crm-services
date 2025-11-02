@@ -128,8 +128,6 @@ public class ContactService extends AbstractService<Contact> {
             // Create and send notification
             notificationService.createNotifications(creatorFk, List.of(userAssignedTo.getPk()), NotificationType.CONTACT_ASSIGNED, savedContact.getPk());
             socketEventService.sendNotifications(List.of(userAssignedTo.getPk()));
-            // Send mail
-            emailService.sendSimpleEmail(savedContact.getEmail(), "Creating Contact", MessageConstants.CREATING_NEW_CONTACT_SUCCESS);
         } catch (Exception e) {
             throw new CRMException(HttpStatus.BAD_REQUEST, MessageConstants.BAD_REQUEST_CODE, MessageConstants.CREATING_NEW_CONTACT_ERROR, e.getMessage());
         }
