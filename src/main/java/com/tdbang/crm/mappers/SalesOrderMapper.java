@@ -98,10 +98,8 @@ public class SalesOrderMapper {
         return salesOrderDTO;
     }
 
-    public SalesOrder mappingSalesOrderDTOToEntity(SalesOrderDTO salesOrderDTO, User creatorUser, User userAssignedTo,
-                                                   Contact contact, boolean isCreateNew) {
-        SalesOrder salesOrder = new SalesOrder();
-        salesOrder.setPk(salesOrderDTO.getPk());
+    public void mappingSalesOrderDTOToEntity(SalesOrderDTO salesOrderDTO, SalesOrder salesOrder, User creatorUser, User userAssignedTo,
+                                             Contact contact, boolean isCreateNew) {
         salesOrder.setSubject(salesOrderDTO.getSubject());
         salesOrder.setContact(contact);
         salesOrder.setStatus(SalesOrderStatus.fromName(salesOrderDTO.getStatus()));
@@ -115,6 +113,5 @@ public class SalesOrderMapper {
         } else {
             salesOrder.setUpdatedOn(new Date());
         }
-        return salesOrder;
     }
 }

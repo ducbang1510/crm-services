@@ -89,9 +89,7 @@ public class ContactMapper {
         return contactDTO;
     }
 
-    public Contact mappingContactDTOToEntity(ContactDTO contactDTO, User creatorUser, User userAssignedTo, boolean isCreateNew) {
-        Contact contact = new Contact();
-        contact.setPk(contactDTO.getPk());
+    public void mappingContactDTOToEntity(ContactDTO contactDTO, Contact contact, User creatorUser, User userAssignedTo, boolean isCreateNew) {
         contact.setContactName(contactDTO.getContactName());
         contact.setSalutation(Salutation.fromName(contactDTO.getSalutation()));
         contact.setMobilePhone(contactDTO.getMobilePhone());
@@ -108,7 +106,6 @@ public class ContactMapper {
         } else {
             contact.setUpdatedOn(new Date());
         }
-        return contact;
     }
 
     public ContactDTO mappingContactEntityToContactDTO(Contact contact) {

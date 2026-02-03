@@ -46,9 +46,7 @@ public class ProductMapper {
         return products;
     }
 
-    public Product mappingProductDTOToEntity(ProductDTO productDTO, boolean isCreateNew) {
-        Product product = new Product();
-        product.setPk(productDTO.getPk());
+    public void mappingProductDTOToEntity(ProductDTO productDTO, Product product, boolean isCreateNew) {
         product.setName(productDTO.getName());
         product.setPrice(productDTO.getPrice());
         product.setIsActive(productDTO.getIsActive());
@@ -57,7 +55,6 @@ public class ProductMapper {
         if (isCreateNew) {
             product.setUpdatedOn(new Date());
         }
-        return product;
     }
 
     public ProductDTO mappingProductEntityToProductDTO(Product product) {

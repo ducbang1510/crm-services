@@ -121,7 +121,8 @@ public class ContactService extends AbstractService<Contact> {
             User userAssignedTo = contactDTO.getAssignedToUserFk() == null
                 ? userRepository.getUsersByNames(contactDTO.getAssignedTo()).get(0)
                 : userRepository.findUserByPk(contactDTO.getAssignedToUserFk());
-            Contact saveContact = contactMapper.mappingContactDTOToEntity(contactDTO, creatorUser, userAssignedTo, true);
+            Contact saveContact = new Contact();
+            contactMapper.mappingContactDTOToEntity(contactDTO, saveContact, creatorUser, userAssignedTo, true);
             Contact savedContact = contactRepository.save(saveContact);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_CONTACT_SUCCESS);
 
@@ -155,7 +156,7 @@ public class ContactService extends AbstractService<Contact> {
             User userAssignedTo = contactDTO.getAssignedToUserFk() == null
                 ? userRepository.getUsersByNames(contactDTO.getAssignedTo()).get(0)
                 : userRepository.findUserByPk(contactDTO.getAssignedToUserFk());
-            updatedContact = contactMapper.mappingContactDTOToEntity(contactDTO, null, userAssignedTo, false);
+            contactMapper.mappingContactDTOToEntity(contactDTO, updatedContact, null, userAssignedTo, false);
             contactRepository.save(updatedContact);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.UPDATING_CONTACT_SUCCESS);
         } else {

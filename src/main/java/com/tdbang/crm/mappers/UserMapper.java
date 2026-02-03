@@ -64,7 +64,6 @@ public class UserMapper {
     }
 
     public void mappingUpdateUserRequestDTOToUserEntity(UpdateUserRequestDTO updateUserRequestDTO, User userEntity) {
-        userEntity.setPk(updateUserRequestDTO.getPk());
         userEntity.setName(updateUserRequestDTO.getName());
         userEntity.setFirstName(updateUserRequestDTO.getFirstName());
         userEntity.setLastName(updateUserRequestDTO.getLastName());
