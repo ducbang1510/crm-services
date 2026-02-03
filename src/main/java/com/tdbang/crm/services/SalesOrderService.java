@@ -129,7 +129,7 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
                 ? contactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0)
                 : contactRepository.findByPk(salesOrderDTO.getContactFk()).orElse(null);
 
-            updatedOrder = salesOrderMapper.mappingSalesOrderDTOToEntity(salesOrderDTO, null, userAssignedTo, contact, false);
+            salesOrderMapper.mappingSalesOrderDTOToEntity(salesOrderDTO, updatedOrder, null, userAssignedTo, contact, false);
             salesOrderRepository.save(updatedOrder);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.UPDATING_SALES_ORDER_SUCCESS);
         } else {
@@ -150,7 +150,8 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
                 ? contactRepository.getContactsByContactName(salesOrderDTO.getContactName()).get(0)
                 : contactRepository.findByPk(salesOrderDTO.getContactFk()).orElse(null);
 
-            SalesOrder saveSalesOrder = salesOrderMapper.mappingSalesOrderDTOToEntity(salesOrderDTO, creatorUser, userAssignedTo, contact, true);
+            SalesOrder saveSalesOrder = new SalesOrder();
+            salesOrderMapper.mappingSalesOrderDTOToEntity(salesOrderDTO, saveSalesOrder, creatorUser, userAssignedTo, contact, true);
             salesOrderRepository.save(saveSalesOrder);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_SALES_ORDER_SUCCESS);
         } catch (Exception e) {

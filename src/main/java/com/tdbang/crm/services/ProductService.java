@@ -71,7 +71,8 @@ public class ProductService extends AbstractService<Product> {
     public ResponseDTO createNewProduct(ProductDTO productDTO) {
         ResponseDTO result;
         try {
-            Product saveProduct = productMapper.mappingProductDTOToEntity(productDTO, true);
+            Product saveProduct = new Product();
+            productMapper.mappingProductDTOToEntity(productDTO, saveProduct, true);
             productRepository.save(saveProduct);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.CREATING_NEW_PRODUCT_SUCCESS);
         } catch (Exception e) {
@@ -97,7 +98,7 @@ public class ProductService extends AbstractService<Product> {
         ResponseDTO result;
         Product updatedProduct = productRepository.findByPk(productPk).orElse(null);
         if (updatedProduct != null) {
-            updatedProduct = productMapper.mappingProductDTOToEntity(productDTO, false);
+            productMapper.mappingProductDTOToEntity(productDTO, updatedProduct, false);
             productRepository.save(updatedProduct);
             result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.UPDATING_PRODUCT_SUCCESS);
         } else {

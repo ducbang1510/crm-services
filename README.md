@@ -5,8 +5,6 @@ A lightweight, modular **Customer Relationship Management (CRM)** web applicatio
 built-in
 support for file uploads, email notifications, and real-time communication.
 
-UI repository built with Angular for integration: https://github.com/luuthanhvan/CRM-new-version.git
-
 ---
 
 ## ✨ Features
