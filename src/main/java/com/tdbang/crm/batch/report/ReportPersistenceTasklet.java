@@ -5,23 +5,21 @@
 
 package com.tdbang.crm.batch.report;
 
-import java.io.ByteArrayInputStream;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.bson.types.ObjectId;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Component;
 
 import com.tdbang.crm.dtos.SalesOrderAggregationDTO;
 import com.tdbang.crm.entities.DailySalesReport;
+import com.tdbang.crm.enums.CollectionType;
 import com.tdbang.crm.enums.ReportStatus;
 import com.tdbang.crm.repositories.DailySalesReportRepository;
+import com.tdbang.crm.services.FileStorageService;
 
 /**
  * Step 3 of the daily sales report job.
@@ -42,7 +40,7 @@ public class ReportPersistenceTasklet implements Tasklet {
     private static final String CONTENT_TYPE =
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-    private final GridFsTemplate gridFsTemplate;
+    private final FileStorageService fileStorageService;
     private final DailySalesReportRepository dailySalesReportRepository;
 
     @Override
@@ -58,14 +56,15 @@ public class ReportPersistenceTasklet implements Tasklet {
             (byte[]) jobContext.get(ExcelGeneratorTasklet.KEY_REPORT_BYTES);
 
         String fileName = "daily-sales-report-" + dto.getReportDate() + ".xlsx";
+        String collectionName = CollectionType.SALES_REPORT.getName();
 
         try {
-            ObjectId objectId = gridFsTemplate.store(
-                new ByteArrayInputStream(reportBytes), fileName, CONTENT_TYPE);
+            String mongoFileId = fileStorageService.storeRawFile(reportBytes, fileName, CONTENT_TYPE, collectionName);
 
-            log.info("Excel report uploaded to GridFS: fileId={}, fileName={}", objectId, fileName);
+            log.info("Excel report uploaded to GridFS: fileId={}, fileName={}, collection={}",
+                mongoFileId, fileName, collectionName);
 
-            saveReport(dto, objectId.toHexString(), fileName, ReportStatus.SUCCESS, null);
+            saveReport(dto, mongoFileId, fileName, ReportStatus.SUCCESS, null);
 
         } catch (Exception e) {
             log.error("Failed to persist daily sales report for date {}: {}",

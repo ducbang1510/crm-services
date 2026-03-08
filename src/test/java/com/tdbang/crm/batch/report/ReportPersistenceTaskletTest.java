@@ -5,11 +5,9 @@
 
 package com.tdbang.crm.batch.report;
 
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,12 +21,13 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.scope.context.StepContext;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 
 import com.tdbang.crm.dtos.SalesOrderAggregationDTO;
 import com.tdbang.crm.entities.DailySalesReport;
+import com.tdbang.crm.enums.CollectionType;
 import com.tdbang.crm.enums.ReportStatus;
 import com.tdbang.crm.repositories.DailySalesReportRepository;
+import com.tdbang.crm.services.FileStorageService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 class ReportPersistenceTaskletTest {
 
     @Mock
-    private GridFsTemplate gridFsTemplate;
+    private FileStorageService fileStorageService;
 
     @Mock
     private DailySalesReportRepository dailySalesReportRepository;
@@ -56,14 +56,14 @@ class ReportPersistenceTaskletTest {
 
     @BeforeEach
     void setUp() {
-        tasklet = new ReportPersistenceTasklet(gridFsTemplate, dailySalesReportRepository);
+        tasklet = new ReportPersistenceTasklet(fileStorageService, dailySalesReportRepository);
     }
 
     @Test
     void execute_successPath_savesReportWithSuccessStatus() throws Exception {
-        ObjectId objectId = new ObjectId();
-        when(gridFsTemplate.store(any(InputStream.class), anyString(), anyString()))
-            .thenReturn(objectId);
+        String fakeFileId = "64f8ffc6e09bd733187b5033";
+        when(fileStorageService.storeRawFile(any(byte[].class), anyString(), anyString(),
+            eq(CollectionType.SALES_REPORT.getName()))).thenReturn(fakeFileId);
         when(dailySalesReportRepository.save(any(DailySalesReport.class)))
             .thenAnswer(inv -> inv.getArgument(0));
 
@@ -72,12 +72,13 @@ class ReportPersistenceTaskletTest {
 
         assertEquals(RepeatStatus.FINISHED, status);
 
-        verify(gridFsTemplate).store(any(InputStream.class), anyString(), anyString());
+        verify(fileStorageService).storeRawFile(any(byte[].class), anyString(), anyString(),
+            eq(CollectionType.SALES_REPORT.getName()));
         verify(dailySalesReportRepository).save(reportCaptor.capture());
 
         DailySalesReport saved = reportCaptor.getValue();
         assertEquals(ReportStatus.SUCCESS, saved.getStatus());
-        assertEquals(objectId.toHexString(), saved.getMongoFileId());
+        assertEquals(fakeFileId, saved.getMongoFileId());
         assertNotNull(saved.getFileName());
         assertTrue(saved.getFileName().contains("daily-sales-report-"));
         assertTrue(saved.getFileName().endsWith(".xlsx"));
@@ -88,9 +89,9 @@ class ReportPersistenceTaskletTest {
     }
 
     @Test
-    void execute_gridFsThrows_savesReportWithFailedStatus() throws Exception {
+    void execute_storeThrows_savesReportWithFailedStatus() throws Exception {
         doThrow(new RuntimeException("MongoDB connection failed"))
-            .when(gridFsTemplate).store(any(InputStream.class), anyString(), anyString());
+            .when(fileStorageService).storeRawFile(any(byte[].class), anyString(), anyString(), anyString());
         when(dailySalesReportRepository.save(any(DailySalesReport.class)))
             .thenAnswer(inv -> inv.getArgument(0));
 
@@ -113,7 +114,7 @@ class ReportPersistenceTaskletTest {
     void execute_longErrorMessage_truncatedTo500Chars() throws Exception {
         String longMessage = "E".repeat(600);
         doThrow(new RuntimeException(longMessage))
-            .when(gridFsTemplate).store(any(InputStream.class), anyString(), anyString());
+            .when(fileStorageService).storeRawFile(any(byte[].class), anyString(), anyString(), anyString());
         when(dailySalesReportRepository.save(any(DailySalesReport.class)))
             .thenAnswer(inv -> inv.getArgument(0));
 

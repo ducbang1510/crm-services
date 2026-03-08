@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.tdbang.crm.dtos.nativequerydto.DashboardQueryDTO;
@@ -58,23 +57,21 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
     List<SalesOrder> getSaleOrdersByOrderPks(List<Long> pks);
 
     /**
-     * Aggregates all sales orders created within [startOfDay, endOfDay).
-     * Returns totals and per-status counts in a single query.
+     * Aggregates all sales orders created within (startOfDay, endOfDay).
      * Status ordinals: 0=CREATED, 1=APPROVED, 2=DELIVERED, 3=CANCELED.
      */
-    @Query(value = "SELECT COUNT(*) AS totalOrders,"
-        + " COALESCE(SUM(total), 0) AS totalRevenue,"
-        + " SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) AS ordersCreated,"
-        + " SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) AS ordersApproved,"
-        + " SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) AS ordersDelivered,"
-        + " SUM(CASE WHEN status = 3 THEN 1 ELSE 0 END) AS ordersCanceled"
-        + " FROM sales_order"
-        + " WHERE created_on >= :startOfDay AND created_on < :endOfDay", nativeQuery = true)
-    SalesOrderDailyAggregationDTO aggregateDailyOrders(@Param("startOfDay") Date startOfDay, @Param("endOfDay") Date endOfDay);
+    @Query(value = "SELECT COUNT(so.pk) AS totalOrders,"
+        + " COALESCE(SUM(so.total), 0) AS totalRevenue,"
+        + " SUM(CASE WHEN so.status = 0 THEN 1 ELSE 0 END) AS ordersCreated,"
+        + " SUM(CASE WHEN so.status = 1 THEN 1 ELSE 0 END) AS ordersApproved,"
+        + " SUM(CASE WHEN so.status = 2 THEN 1 ELSE 0 END) AS ordersDelivered,"
+        + " SUM(CASE WHEN so.status = 3 THEN 1 ELSE 0 END) AS ordersCanceled"
+        + " FROM sales_order so"
+        + " WHERE so.created_on >= :startOfDay AND so.created_on < :endOfDay", nativeQuery = true)
+    SalesOrderDailyAggregationDTO aggregateDailyOrders(Date startOfDay, Date endOfDay);
 
     /**
-     * Returns per-user order count and total revenue for orders created within
-     * (startOfDay, endOfDay). Used for the "By User" sheet in the Excel report.
+     * Returns per-user order count and total revenue for orders created within (startOfDay, endOfDay)
      */
     @Query(value = "SELECT u.name AS assignedToName, COUNT(so.pk) AS orderCount,"
         + " COALESCE(SUM(so.total), 0) AS totalRevenue"
@@ -82,7 +79,7 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
         + " LEFT JOIN user u ON so.assigned_to = u.pk"
         + " WHERE so.created_on >= :startOfDay AND so.created_on < :endOfDay"
         + " GROUP BY so.assigned_to, u.name", nativeQuery = true)
-    List<SalesOrderUserSummaryDTO> aggregateDailyOrdersByUser(@Param("startOfDay") Date startOfDay, @Param("endOfDay") Date endOfDay);
+    List<SalesOrderUserSummaryDTO> aggregateDailyOrdersByUser(Date startOfDay, Date endOfDay);
 
     /**
      * Finds sales orders in actionable statuses that have not been updated since
@@ -90,10 +87,10 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
      * Used as a repository-level alternative to the batch item reader query.
      */
     @Query("SELECT s FROM SalesOrder s"
-        + " WHERE s.status IN :statuses"
+        + " WHERE s.status IN (:statuses)"
         + " AND s.updatedOn < :cutoffDate"
         + " AND s.assignedTo IS NOT NULL"
         + " AND s.assignedTo.email IS NOT NULL"
         + " ORDER BY s.pk ASC")
-    List<SalesOrder> findOrdersNeedingFollowUp(@Param("statuses") List<SalesOrderStatus> statuses, @Param("cutoffDate") Date cutoffDate);
+    List<SalesOrder> findOrdersNeedingFollowUp(List<SalesOrderStatus> statuses, Date cutoffDate);
 }

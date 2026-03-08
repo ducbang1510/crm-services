@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.tdbang.crm.dtos.nativequerydto.ContactQueryDTO;
@@ -66,5 +65,5 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
         + " AND c.assignedTo IS NOT NULL"
         + " AND c.assignedTo.email IS NOT NULL"
         + " ORDER BY c.pk ASC")
-    List<Contact> findContactsNeedingFollowUp(@Param("cutoffDate") Date cutoffDate);
+    List<Contact> findContactsNeedingFollowUp(Date cutoffDate);
 }
