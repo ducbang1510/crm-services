@@ -5,6 +5,7 @@
 
 package com.tdbang.crm.repositories;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.tdbang.crm.dtos.nativequerydto.ContactQueryDTO;
@@ -53,4 +55,16 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
 
     @Query(value = "SELECT c FROM Contact c WHERE c.pk IN (:pks)")
     List<Contact> getContactsByContactPks(List<Long> pks);
+
+    /**
+     * Finds contacts that have not been updated since {@code cutoffDate} and
+     * have an assigned user with a valid email.
+     * Used as a repository-level alternative to the batch item reader query.
+     */
+    @Query("SELECT c FROM Contact c"
+        + " WHERE c.updatedOn < :cutoffDate"
+        + " AND c.assignedTo IS NOT NULL"
+        + " AND c.assignedTo.email IS NOT NULL"
+        + " ORDER BY c.pk ASC")
+    List<Contact> findContactsNeedingFollowUp(@Param("cutoffDate") Date cutoffDate);
 }
