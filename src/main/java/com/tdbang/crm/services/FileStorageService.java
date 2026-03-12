@@ -5,6 +5,7 @@
 
 package com.tdbang.crm.services;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -86,6 +87,19 @@ public class FileStorageService {
 
             return FileAttachmentDto.from(attachment);
         }
+    }
+
+    /**
+     * Upload raw bytes to MongoDB GridFS under a named collection bucket.
+     * Returns the GridFS ObjectId as a hex string.
+     */
+    public String storeRawFile(byte[] data, String fileName, String contentType, String collectionName) {
+        GridFSBucket bucket = getBucket(collectionName);
+        Document metadata = new Document();
+        metadata.put("contentType", contentType);
+        ObjectId fileId = bucket.uploadFromStream(fileName, new ByteArrayInputStream(data),
+            new GridFSUploadOptions().metadata(metadata));
+        return fileId.toHexString();
     }
 
     /**

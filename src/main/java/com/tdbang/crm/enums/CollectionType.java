@@ -13,7 +13,8 @@ import lombok.Getter;
 @Getter
 public enum CollectionType {
     CONTRACT("Contract"),
-    INVOICE("Invoice");
+    INVOICE("Invoice"),
+    SALES_REPORT("SalesReports");
 
     private final String name;
 
