@@ -38,7 +38,10 @@
 <body>
 <div class="logout-box">
     <h2>You have been logged out</h2>
-    <p>You now can close the tab</p>
+    <p>Redirecting to login page...</p>
 </div>
+<script th:inline="javascript">
+    window.location.href = /*[[${angularLoginUrl}]]*/ '/';
+</script>
 </body>
 </html>

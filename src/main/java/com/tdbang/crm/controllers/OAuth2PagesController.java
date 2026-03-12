@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
@@ -26,6 +27,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class OAuth2PagesController {
     @Autowired
     private OAuth2AuthorizationService authorizationService;
+
+    @Value("${app.angular.base-url}")
+    private String angularBaseUrl;
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER = "Bearer ";
@@ -47,7 +51,8 @@ public class OAuth2PagesController {
     }
 
     @GetMapping("/logout-success")
-    public String logoutSuccess(HttpServletRequest request) {
+    public String logoutSuccess(Model model) {
+        model.addAttribute("angularLoginUrl", angularBaseUrl + "/login");
         return "logout-success";
     }
 

@@ -24,6 +24,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -49,7 +50,9 @@ public class SecurityConfig implements InitializingBean {
         "/login",
         "/css/**", "/js/**", "/images/**",
         "/socket.io/**",
-        "/actuator/**"
+        "/actuator/**",
+        "/.well-known/**",
+        "/oauth2/logout"
     };
     @Value("${authentication.cors.allowed.urls:*}")
     private String allowedUrlsRaw;
@@ -87,7 +90,10 @@ public class SecurityConfig implements InitializingBean {
                 .permitAll()
             )
             .logout(logout -> logout
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/logout-success")
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
                 .permitAll()
             )
             .build();
@@ -122,7 +128,10 @@ public class SecurityConfig implements InitializingBean {
                 .loginPage("/login")
                 .permitAll())
             .logout(logout -> logout
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/logout-success")
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
                 .permitAll()
             )
             .build();
