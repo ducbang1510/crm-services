@@ -24,7 +24,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -90,7 +90,7 @@ public class SecurityConfig implements InitializingBean {
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutRequestMatcher(PathPatternRequestMatcher.withDefaults().matcher("/logout"))
                 .logoutSuccessUrl("/logout-success")
                 .deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true)
@@ -128,7 +128,7 @@ public class SecurityConfig implements InitializingBean {
                 .loginPage("/login")
                 .permitAll())
             .logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutRequestMatcher(PathPatternRequestMatcher.withDefaults().matcher("/logout"))
                 .logoutSuccessUrl("/logout-success")
                 .deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true)
