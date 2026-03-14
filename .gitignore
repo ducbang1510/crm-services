@@ -35,3 +35,4 @@ replay_pid*
 logs/
 target/
 /crm-services.properties
+.postman/
