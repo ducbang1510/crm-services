@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{base_url}}/note"
+method: POST
+body:
+  type: json
+  content: |-
+    {
+        "entityType": "CONTACT",
+        "entityFk": 1,
+        "noteType": "Call",
+        "content": "Discussed pricing and delivery timeline with the client."
+    }
+order: 1000

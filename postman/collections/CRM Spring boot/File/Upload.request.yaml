@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{base_url}}/file/upload"
+method: POST
+body:
+  type: formdata
+  content:
+    - type: file
+      key: file
+      src:
+        - /C:/Users/ccvn1/Downloads/Documents/IELTS_246/IELTS_T9_DocAndTest/Procrastination-DICH.pdf
+    - type: text
+      key: collectionType
+      value: CONTRACT
+    - type: text
+      key: entityFk
+      value: "36"
+    - type: text
+      key: description
+      value: Contract pdf
+    - type: text
+      key: entityType
+      value: CONTACT
+order: 2000

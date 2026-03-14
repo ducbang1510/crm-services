@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{base_url}}/user/2"
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"pk\": 2,\r
+
+    \    \"name\": \"Jane Smith\",\r
+
+    \    \"email\": \"jsmith@example.com\",\r
+
+    \    \"phone\": \"0987654322\",\r
+
+    \    \"isAdmin\": true,\r
+
+    \    \"isActive\": true\r
+
+    }"
+order: 7000

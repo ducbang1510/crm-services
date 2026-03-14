@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{base_url}}/file/delete?pk=1"
+method: DELETE
+queryParams:
+  pk: "1"
+order: 4000

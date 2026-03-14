@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{base_url}}/contact/list?pageNumber=0&pageSize=10&sortColumn=pk&sortOrde\
+  r=ASC"
+method: GET
+queryParams:
+  - key: filter
+    value: assignedTo.name:Name4
+    disabled: true
+  - key: fields
+    value: pk,contactName
+    disabled: true
+  - key: pageNumber
+    value: "0"
+  - key: pageSize
+    value: "10"
+  - key: sortColumn
+    value: pk
+  - key: sortOrder
+    value: ASC
+order: 2000

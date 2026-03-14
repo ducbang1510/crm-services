@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{base_url}}/user/list?fields=pk,name"
+method: GET
+queryParams:
+  - key: filter
+    value: name:Name4
+    disabled: true
+  - key: fields
+    value: pk,name
+  - key: pageNumber
+    value: "0"
+    disabled: true
+  - key: pageSize
+    value: "0"
+    disabled: true
+  - key: sortColumn
+    value: contactName
+    disabled: true
+  - key: sortOrder
+    value: ASC
+    disabled: true
+order: 8000

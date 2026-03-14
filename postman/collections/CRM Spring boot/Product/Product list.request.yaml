@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{base_url}}/product/list"
+method: GET
+queryParams:
+  - key: filter
+    value: assignedTo.name:Name2
+    disabled: true
+order: 1000

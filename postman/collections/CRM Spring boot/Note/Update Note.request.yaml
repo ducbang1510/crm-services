@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{base_url}}/note/1"
+method: PUT
+body:
+  type: json
+  content: |-
+    {
+        "entityType": "CONTACT",
+        "entityFk": 1,
+        "noteType": "Meeting",
+        "content": "Updated: Had a face-to-face meeting to finalize the deal."
+    }
+order: 3000

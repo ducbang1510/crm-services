@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{base_url}}/contact/salutation"
+method: GET
+order: 4000

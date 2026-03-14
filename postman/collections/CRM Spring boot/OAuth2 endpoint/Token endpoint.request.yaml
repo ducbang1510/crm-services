@@ -1,0 +1,15 @@
+$kind: http-request
+url: http://localhost:8080/oauth2/token
+method: POST
+body:
+  type: urlencoded
+  content:
+    code: n6Vc--yRR4LQPAx-Ljlf_mOTSsfdlcj0mSuCUdAX5fwkdp375ixWMWDItmQEv5jSR_1nD05nMFSx2DZBEIV3I-Ky-ue-40FnlhG1r6r-0p-8Bkt50_mZmGXAV4pI_E9r
+    grant_type: authorization_code
+    redirect_uri: http://localhost:4200
+auth:
+  type: basic
+  credentials:
+    username: crm-app
+    password: secret
+order: 1000

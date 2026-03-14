@@ -1,0 +1,8 @@
+$kind: http-request
+name: List Notes
+url: "{{base_url}}/note/list?entityType=CONTACT&entityFk=12"
+method: GET
+queryParams:
+  entityType: CONTACT
+  entityFk: "12"
+order: 2000

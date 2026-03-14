@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8080/logout
+method: POST
+order: 7000

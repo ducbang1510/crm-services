@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{base_url}}/file/list?entityType=CONTACT&entityFk=36"
+method: GET
+queryParams:
+  entityType: CONTACT
+  entityFk: "36"
+order: 3000
