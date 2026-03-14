@@ -6,6 +6,7 @@
 package com.tdbang.crm.repositories;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,4 +29,6 @@ public interface DailySalesReportRepository extends JpaRepository<DailySalesRepo
      * Checks whether a report with the given status already exists for a date.
      */
     boolean existsByReportDateAndStatus(LocalDate reportDate, ReportStatus status);
+
+    List<DailySalesReport> findByReportDateBetweenOrderByReportDateDesc(LocalDate from, LocalDate to);
 }

@@ -105,6 +105,10 @@ public class MessageConstants {
     public static final String FETCHING_TOP_USERS_SUCCESS = "Fetching top users successfully!";
     public static final String FETCHING_TOP_USERS_ERROR = "Error while fetching top users";
 
+    public static final String FETCHING_REPORTS_SUCCESS = "Fetching reports successfully!";
+    public static final String FETCHING_REPORTS_ERROR = "Error while fetching reports";
+    public static final String DOWNLOADING_REPORT_ERROR = "Error while downloading report";
+
     public static final String ERROR_CODE = "ERROR";
     public static final String SUCCESS_CODE = "SUCCESS";
     public static final String CREATED_CODE = "CREATED";
