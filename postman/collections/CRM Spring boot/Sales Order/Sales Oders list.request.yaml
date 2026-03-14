@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{base_url}}/sales-order/list?filter=assignedTo.name:Name2"
+method: GET
+queryParams:
+  filter: assignedTo.name:Name2
+order: 2000

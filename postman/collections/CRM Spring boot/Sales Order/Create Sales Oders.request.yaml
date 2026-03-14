@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{base_url}}/sales-order"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"contactName\": \"Joseph Jones\",\r
+
+    \    \"subject\": \"Subject Test\",\r
+
+    \    \"status\": \"Created\",\r
+
+    \    \"total\": \"11111111\",\r
+
+    \    \"assignedTo\": \"Michael Johnson\",\r
+
+    \    \"description\": \"111111111\"\r
+
+    }"
+order: 1000

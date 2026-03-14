@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{base_url}}/file/download?collectionType=SALES_REPORT&fileId=69b2d1aa755\
+  499927e753c8c"
+method: GET
+queryParams:
+  collectionType: SALES_REPORT
+  fileId: 69b2d1aa755499927e753c8c
+order: 1000

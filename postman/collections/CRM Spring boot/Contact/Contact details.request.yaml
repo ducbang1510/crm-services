@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{base_url}}/contact/1"
+method: GET
+headers:
+  Origin: http://localhost:4200
+order: 6000

@@ -1,0 +1,29 @@
+$kind: http-request
+url: "{{base_url}}/contact"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"contactName\": \"Bang Tran3\",\r
+
+    \    \"salutation\": \"Mr.\",\r
+
+    \    \"mobilePhone\": \"09123322357\",\r
+
+    \    \"email\": \"bangtran3@gmail.com\",\r
+
+    \    \"organization\": \"CRM Org\",\r
+
+    \    \"dob\": \"2000-10-15T17:00:00.000Z\",\r
+
+    \    \"leadSrc\": \"Conference\",\r
+
+    \    \"assignedTo\": \"Jane Smith\",\r
+
+    \    \"address\": \"583 White Street\",\r
+
+    \    \"description\": \"Follow-up contact for CoreVision\"\r
+
+    }"
+order: 1000

@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{base_url}}/user/create"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"Name3\",\r
+
+    \    \"username\": \"user3\",\r
+
+    \    \"password\": \"123456\",\r
+
+    \    \"email\": \"user3@gmail.com\",\r
+
+    \    \"phone\": \"12346789\",\r
+
+    \    \"isAdmin\": true,\r
+
+    \    \"isActive\": true\r
+
+    }"
+order: 6000

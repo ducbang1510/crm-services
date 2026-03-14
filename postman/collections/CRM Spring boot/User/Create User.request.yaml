@@ -1,0 +1,29 @@
+$kind: http-request
+url: "{{base_url}}/user/create"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"Bang Tran\",\r
+
+    \    \"firstName\": \"Tran\",\r
+
+    \    \"lastName\": \"Bang\",\r
+
+    \    \"username\": \"bangtran\",\r
+
+    \    \"password\": \"12345678\",\r
+
+    \    \"email\": \"bangtran146@gmail.com\",\r
+
+    \    \"phone\": \"12346789\",\r
+
+    \    \"isAdmin\": true,\r
+
+    \    \"isActive\": true,\r
+
+    \    \"isStaff\": true\r
+
+    }"
+order: 5000

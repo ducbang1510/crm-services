@@ -1,0 +1,14 @@
+$kind: http-request
+url: http://localhost:8080/oauth2/token
+method: POST
+body:
+  type: urlencoded
+  content:
+    grant_type: refresh_token
+    refresh_token: CFRTG-YuWMuE1YdeYxfhYJdA2lk43rQtdR8-bmf4zWMBXc8zwzN3qFuKtFapdHwoZXAdS-FavTOqBT9oIUA1Pytlf6GlbR-if4KU6XfiSxR2oO0zDbvkgNk_0lZEp5_g
+auth:
+  type: basic
+  credentials:
+    username: crm-app
+    password: secret
+order: 2000

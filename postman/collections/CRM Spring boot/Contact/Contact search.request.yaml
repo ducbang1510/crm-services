@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{base_url}}/contact/search"
+method: GET
+queryParams:
+  - key: subject
+    value: subject1
+    disabled: true
+  - key: pageNumber
+    value: "0"
+    disabled: true
+  - key: pageSize
+    value: "0"
+    disabled: true
+order: 3000

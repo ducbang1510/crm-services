@@ -1,0 +1,20 @@
+$kind: collection
+name: CRM Spring boot
+auth:
+  type: oauth2
+  credentials:
+    redirect_uri: "{{callback_url}}"
+    refreshTokenUrl: "{{token_url}}"
+    scope: "{{scope}}"
+    clientSecret: "{{client_secret}}"
+    clientId: "{{client_id}}"
+    accessTokenUrl: "{{token_url}}"
+    authUrl: "{{auth_url}}"
+    refreshRequestParams: []
+    tokenName: CRM Spring boot
+    tokenRequestParams: []
+    authRequestParams: []
+    challengeAlgorithm: S256
+    grant_type: authorization_code
+    addTokenTo: header
+    client_authentication: header

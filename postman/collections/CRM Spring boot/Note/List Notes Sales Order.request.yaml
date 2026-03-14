@@ -1,0 +1,8 @@
+$kind: http-request
+name: List Notes Sales Order
+url: "{{base_url}}/note/list?entityType=SALES_ORDER&entityFk=14"
+method: GET
+queryParams:
+  entityType: SALES_ORDER
+  entityFk: "14"
+order: 6000
