@@ -1,0 +1,8 @@
+$kind: http-request
+name: List Tasks By Entity
+url: "{{base_url}}/task/list?entityType=CONTACT&entityFk=1"
+method: GET
+queryParams:
+  entityType: CONTACT
+  entityFk: "1"
+order: 7000

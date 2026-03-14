@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +33,7 @@ import com.tdbang.crm.services.FileStorageService;
 
 @RestController
 @RequestMapping("/api/v1/file")
+@Tag(name = "CRM File APIs")
 public class FileController extends BaseController {
 
     private final FileStorageService fileStorageService;

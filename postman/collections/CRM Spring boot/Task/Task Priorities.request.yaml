@@ -1,0 +1,5 @@
+$kind: http-request
+name: Task Priorities
+url: "{{base_url}}/task/priority"
+method: GET
+order: 11000

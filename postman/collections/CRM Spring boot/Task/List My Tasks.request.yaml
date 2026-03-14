@@ -1,0 +1,8 @@
+$kind: http-request
+name: List My Tasks
+url: "{{base_url}}/task/my?pageNumber=0&pageSize=10"
+method: GET
+queryParams:
+  pageNumber: "0"
+  pageSize: "10"
+order: 6000

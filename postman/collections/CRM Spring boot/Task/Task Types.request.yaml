@@ -1,0 +1,5 @@
+$kind: http-request
+name: Task Types
+url: "{{base_url}}/task/type"
+method: GET
+order: 9000

@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get Task Details
+url: "{{base_url}}/task/1"
+method: GET
+order: 3000

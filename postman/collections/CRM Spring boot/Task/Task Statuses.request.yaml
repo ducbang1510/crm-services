@@ -1,0 +1,5 @@
+$kind: http-request
+name: Task Statuses
+url: "{{base_url}}/task/status"
+method: GET
+order: 10000

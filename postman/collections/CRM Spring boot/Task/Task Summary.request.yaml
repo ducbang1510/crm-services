@@ -1,0 +1,5 @@
+$kind: http-request
+name: Task Summary
+url: "{{base_url}}/task/summary"
+method: GET
+order: 8000
