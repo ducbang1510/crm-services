@@ -55,8 +55,8 @@ class SalesOrderItemControllerTest {
     private UserService userService;
 
     @Test
-    void addItem_withValidBody_returnsCreated() throws Exception {
-        SalesOrderItemDTO dto = buildItemDTO();
+    void addOrderItem_withValidBody_returnsCreated() throws Exception {
+        SalesOrderItemDTO dto = buildOrderItemDTO();
         ResponseDTO response = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.ADDING_ORDER_ITEM_SUCCESS);
 
         when(securityService.getCurrentUsername()).thenReturn("testuser");
@@ -70,7 +70,7 @@ class SalesOrderItemControllerTest {
     }
 
     @Test
-    void addItem_withMissingRequiredField_returnsBadRequest() throws Exception {
+    void addOrderItem_withMissingRequiredField_returnsBadRequest() throws Exception {
         SalesOrderItemDTO dto = new SalesOrderItemDTO();
 
         mockMvc.perform(post("/api/v1/sales-order/1/item")
@@ -80,7 +80,7 @@ class SalesOrderItemControllerTest {
     }
 
     @Test
-    void listItems_returnsOk() throws Exception {
+    void listOrderItems_returnsOk() throws Exception {
         ResponseDTO response = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_ORDER_ITEMS_SUCCESS);
         when(salesOrderItemService.listOrderItems(1L)).thenReturn(response);
 
@@ -89,8 +89,8 @@ class SalesOrderItemControllerTest {
     }
 
     @Test
-    void updateItem_withValidBody_returnsOk() throws Exception {
-        SalesOrderItemDTO dto = buildItemDTO();
+    void updateOrderItem_withValidBody_returnsOk() throws Exception {
+        SalesOrderItemDTO dto = buildOrderItemDTO();
         ResponseDTO response = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.UPDATING_ORDER_ITEM_SUCCESS);
 
         when(securityService.getCurrentUsername()).thenReturn("testuser");
@@ -104,7 +104,7 @@ class SalesOrderItemControllerTest {
     }
 
     @Test
-    void deleteItem_returnsOk() throws Exception {
+    void deleteOrderItem_returnsOk() throws Exception {
         ResponseDTO response = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.DELETING_ORDER_ITEM_SUCCESS);
 
         when(securityService.getCurrentUsername()).thenReturn("testuser");
@@ -115,9 +115,7 @@ class SalesOrderItemControllerTest {
             .andExpect(status().isOk());
     }
 
-    // --- Helper methods ---
-
-    private SalesOrderItemDTO buildItemDTO() {
+    private SalesOrderItemDTO buildOrderItemDTO() {
         SalesOrderItemDTO dto = new SalesOrderItemDTO();
         dto.setProductFk(1L);
         dto.setQuantity(3);
