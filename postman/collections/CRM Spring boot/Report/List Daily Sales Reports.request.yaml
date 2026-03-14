@@ -1,0 +1,8 @@
+$kind: http-request
+name: List Daily Sales Reports
+url: "{{base_url}}/report/daily-sales?from=2026-01-01&to=2026-03-31"
+method: GET
+queryParams:
+  from: "2026-01-01"
+  to: "2026-03-31"
+order: 1000

@@ -1,0 +1,7 @@
+$kind: http-request
+name: Revenue Trend
+url: "{{base_url}}/dashboard/revenue-trend?months=12"
+method: GET
+queryParams:
+  months: "12"
+order: 1000

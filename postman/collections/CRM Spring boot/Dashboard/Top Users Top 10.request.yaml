@@ -1,0 +1,7 @@
+$kind: http-request
+name: Top Users Top 10
+url: "{{base_url}}/dashboard/top-users?limit=10"
+method: GET
+queryParams:
+  limit: "10"
+order: 5000

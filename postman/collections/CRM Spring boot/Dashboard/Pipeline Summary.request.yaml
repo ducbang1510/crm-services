@@ -1,0 +1,5 @@
+$kind: http-request
+name: Pipeline Summary
+url: "{{base_url}}/dashboard/pipeline-summary"
+method: GET
+order: 3000
