@@ -16,9 +16,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.tdbang.crm.dtos.nativequerydto.DashboardQueryDTO;
+import com.tdbang.crm.dtos.nativequerydto.PipelineSummaryDTO;
+import com.tdbang.crm.dtos.nativequerydto.RevenueTrendDTO;
 import com.tdbang.crm.dtos.nativequerydto.SalesOrderDailyAggregationDTO;
 import com.tdbang.crm.dtos.nativequerydto.SalesOrderQueryDTO;
 import com.tdbang.crm.dtos.nativequerydto.SalesOrderUserSummaryDTO;
+import com.tdbang.crm.dtos.nativequerydto.TopUserDTO;
 import com.tdbang.crm.entities.SalesOrder;
 import com.tdbang.crm.enums.SalesOrderStatus;
 
@@ -93,4 +96,27 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
         + " AND s.assignedTo.email IS NOT NULL"
         + " ORDER BY s.pk ASC")
     List<SalesOrder> findOrdersNeedingFollowUp(List<SalesOrderStatus> statuses, Date cutoffDate);
+
+    @Query(value = "SELECT DATE_FORMAT(so.created_on, '%Y-%m') AS period,"
+        + " COUNT(*) AS orderCount,"
+        + " COALESCE(SUM(so.total), 0) AS revenue"
+        + " FROM sales_order so"
+        + " WHERE so.created_on >= DATE_SUB(CURDATE(), INTERVAL :months MONTH)"
+        + " GROUP BY period ORDER BY period", nativeQuery = true)
+    List<RevenueTrendDTO> aggregateRevenueTrend(int months);
+
+    @Query(value = "SELECT so.status AS status,"
+        + " COUNT(*) AS orderCount,"
+        + " COALESCE(SUM(so.total), 0) AS totalRevenue"
+        + " FROM sales_order so GROUP BY so.status", nativeQuery = true)
+    List<PipelineSummaryDTO> aggregatePipelineSummary();
+
+    @Query(value = "SELECT u.name AS userName,"
+        + " COUNT(so.pk) AS orderCount,"
+        + " COALESCE(SUM(so.total), 0) AS totalRevenue"
+        + " FROM sales_order so"
+        + " LEFT JOIN user u ON so.assigned_to = u.pk"
+        + " GROUP BY so.assigned_to, u.name"
+        + " ORDER BY totalRevenue DESC LIMIT :topLimit", nativeQuery = true)
+    List<TopUserDTO> aggregateTopUsersByRevenue(int topLimit);
 }
