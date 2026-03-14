@@ -1,0 +1,15 @@
+$kind: http-request
+name: Add Order Item
+url: "{{base_url}}/sales-order/1/item"
+method: POST
+body:
+  type: json
+  content: |-
+    {
+        "productFk": 1,
+        "quantity": 3,
+        "unitPrice": 100.000,
+        "discount": 10.00,
+        "sortOrder": 1
+    }
+order: 2000
