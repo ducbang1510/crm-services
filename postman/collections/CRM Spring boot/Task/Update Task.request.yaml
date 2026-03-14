@@ -1,0 +1,15 @@
+$kind: http-request
+name: Update Task
+url: "{{base_url}}/task/1"
+method: PUT
+body:
+  type: json
+  content: |-
+    {
+        "title": "Follow up with client on pricing",
+        "taskType": "Call",
+        "assignedToUserFk": 1,
+        "status": "In Progress",
+        "priority": "High"
+    }
+order: 4000

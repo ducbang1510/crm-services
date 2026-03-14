@@ -1,0 +1,18 @@
+$kind: http-request
+name: Create Task
+url: "{{base_url}}/task"
+method: POST
+body:
+  type: json
+  content: |-
+    {
+        "title": "Follow up with client on pricing",
+        "taskType": "Call",
+        "entityType": "CONTACT",
+        "entityFk": 1,
+        "assignedToUserFk": 1,
+        "priority": "High",
+        "dueDate": "2026-03-20",
+        "description": "Call the client to discuss the updated pricing proposal"
+    }
+order: 1000

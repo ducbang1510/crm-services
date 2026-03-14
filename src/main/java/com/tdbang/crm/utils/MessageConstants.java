@@ -85,6 +85,19 @@ public class MessageConstants {
     public static final String DELETING_ORDER_ITEM_SUCCESS = "Deleting order item successfully!";
     public static final String DELETING_ORDER_ITEM_ERROR = "Error while deleting order item";
 
+    public static final String CREATING_TASK_SUCCESS = "Creating task successfully!";
+    public static final String CREATING_TASK_ERROR = "Error while creating task";
+    public static final String FETCHING_TASK_SUCCESS = "Fetching task successfully!";
+    public static final String FETCHING_TASK_ERROR = "Error while fetching task";
+    public static final String FETCHING_LIST_OF_TASKS_SUCCESS = "Fetching list of tasks successfully!";
+    public static final String FETCHING_LIST_OF_TASKS_ERROR = "Error while fetching list of tasks";
+    public static final String UPDATING_TASK_SUCCESS = "Updating task successfully!";
+    public static final String UPDATING_TASK_ERROR = "Error while updating task";
+    public static final String DELETING_TASK_SUCCESS = "Deleting task successfully!";
+    public static final String DELETING_TASK_ERROR = "Error while deleting task";
+    public static final String FETCHING_TASK_SUMMARY_SUCCESS = "Fetching task summary successfully!";
+    public static final String FETCHING_TASK_SUMMARY_ERROR = "Error while fetching task summary";
+
     public static final String ERROR_CODE = "ERROR";
     public static final String SUCCESS_CODE = "SUCCESS";
     public static final String CREATED_CODE = "CREATED";

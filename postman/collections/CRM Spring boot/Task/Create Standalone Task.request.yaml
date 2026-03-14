@@ -1,0 +1,16 @@
+$kind: http-request
+name: Create Standalone Task
+url: "{{base_url}}/task"
+method: POST
+body:
+  type: json
+  content: |-
+    {
+        "title": "Prepare quarterly report",
+        "taskType": "Todo",
+        "assignedToUserFk": 1,
+        "priority": "Medium",
+        "dueDate": "2026-03-25",
+        "description": "Compile Q1 sales data and prepare summary report"
+    }
+order: 2000
