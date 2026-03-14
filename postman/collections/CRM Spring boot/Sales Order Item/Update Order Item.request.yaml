@@ -1,0 +1,13 @@
+$kind: http-request
+name: Update Order Item
+url: "{{base_url}}/sales-order/1/item/107"
+method: PUT
+body:
+  type: json
+  content: |-
+    {
+        "productFk": 3,
+        "quantity": 10,
+        "discount": 15.00
+    }
+order: 4000
