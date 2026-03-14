@@ -67,6 +67,15 @@ public class MessageConstants {
     public static final String UPDATING_PRODUCT_SUCCESS = "Updating product successfully!";
     public static final String DELETING_LIST_OF_PRODUCTS_SUCCESS = "Deleting list of products successfully!";
 
+    public static final String CREATING_NOTE_SUCCESS = "Creating note successfully!";
+    public static final String CREATING_NOTE_ERROR = "Error while creating note";
+    public static final String FETCHING_LIST_OF_NOTES_SUCCESS = "Fetching list of notes successfully!";
+    public static final String FETCHING_LIST_OF_NOTES_ERROR = "Error while fetching list of notes";
+    public static final String UPDATING_NOTE_SUCCESS = "Updating note successfully!";
+    public static final String UPDATING_NOTE_ERROR = "Error while updating note";
+    public static final String DELETING_NOTE_SUCCESS = "Deleting note successfully!";
+    public static final String DELETING_NOTE_ERROR = "Error while deleting note";
+
     public static final String ERROR_CODE = "ERROR";
     public static final String SUCCESS_CODE = "SUCCESS";
     public static final String CREATED_CODE = "CREATED";
