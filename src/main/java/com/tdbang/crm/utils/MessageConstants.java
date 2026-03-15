@@ -98,6 +98,17 @@ public class MessageConstants {
     public static final String FETCHING_TASK_SUMMARY_SUCCESS = "Fetching task summary successfully!";
     public static final String FETCHING_TASK_SUMMARY_ERROR = "Error while fetching task summary";
 
+    public static final String FETCHING_REVENUE_TREND_SUCCESS = "Fetching revenue trend successfully!";
+    public static final String FETCHING_REVENUE_TREND_ERROR = "Error while fetching revenue trend";
+    public static final String FETCHING_PIPELINE_SUMMARY_SUCCESS = "Fetching pipeline summary successfully!";
+    public static final String FETCHING_PIPELINE_SUMMARY_ERROR = "Error while fetching pipeline summary";
+    public static final String FETCHING_TOP_USERS_SUCCESS = "Fetching top users successfully!";
+    public static final String FETCHING_TOP_USERS_ERROR = "Error while fetching top users";
+
+    public static final String FETCHING_REPORTS_SUCCESS = "Fetching reports successfully!";
+    public static final String FETCHING_REPORTS_ERROR = "Error while fetching reports";
+    public static final String DOWNLOADING_REPORT_ERROR = "Error while downloading report";
+
     public static final String ERROR_CODE = "ERROR";
     public static final String SUCCESS_CODE = "SUCCESS";
     public static final String CREATED_CODE = "CREATED";

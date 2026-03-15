@@ -1,0 +1,7 @@
+$kind: http-request
+name: Download Daily Sales Report
+url: "{{base_url}}/report/daily-sales/download?date=2026-03-11"
+method: GET
+queryParams:
+  date: 2026-03-11
+order: 2000
