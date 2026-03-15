@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{base_url}}/product"
+method: POST
+body:
+  type: json
+  content: "{\r
+    \    \"name\": \"CRM Enterprise License\",\r
+    \    \"price\": 2500.000,\r
+    \    \"isActive\": true,\r
+    \    \"description\": \"Annual enterprise CRM license\"\r
+    }"
+order: 500

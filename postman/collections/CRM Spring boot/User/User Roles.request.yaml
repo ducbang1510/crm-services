@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{base_url}}/user/role"
+method: GET
+order: 9000

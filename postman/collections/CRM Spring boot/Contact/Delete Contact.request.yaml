@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{base_url}}/contact/1"
+method: DELETE
+order: 7000

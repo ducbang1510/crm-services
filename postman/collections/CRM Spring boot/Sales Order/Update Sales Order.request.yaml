@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{base_url}}/sales-order/1"
+method: PUT
+body:
+  type: json
+  content: "{\r
+    \    \"contactName\": \"Joseph Jones\",\r
+    \    \"subject\": \"Updated Subject\",\r
+    \    \"status\": \"Approved\",\r
+    \    \"total\": \"25000\",\r
+    \    \"assignedTo\": \"Michael Johnson\",\r
+    \    \"description\": \"Updated description\"\r
+    }"
+order: 1500

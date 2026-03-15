@@ -1,0 +1,9 @@
+$kind: http-request
+url: "{{base_url}}/notification"
+method: GET
+queryParams:
+  - key: pageNumber
+    value: "0"
+  - key: pageSize
+    value: "10"
+order: 1000

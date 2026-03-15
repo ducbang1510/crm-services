@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{base_url}}/contact/1"
+method: PUT
+body:
+  type: json
+  content: "{\r
+    \    \"contactName\": \"Bang Tran Updated\",\r
+    \    \"salutation\": \"Mr.\",\r
+    \    \"mobilePhone\": \"09123322357\",\r
+    \    \"email\": \"bangtran_updated@gmail.com\",\r
+    \    \"organization\": \"CRM Org\",\r
+    \    \"dob\": \"2000-10-15T17:00:00.000Z\",\r
+    \    \"leadSrc\": \"Website\",\r
+    \    \"assignedTo\": \"Jane Smith\",\r
+    \    \"address\": \"123 Updated Street\",\r
+    \    \"description\": \"Updated description\"\r
+    }"
+order: 1500

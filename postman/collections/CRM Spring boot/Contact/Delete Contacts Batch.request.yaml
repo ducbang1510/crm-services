@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{base_url}}/contact/delete"
+method: POST
+body:
+  type: json
+  content: "[1, 2, 3]"
+order: 7500

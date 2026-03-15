@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{base_url}}/contact/list/contact-name"
+method: GET
+order: 2500
