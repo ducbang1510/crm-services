@@ -82,7 +82,7 @@ Copy the properties file to the `target` folder and update database credentials:
 
 ```sh
 cd target
-cp ../src/main/resources/crm-services.properties .
+cp ../src/main/resources/crm-services.properties
 ```
 
 > On Windows, use `copy` instead of `cp`.
