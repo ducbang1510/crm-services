@@ -10,6 +10,7 @@ import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -20,10 +21,12 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
@@ -59,15 +62,31 @@ public class SecurityConfig implements InitializingBean {
 
     private final CustomUserDetailsService userDetailsService;
     private final JwtConfig jwtConfig;
+    private final ApiKeyAuthFilter apiKeyAuthFilter;
 
     @Override
     public void afterPropertiesSet() {
 
     }
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService, JwtConfig jwtConfig) {
+    public SecurityConfig(CustomUserDetailsService userDetailsService, JwtConfig jwtConfig,
+                           ApiKeyAuthFilter apiKeyAuthFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtConfig = jwtConfig;
+        this.apiKeyAuthFilter = apiKeyAuthFilter;
+    }
+
+    @Bean
+    @Order(0)
+    public SecurityFilterChain internalApiFilterChain(HttpSecurity http) throws Exception {
+        return http
+            .securityMatcher("/internal/**")
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(AbstractHttpConfigurer::disable)
+            .addFilterBefore(apiKeyAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .authorizeHttpRequests(auth -> auth.anyRequest().hasRole("AGENT"))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .build();
     }
 
     @Bean
@@ -150,6 +169,13 @@ public class SecurityConfig implements InitializingBean {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public FilterRegistrationBean<ApiKeyAuthFilter> disableApiKeyAutoRegistration(ApiKeyAuthFilter filter) {
+        FilterRegistrationBean<ApiKeyAuthFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
     }
 
     @Bean

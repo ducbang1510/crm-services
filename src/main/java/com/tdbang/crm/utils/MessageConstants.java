@@ -133,4 +133,8 @@ public class MessageConstants {
     public static final String METHOD_NOT_ALLOWED_MESSAGE = "HTTP method not supported";
     public static final String CONFLICT_MESSAGE = "Resource already exists or version conflict";
     public static final String INTERNAL_ERROR_MESSAGE = "An unexpected error occurred";
+
+    public static final String AI_CHAT_SUCCESS = "AI chat processed successfully!";
+    public static final String AI_CHAT_ERROR = "Error while processing AI chat";
+    public static final String AI_AGENT_UNAVAILABLE = "AI agent service is currently unavailable";
 }
