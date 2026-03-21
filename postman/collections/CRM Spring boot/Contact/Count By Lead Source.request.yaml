@@ -1,4 +1,0 @@
-$kind: http-request
-url: "{{base_url}}/contact/count/lead-source"
-method: GET
-order: 5500

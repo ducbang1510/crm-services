@@ -1,4 +1,0 @@
-$kind: http-request
-url: "{{base_url}}/user/list/name"
-method: GET
-order: 4000
