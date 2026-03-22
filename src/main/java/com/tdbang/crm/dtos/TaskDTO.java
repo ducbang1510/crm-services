@@ -9,7 +9,6 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,8 +31,8 @@ public class TaskDTO {
     private String priority;
     private Date dueDate;
     private String description;
+    @NotBlank(message = "Assigned To is required")
     private String assignedTo;
-    @NotNull(message = "Assigned To User FK is required")
     private Long assignedToUserFk;
     private String createdBy;
     private Long createdByFk;

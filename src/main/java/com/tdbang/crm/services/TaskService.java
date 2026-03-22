@@ -56,7 +56,9 @@ public class TaskService {
                 validateEntityType(dto.getEntityType());
             }
 
-            User assignedTo = userRepository.findUserByPk(dto.getAssignedToUserFk());
+            User assignedTo = dto.getAssignedToUserFk() == null
+                ? userRepository.getUsersByNames(dto.getAssignedTo()).get(0)
+                : userRepository.findUserByPk(dto.getAssignedToUserFk());
             if (assignedTo == null) {
                 throw new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, "Assigned user not found");
             }
@@ -118,8 +120,10 @@ public class TaskService {
             if (dto.getDescription() != null) {
                 task.setDescription(dto.getDescription());
             }
-            if (dto.getAssignedToUserFk() != null) {
-                User assignedTo = userRepository.findUserByPk(dto.getAssignedToUserFk());
+            if (dto.getAssignedToUserFk() != null || dto.getAssignedTo() != null) {
+                User assignedTo = dto.getAssignedToUserFk() == null
+                        ? userRepository.getUsersByNames(dto.getAssignedTo()).get(0)
+                        : userRepository.findUserByPk(dto.getAssignedToUserFk());
                 if (assignedTo == null) {
                     throw new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, "Assigned user not found");
                 }

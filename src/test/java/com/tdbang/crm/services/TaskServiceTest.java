@@ -87,7 +87,6 @@ class TaskServiceTest {
     @Test
     void createTask_invalidTaskType_throwsException() {
         TaskDTO dto = buildTaskDTO("INVALID_TYPE", null, null);
-        dto.setAssignedToUserFk(1L);
 
         CRMException ex = assertThrows(CRMException.class,
             () -> taskService.createTask(dto, 1L));
@@ -122,13 +121,13 @@ class TaskServiceTest {
         TaskDTO dto = new TaskDTO();
         dto.setTitle("Updated Title");
         dto.setTaskType("Todo");
-        dto.setAssignedToUserFk(1L);
+        dto.setAssignedTo("Admin");
         dto.setStatus("Done");
         TaskDTO resultDto = new TaskDTO();
         resultDto.setPk(10L);
 
         when(taskRepository.findByPk(10L)).thenReturn(Optional.of(existingTask));
-        when(userRepository.findUserByPk(1L)).thenReturn(user);
+        when(userRepository.getUsersByNames("Admin")).thenReturn(List.of(user));
         when(taskRepository.save(any(Task.class))).thenReturn(existingTask);
         when(taskMapper.mappingTaskEntityToTaskDTO(existingTask)).thenReturn(resultDto);
 
@@ -223,6 +222,7 @@ class TaskServiceTest {
         dto.setTaskType(taskType);
         dto.setEntityType(entityType);
         dto.setEntityFk(entityFk);
+        dto.setAssignedTo("Admin");
         dto.setAssignedToUserFk(1L);
         dto.setPriority("Medium");
         return dto;

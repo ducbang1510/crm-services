@@ -178,7 +178,7 @@ class TaskControllerTest {
         dto.setTaskType("Todo");
         dto.setEntityType("CONTACT");
         dto.setEntityFk(1L);
-        dto.setAssignedToUserFk(1L);
+        dto.setAssignedTo("Admin");
         dto.setPriority("Medium");
         return dto;
     }
