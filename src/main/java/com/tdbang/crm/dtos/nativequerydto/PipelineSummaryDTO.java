@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 public interface PipelineSummaryDTO {
 
-    String getStatus();
+    Integer getStatus();
 
     Long getOrderCount();
 

@@ -17,6 +17,7 @@ A modular Customer Relationship Management backend application built with Spring
 - **Background Processing** -- Spring Batch jobs and scheduled tasks for report generation and email reminders
 - **Real-Time Notifications** -- Socket.IO integration for push notifications
 - **Authentication and Authorization** -- Spring Authorization Server with OAuth2 and JWT
+- **AI Agent Integration** -- BFF proxy to Python AI agent for conversational CRM queries, with internal API endpoints secured by API key
 - **API Documentation** -- Swagger/OpenAPI with built-in OAuth2 authentication
 
 ## Tech Stack
@@ -32,7 +33,7 @@ A modular Customer Relationship Management backend application built with Spring
 | **Email**               | Spring Mail                                |
 | **Schema Migration**    | Flyway                                     |
 | **Build Tool**          | Maven 3.9                                  |
-| **Testing**             | JUnit 5, Mockito, Postman Collections      |
+| **Testing**             | JUnit 5, Mockito                           |
 | **API Documentation**   | SpringDoc OpenAPI (Swagger UI)             |
 
 ## Architecture Overview
@@ -49,16 +50,21 @@ A modular Customer Relationship Management backend application built with Spring
 │               SPRING BOOT APPLICATION                         │
 │                                                               │
 │  ┌─────────────────── SECURITY ───────────────────────────┐   │
-│  │  OAuth2 Auth Server ► JWT Resource Server ► Form Login │   │
+│  │  @Order(0) API Key filter (/internal/**)               │   │
+│  │  @Order(1) OAuth2 Auth Server                          │   │
+│  │  @Order(2) JWT Resource Server ► Form Login            │   │
 │  └────────────────────────────────────────────────────────┘   │
 │                            │                                  │
 │  ┌─────────────────── CONTROLLER ──────────────────────────┐  │
-│  │  RESTful API endpoints with role-based access control   │  │
+│  │  /api/v1/*      RESTful API (JWT auth, role-based)     │  │
+│  │  /api/v1/ai/*   BFF proxy to Python AI agent (JWT)     │  │
+│  │  /internal/v1/* Read-only CRM data for agent (API key) │  │
 │  └────────────────────────┬────────────────────────────────┘  │
 │                            │                                  │
 │  ┌─────────────────── SERVICE ─────────────────────────────┐  │
 │  │  Business logic, validation, mapping, transactions      │  │
 │  │  + Notifications (Socket.IO) + Email + File Storage     │  │
+│  │  + AiProxyService (forwards chat to Python agent)       │  │
 │  └────────────────────────┬────────────────────────────────┘  │
 │                            │                                  │
 │  ┌─────────────────── REPOSITORY ──────────────────────────┐  │
@@ -70,13 +76,20 @@ A modular Customer Relationship Management backend application built with Spring
 │  │  (Report generation, Email reminders)                   │  │
 │  └────────────────────────┬────────────────────────────────┘  │
 │                            │                                  │
-└────────────┬───────────────┴──────────────┬───────────────────┘
-             │                              │
-┌────────────▼────────────┐  ┌──────────────▼───────────────────┐
-│       MySQL 8+          │  │        MongoDB 8.2.0             │
-│  Relational data        │  │  File storage (GridFS)           │
-│  + Flyway migrations    │  │  with named collection buckets   │
-└─────────────────────────┘  └──────────────────────────────────┘
+└────────────┬───────────────┼──────────────┬───────────────────┘
+             │               │              │
+┌────────────▼────────────┐  │  ┌───────────▼──────────────────┐
+│       MySQL 8+          │  │  │        MongoDB 8.2.0         │
+│  Relational data        │  │  │  File storage (GridFS)       │
+│  + Flyway migrations    │  │  │  with named collection       │
+│                         │  │  │  buckets                     │
+└─────────────────────────┘  │  └──────────────────────────────┘
+                             │
+              ┌──────────────▼──────────────────┐
+              │     Python AI Agent (8000)       │
+              │  FastAPI + pydantic-ai + LLM     │
+              │  ◄── /internal/v1/* callbacks ──►│
+              └─────────────────────────────────┘
 ```
 
 ### Request Flow
@@ -157,19 +170,21 @@ src/main/java/com/tdbang/crm/
 
 ## API Endpoints
 
-| Module              | Base Path                                | Methods              |
-|---------------------|------------------------------------------|----------------------|
-| Contact             | `/api/v1/contact`                        | GET, POST, PUT, DELETE |
-| Product             | `/api/v1/product`                        | GET, POST, PUT, DELETE |
-| Sales Order         | `/api/v1/sales-order`                    | GET, POST, PUT, DELETE |
-| Sales Order Item    | `/api/v1/sales-order/{orderId}/item`     | GET, POST, PUT, DELETE |
-| Task                | `/api/v1/task`                           | GET, POST, PUT, DELETE |
-| Note                | `/api/v1/note`                           | GET, POST, PUT, DELETE |
-| Dashboard           | `/api/v1/dashboard`                      | GET                  |
-| Report              | `/api/v1/report`                         | GET                  |
-| File                | `/api/v1/file`                           | GET, POST            |
-| User                | `/api/v1/user`                           | GET, POST, PUT       |
-| Notification        | `/api/v1/notification`                   | GET, PUT             |
+| Module              | Base Path                                | Methods              | Auth     |
+|---------------------|------------------------------------------|----------------------|----------|
+| Contact             | `/api/v1/contact`                        | GET, POST, PUT, DELETE | JWT    |
+| Product             | `/api/v1/product`                        | GET, POST, PUT, DELETE | JWT    |
+| Sales Order         | `/api/v1/sales-order`                    | GET, POST, PUT, DELETE | JWT    |
+| Sales Order Item    | `/api/v1/sales-order/{orderId}/item`     | GET, POST, PUT, DELETE | JWT    |
+| Task                | `/api/v1/task`                           | GET, POST, PUT, DELETE | JWT    |
+| Note                | `/api/v1/note`                           | GET, POST, PUT, DELETE | JWT    |
+| Dashboard           | `/api/v1/dashboard`                      | GET                  | JWT      |
+| Report              | `/api/v1/report`                         | GET                  | JWT      |
+| File                | `/api/v1/file`                           | GET, POST, DELETE    | JWT      |
+| User                | `/api/v1/user`                           | GET, POST, PUT       | JWT      |
+| Notification        | `/api/v1/notification`                   | GET                  | JWT      |
+| AI Chat (BFF)       | `/api/v1/ai`                             | POST                 | JWT      |
+| Internal API        | `/internal/v1`                           | GET                  | API Key  |
 
 ## Business Workflow
 
@@ -244,6 +259,62 @@ The following diagram illustrates the end-to-end CRM business flow, from user au
 │                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
+
+## AI Agent Integration
+
+This application acts as a **BFF (Backend-for-Frontend)** proxy between the Angular UI and a Python AI agent (`crm-agent`). The agent provides a conversational interface for querying CRM data using natural language.
+
+### How It Works
+
+```text
+Angular UI ──(JWT)──► /api/v1/ai/chat ──(X-API-Key)──► Python Agent (port 8000)
+                                                              │
+                                                              ▼
+                      /internal/v1/* ◄──(X-API-Key)── Agent tool calls
+```
+
+1. **UI sends chat** to `POST /api/v1/ai/chat` with JWT auth and `{sessionId, message}`
+2. **AiProxyService** resolves user context from JWT, forwards to the Python agent
+3. **Python agent** processes the message with an LLM, calling CRM tools as needed
+4. **Agent tools** call back to `/internal/v1/*` endpoints to fetch CRM data
+5. **Response** flows back through the proxy to the UI
+
+### Internal API Endpoints (`/internal/v1/*`)
+
+All endpoints are **GET-only**, secured by API key (`X-API-Key` header), hidden from Swagger, and serve the Python agent's tool calls:
+
+| Endpoint | Data |
+| -------- | ---- |
+| `/internal/v1/dashboard/pipeline-summary` | Order counts by status |
+| `/internal/v1/dashboard/revenue-trend?months=12` | Monthly revenue data |
+| `/internal/v1/dashboard/top-users?limit=5` | Top salespeople by revenue |
+| `/internal/v1/reports?from=...&to=...` | Reports in date range |
+| `/internal/v1/tasks/summary?userPk=...` | Task counts by status for user |
+| `/internal/v1/contacts?contactName=...` | Contact search (paginated) |
+| `/internal/v1/contacts/{id}` | Contact details |
+| `/internal/v1/sales-orders?subject=...` | Order search (paginated) |
+| `/internal/v1/sales-orders/{id}` | Order details |
+| `/internal/v1/sales-orders/count/status` | Order count by status |
+| `/internal/v1/sales-orders/{orderId}/items` | Order line items |
+| `/internal/v1/notes?entityType=...&entityFk=...` | Notes for an entity |
+| `/internal/v1/products?pageNumber=0&pageSize=50` | Product catalog |
+
+### Configuration
+
+Properties in `crm-services.properties`:
+
+```properties
+ai.agent.base-url=http://localhost:8000
+ai.agent.api-key=crm-agent-secret-key-change-me
+ai.agent.timeout-ms=60000
+```
+
+### Security
+
+- `/internal/**` uses a dedicated `@Order(0)` security filter chain (stateless, CSRF disabled)
+- `ApiKeyAuthFilter` compares `X-API-Key` header to `ai.agent.api-key` property
+- Authenticated requests receive `ROLE_AGENT` authority
+- Existing `/api/v1/*` JWT endpoints are unaffected
 
 ## Getting Started
 

@@ -139,8 +139,12 @@ public class ContactService extends AbstractService<Contact> {
         ResponseDTO result = new ResponseDTO();
         if (contactPk != null) {
             ContactQueryDTO contactQueryDTO = contactRepository.getContactDetailsByPk(contactPk);
-            result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_CONTACT_SUCCESS,
-                contactMapper.mappingContactQueryDTOToContactDTO(contactQueryDTO));
+            if (contactQueryDTO != null) {
+                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_CONTACT_SUCCESS,
+                    contactMapper.mappingContactQueryDTOToContactDTO(contactQueryDTO));
+            } else {
+                throw new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, "Contact details not found");
+            }
         }
 
         return result;

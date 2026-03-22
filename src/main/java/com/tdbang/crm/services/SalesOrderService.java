@@ -109,8 +109,12 @@ public class SalesOrderService extends AbstractService<SalesOrder> {
         ResponseDTO result = new ResponseDTO();
         if (orderPk != null) {
             SalesOrderQueryDTO salesOrderQueryDTO = salesOrderRepository.getSalesOrderDetailsByPk(orderPk);
-            result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_SALES_ORDER_SUCCESS,
-                salesOrderMapper.mappingSalesOrderQueryDTOToSalesOrderDTO(salesOrderQueryDTO));
+            if (salesOrderQueryDTO != null) {
+                result = new ResponseDTO(MessageConstants.SUCCESS_STATUS, MessageConstants.FETCHING_SALES_ORDER_SUCCESS,
+                    salesOrderMapper.mappingSalesOrderQueryDTOToSalesOrderDTO(salesOrderQueryDTO));
+            } else {
+                throw new CRMException(HttpStatus.NOT_FOUND, MessageConstants.NOT_FOUND_CODE, "Sales Order details not found");
+            }
         }
 
         return result;
